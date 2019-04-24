@@ -10,8 +10,10 @@ typedef int Shape;
 
 class Tile {
 public:
-   Colour colour;
-   Shape  shape;
+	Tile(Color color, Shape shape);
+
+    Colour colour;
+    Shape  shape;
 };
 
 #endif // ASSIGN2_TILE_H

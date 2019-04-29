@@ -10,7 +10,7 @@ typedef int Shape;
 
 class Tile {
 public:
-	Tile(Color color, Shape shape);
+	Tile(Colour colour, Shape shape);
 
     Colour colour;
     Shape  shape;

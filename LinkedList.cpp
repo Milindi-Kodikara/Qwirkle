@@ -29,11 +29,46 @@ void LinkedList::add_back(Tile* tile)
 // Removes the tile at the start of the list and returns it
 Tile* LinkedList::pop_front()
 {
-	//TODO
+	Node *tempNode = head;
+	if (tempNode != nullptr) {
+		Tile *tempTile = head->tile;
+		head = head->next;
+		delete tempNode;
+		return tempTile;
+	}
+	else {
+		return nullptr;
+	}
 }
 
 // Removes the specified tile from the list
 void LinkedList::remove(Tile* tile)
 {
-	//TODO
+	Node* current = head;
+	Node* previous = nullptr;
+	bool found = false;
+
+	while (current != nullptr && !found) 
+	{		
+		if (current->tile == tile)
+		{
+			if (current == head)
+			{
+				head = head->next;
+				delete current;
+			}
+			else 
+			{
+				previous->next = current->next;
+				delete current;
+			}
+			found = true;
+		}
+		else 
+		{
+			previous = current;
+			current = previous->next;
+		}
+	}
+	
 }

@@ -25,6 +25,13 @@ private:
 };
 
 struct InvalidPopException {};
-struct TileNotFoundException {};
+struct TileNotFoundException 
+{
+public:
+	const char* what()
+	{
+		return "Tile does not exist";
+	}
+}TileNotFound;
 
 #endif // ASSIGN2_LINKEDLIST_H

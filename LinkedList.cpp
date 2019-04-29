@@ -24,6 +24,26 @@ LinkedList::~LinkedList()
 void LinkedList::add_back(Tile* tile)
 {
 	//TODO
+	try
+	{
+		if (tile != nullptr)
+		{
+			Node* temp = new Node(tile, nullptr);
+			if (head != nullptr)
+			{
+				tail->next = temp;
+				tail = tail->next;
+			}
+		}
+		else
+		{
+			throw TileNotFound;
+		}
+	}
+	catch (TileNotFoundException & e)
+	{
+		std::cout << e.what() << std::endl;
+	}
 }
 
 // Removes the tile at the start of the list and returns it

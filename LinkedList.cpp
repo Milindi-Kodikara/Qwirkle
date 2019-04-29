@@ -9,7 +9,14 @@ LinkedList::LinkedList()
 
 LinkedList::~LinkedList() 
 {
-	//TODO
+	Node* curr = head;
+	Node* prev;
+	while (curr != nullptr)
+	{
+		prev = curr;
+		curr = curr->next;
+		delete prev;
+	}
 }
 
 // Adds the supplied tile to the back of the list

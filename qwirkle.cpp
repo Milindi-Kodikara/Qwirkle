@@ -54,7 +54,7 @@ void display_menu()
 				else
 				{
 					valid_input = false;
-					cout << "Invalid Input" << endl;
+					std::cout << "Invalid Input" << std::endl;
 				}
 			}
 			catch (std::exception e)
@@ -65,7 +65,7 @@ void display_menu()
 					valid_input = true;
 					exit = true;
 				}
-				cout << "Invalid Input" << endl;
+				std::cout << "Invalid Input" << std::endl;
 			}
 		}
 	}

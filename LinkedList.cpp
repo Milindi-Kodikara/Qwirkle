@@ -34,25 +34,31 @@ Tile* LinkedList::pop_front()
 // Removes the specified tile from the list
 void LinkedList::remove(Tile* tile)
 {
-	Node* current = nullptr;
+	Node* current = head;
 	Node* previous = nullptr;
-	current = head->next;
-	previous = head;
-	while (true) {
+	bool found = false;
+
+	while (current != nullptr && !found) 
+	{		
 		if (current->tile == tile)
 		{
-			previous->next = current->next;
-			delete current;
-			break;
+			if (current == head)
+			{
+				head = head->next;
+				delete current;
+			}
+			else 
+			{
+				previous->next = current->next;
+				delete current;
+			}
+			found = true;
 		}
-		else if (current != tail)
+		else 
 		{
 			previous = current;
-			current = current->next;
-		}
-		else
-		{
-			break;
+			current = previous->next;
 		}
 	}
+	
 }

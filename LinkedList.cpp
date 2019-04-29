@@ -2,6 +2,7 @@
 
 LinkedList::LinkedList() 
 {
+	//test2
     head = nullptr;
 	tail = nullptr;
 	size = 0;

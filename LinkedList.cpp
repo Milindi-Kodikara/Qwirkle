@@ -2,7 +2,6 @@
 
 LinkedList::LinkedList() 
 {
-    //Test1
 	head = nullptr;
 	tail = nullptr;
 	size = 0;
@@ -23,7 +22,6 @@ LinkedList::~LinkedList()
 // Adds the supplied tile to the back of the list
 void LinkedList::add_back(Tile* tile)
 {
-	//TODO
 	try
 	{
 		if (tile != nullptr)
@@ -47,18 +45,18 @@ void LinkedList::add_back(Tile* tile)
 }
 
 // Removes the tile at the start of the list and returns it
+// Returns nullptr if the list is empty
 Tile* LinkedList::pop_front()
 {
-	Node *tempNode = head;
-	if (tempNode != nullptr) {
-		Tile *tempTile = head->tile;
+	Tile* tempTile = nullptr;
+	if (head != nullptr)
+	{
+		Node* tempNode = head;
+		tempTile = head->tile;
 		head = head->next;
 		delete tempNode;
-		return tempTile;
 	}
-	else {
-		return nullptr;
-	}
+	return tempTile;
 }
 
 // Removes the specified tile from the list
@@ -90,5 +88,4 @@ void LinkedList::remove(Tile* tile)
 			current = previous->next;
 		}
 	}
-	
 }

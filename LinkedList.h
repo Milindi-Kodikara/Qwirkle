@@ -13,6 +13,7 @@ public:
 	void add_back(Tile* tile);
 
 	// Removes the tile at the start of the list and returns it
+	// Returns nullptr if the list is empty
 	Tile* pop_front();
 
 	// Removes the specified tile from the list

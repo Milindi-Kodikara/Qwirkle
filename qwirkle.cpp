@@ -31,7 +31,7 @@ void display_menu()
 			<< "2. Load Game\n"
 			<< "3. Show Student Information\n"
 			<< "4. Quit\n\n";
-		bool valid_input = false;
+		bool valid_input = true;
 		while (valid_input)
 		{
 			// This system for checking EOF won't work, find better solution

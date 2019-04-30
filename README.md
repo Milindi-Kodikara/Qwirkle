@@ -1,5 +1,4 @@
 # APT-Assignment-2
 ## TODO
-1. Fully read through the specification
-2. Start thinking about test cases
-3. Fill out LinkedList functionality, but don't push yet
+1. Complete your assigned function (preferably by the weekend)
+2. Choose which extension you like the most (minor or major)

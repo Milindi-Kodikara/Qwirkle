@@ -22,8 +22,6 @@ LinkedList::~LinkedList()
 // Adds the supplied tile to the back of the list
 void LinkedList::add_back(Tile* tile)
 {
-	try
-	{
 		if (tile != nullptr)
 		{
 			Node* temp = new Node(tile, nullptr);
@@ -33,15 +31,6 @@ void LinkedList::add_back(Tile* tile)
 				tail = tail->next;
 			}
 		}
-		else
-		{
-			throw TileNotFound;
-		}
-	}
-	catch (TileNotFoundException & e)
-	{
-		std::cout << e.what() << std::endl;
-	}
 }
 
 // Removes the tile at the start of the list and returns it

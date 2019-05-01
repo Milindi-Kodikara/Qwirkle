@@ -48,14 +48,15 @@ Tile* LinkedList::pop_front()
 	return tempTile;
 }
 
-// Removes the specified tile from the list
-void LinkedList::remove(Tile* tile)
+/* Removes the specified tile from the list and returns true if
+ * the tile was successfully removed*/
+bool LinkedList::remove(Tile* tile)
 {
 	Node* current = head;
 	Node* previous = nullptr;
 	bool found = false;
 
-	while (current != nullptr && !found) 
+	while (current != nullptr && !found)
 	{		
 		if (current->tile == tile)
 		{
@@ -77,4 +78,5 @@ void LinkedList::remove(Tile* tile)
 			current = previous->next;
 		}
 	}
+	return found;
 }

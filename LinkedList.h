@@ -17,7 +17,7 @@ public:
 	Tile* pop_front();
 
 	// Removes the specified tile from the list
-	void remove(Tile* tile);
+	bool remove(Tile* tile);
 
 private:
     Node* head;

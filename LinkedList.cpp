@@ -22,15 +22,9 @@ LinkedList::~LinkedList()
 // Adds the supplied tile to the back of the list
 void LinkedList::add_back(Tile* tile)
 {
-		if (tile != nullptr)
-		{
-			Node* temp = new Node(tile, nullptr);
-			if (head != nullptr)
-			{
-				tail->next = temp;
-				tail = tail->next;
-			}
-		}
+	Node* temp = new Node(tile, nullptr);
+	tail->next = temp;
+	tail = tail->next;
 }
 
 // Removes the tile at the start of the list and returns it
@@ -46,6 +40,14 @@ Tile* LinkedList::pop_front()
 		delete tempNode;
 	}
 	return tempTile;
+}
+
+// Searches through the list for the tile with the specified
+// tileLabel, returning it if it is found and returning nullptr
+// if it isn't
+Tile* LinkedList::find(std::string tileLabel)
+{
+	//TODO
 }
 
 /* Removes the specified tile from the list and returns true if

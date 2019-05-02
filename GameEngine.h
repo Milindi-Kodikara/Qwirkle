@@ -9,40 +9,67 @@
 
 class GameEngine
 {
-    GameEngine();
+public:
+	/*
+	 * Initialises the GameEngine's state from scratch, and then 
+	 * begins the game
+	 */
+	GameEngine();
+
+	/*
+	 * Initialises the GameEngine's state from the provided file,
+	 * and then begins the game
+	 */
     GameEngine(std::string fileName);
 
-    /*Get the input line
-    Validate by checking if it matches the existing commands
-    Convert the objects as necessary i.e Tiles and stuff and validate
+	/*
+	 * Contains the main game loop, performing each player's turn
+	 * until the game ends
+	 */
+	void runGame();
 
+	/*
+	 * Prompts the player for input, then processes and validates the
+	 * supplied command, calling corresponding function if the input
+	 * is valid. If the input is invalid, the player is re-prompted for
+	 * input until valid input is supplied
+	 */
+    void getInput();
 
-    1.Check if the line length i.e 2 or 4  words in the array
-    If 2 --> replace or save
-    Check the first word and compare etc
+	/*
+	 * Returns a string that contains the formatted representation of the
+	 * board as detailed in the assignment specification
+	 */
+	std::string boardToString();
 
-    2.Convert the string tile to Tile etc
-    3.Check the player hand etc.
-    4.Call required functions
-
-    */
-
-    void getInputFromPlayer();
-
-    //Display current game state
     /*
-     * Print out the details
+     * Prints out the details of the current game state as specified in
+	 * the assignment specification
      */
     void displayGameState();
 
-
     /*
-     Loop until the user inputs the command for quitting
-     The Tile that we are passing isn't a new Tile, it's the actual Tile
-     Return true if the tile is placed
+     * Attempts to remove the specified tile from the current player's 
+	 * hand and place it on the board in the specified postion, calculating
+	 * and adding points to the current player's total if the placement is 
+	 * successful, and then adding a new tile to the player's hand from the
+	 * bag. If the tile is not contained within the player's hand or the 
+	 * placement is invalid, then the function returns false
      */
-    bool placeTile(Tile* tile, Position position);
-    void replaceTile(Tile* tile);
+    bool placeTile(std::string tile, std::string position);
+
+	/*
+	 * Attemps to remove the specified tile from the current player's hand,
+	 * place it back in the bag, and add a new tile from the bag to the
+	 * player's hand. If the tile is not contained within the player's hand
+	 * then the function returns false
+	 */
+    bool replaceTile(std::string tile);
+
+	/*
+	 * Opens the specified file and saves within it the current game state
+	 * using the format specified in the assignment specification
+	 */
     void saveGame(std::string fileName);
 
 

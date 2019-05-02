@@ -16,6 +16,11 @@ public:
 	// Returns nullptr if the list is empty
 	Tile* pop_front();
 
+	// Searches through the list for the tile with the specified
+	// tileLabel, returning it if it is found and returning nullptr
+	// if it isn't
+	Tile* find(std::string tileLabel);
+
 	// Removes the specified tile from the list
 	bool remove(Tile* tile);
 

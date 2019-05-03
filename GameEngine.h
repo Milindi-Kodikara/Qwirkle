@@ -18,7 +18,8 @@ public:
 
 	/*
 	 * Initialises the GameEngine's state from the provided file,
-	 * and then begins the game
+	 * and then begins the game. If loading the game state from the
+	 * file fails, then the game quits
 	 */
     GameEngine(std::string fileName);
 

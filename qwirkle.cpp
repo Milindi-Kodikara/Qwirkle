@@ -7,17 +7,23 @@
 
 void new_game()
 {
-	//TODO
+	GameEngine engine;
 }
 
 void load_game()
 {
-	//TODO
+	std::cout << "Enter the filename from which to load a game\n> ";
+	std::string fileName;
+	std::getline(std::cin, fileName);
+	GameEngine engine(fileName);
 }
 
 void show_student_info()
 {
-	//TODO
+	printf("Name: %s\nStudent ID: %s\nEmail: %s\n\n", "Flynn Swainston-Calcutt", "s3720879", "s3720879@student.rmit.edu.au");
+	printf("Name: %s\nStudent ID: %s\nEmail: %s\n\n", "TODO", "TODO", "TODO");
+	printf("Name: %s\nStudent ID: %s\nEmail: %s\n\n", "TODO", "TODO", "TODO");
+	printf("Name: %s\nStudent ID: %s\nEmail: %s\n\n", "TODO", "TODO", "TODO");
 }
 
 void display_menu()
@@ -31,42 +37,35 @@ void display_menu()
 			<< "2. Load Game\n"
 			<< "3. Show Student Information\n"
 			<< "4. Quit\n\n";
-		bool valid_input = true;
-		while (valid_input)
+		bool valid_input = false;
+		while (!valid_input)
 		{
-			// This system for checking EOF won't work, find better solution
 			std::cout << "> ";
 			std::string input;
-			std::cin >> input;
-			try
+			std::getline(std::cin, input);
+			if (input[0] == '1')
 			{
-				int choice = std::stoi(input);
-				exit = true;
+				new_game();
 				valid_input = true;
-				if (choice == 1) new_game();
-				else if (choice == 2) load_game();
-				else if (choice == 3)
-				{
-					// Allows the menu to be shown again after the info is displayed
-					exit = false;
-					show_student_info();
-				}
-				else
-				{
-					valid_input = false;
-					std::cout << "Invalid Input" << std::endl;
-				}
+				exit = true;
 			}
-			catch (std::exception e)
+			else if (input[0] == '2')
 			{
-				// Checks if Ctrl D (EOF) was entered
-				if (input[0] == EOF)
-				{
-					valid_input = true;
-					exit = true;
-				}
-				std::cout << "Invalid Input" << std::endl;
+				load_game();
+				valid_input = true;
+				exit = true;
 			}
+			else if (input[0] == '3')
+			{
+				show_student_info();
+				valid_input = true;
+			}
+			else if (input[0] == '4' || std::cin.eof())
+			{
+				valid_input = true;
+				exit = true;
+			}
+			else std::cout << "Invalid input" << std::endl;
 		}
 	}
 }

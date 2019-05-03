@@ -1,5 +1,6 @@
 #include "GameEngine.h"
 #include <iostream>
+#include <sstream>
 #include <vector>
 
 void GameEngine::getInput()
@@ -39,7 +40,7 @@ void GameEngine::getInput()
 				else if (commands[0] == "save")
 				{
 					// Input is valid if the action was successful
-					valid = saveGame(commands[1])
+					valid = saveGame(commands[1]);
 				}
 			}
 			else if (commands.size() == 4)
@@ -47,7 +48,7 @@ void GameEngine::getInput()
 				if (commands[0] == "place" && commands[2] == "at")
 				{
 					// Input is valid if the action was successful
-					valid = placeTile(commands[1], commands[3])
+					valid = placeTile(commands[1], commands[3]);
 				}
 			}
 		}

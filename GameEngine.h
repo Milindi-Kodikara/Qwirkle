@@ -68,12 +68,14 @@ public:
 
 	/*
 	 * Opens the specified file and saves within it the current game state
-	 * using the format specified in the assignment specification
+	 * using the format specified in the assignment specification. Returns
+	 * whether the save was successful
 	 */
-    void saveGame(std::string fileName);
+    bool saveGame(std::string fileName);
 
 
 private:
+
     //2D array of tiles as board 26*26
     Tile*** board;
     LinkedList tileBag;
@@ -87,6 +89,7 @@ private:
     std::string playerOneName;
     std::string playerTwoName;
 
+	bool exitGame;
 };
 
 #endif // ASSIGN2_GAMEENGINE_H

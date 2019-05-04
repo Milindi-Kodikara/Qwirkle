@@ -48,24 +48,24 @@ Tile* LinkedList::pop_front()
 Tile* LinkedList::find(std::string tileLabel)
 {
 	//TODO
-
-	if (tileLabel != nullptr)
-    {
 	    Node* current = head;
+
+	    Tile* tile = nullptr;
 
 	    while (current != nullptr)
 	    {
             if (current->tile->label != tileLabel)
             {
-                current = current->tile;
+                current = current->next;
             }
             else
             {
-                return current->tile;
+                tile = current->tile;
             }
         }
-    }
+	    return tile;
 }
+
 
 /* Removes the specified tile from the list and returns true if
  * the tile was successfully removed*/

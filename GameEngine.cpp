@@ -3,6 +3,26 @@
 #include <sstream>
 #include <vector>
 
+GameEngine::GameEngine()
+{
+    //TODO
+}
+
+GameEngine::GameEngine(std::string fileName)
+{
+    //TODO
+}
+
+std::string GameEngine::boardToString()
+{
+    //TODO
+}
+
+void GameEngine::displayGameState()
+{
+    //TODO
+}
+
 void GameEngine::getInput()
 {
 	bool valid = false;
@@ -55,4 +75,50 @@ void GameEngine::getInput()
 
 		if (!valid) std::cout << "Invalid input" << std::endl;
 	}
+}
+
+void GameEngine::displayGameState()
+{
+    //TODO
+}
+
+bool GameEngine::placeTile(std::string tile, std::string position)
+{
+    //TODO
+}
+
+bool GameEngine::replaceTile(std::string tile)
+{
+    bool replaced = false;
+
+    if (playerOneTurn == true)
+    {
+        if (playerOneHand.remove(playerOneHand.find(tile)) == true)
+        {
+            playerOneHand.add_back(tileBag.pop_front());
+
+            replaced = true;
+        }
+    }
+    else
+    {
+        if (playerTwoHand.remove(playerTWoHand.find(tile)) == true)
+        {
+            playerTwoHand.add_back(tileBag.pop_front());
+
+            replaced = true;
+        }
+    }
+
+    return replaced;
+}
+
+void GameEngine::runGame()
+{
+    //TODO
+}
+
+bool GameEngine::saveGame(std::string fileName)
+{
+    //TODO
 }

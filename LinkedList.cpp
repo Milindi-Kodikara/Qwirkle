@@ -50,8 +50,6 @@ Tile* LinkedList::find(std::string tileLabel)
 	//TODO
 	    Node* current = head;
 
-	    Tile* tile = nullptr;
-
 	    while (current != nullptr)
 	    {
             if (current->tile->label != tileLabel)
@@ -60,10 +58,9 @@ Tile* LinkedList::find(std::string tileLabel)
             }
             else
             {
-                tile = current->tile;
+                return current->tile;
             }
         }
-	    return tile;
 }
 
 

@@ -102,7 +102,7 @@ bool GameEngine::replaceTile(std::string tile)
     }
     else
     {
-        if (playerTwoHand.remove(playerTWoHand.find(tile)) == true)
+        if (playerTwoHand.remove(playerTwoHand.find(tile)) == true)
         {
             playerTwoHand.add_back(tileBag.pop_front());
 

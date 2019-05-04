@@ -50,14 +50,23 @@ Tile* LinkedList::find(std::string tileLabel)
 	//TODO
 	    Node* current = head;
 	    Tile* tilePtr = nullptr;
+	    bool found = false;
 
-	    while (head != nullptr && current->tile->label != label)
+	    if (current->tile->label != tileLabel)
 	    {
-            current = current->next;
-            if (current->tile->label == tileLabel)
+            while (head != nullptr && found == false)
             {
-                tilePtr = current->tile;
+                current = current->next;
+                if (current->tile->label == tileLabel)
+                {
+                    tilePtr = current->tile;
+                    found = true;
+                }
             }
+        }
+	    if (current->tile->label == tileLabel)
+        {
+	        tilePtr = current->tile;
         }
 	    return tilePtr;
 }

@@ -49,18 +49,17 @@ Tile* LinkedList::find(std::string tileLabel)
 {
 	//TODO
 	    Node* current = head;
+	    Tile* tilePtr = nullptr;
 
-	    while (current != nullptr)
+	    while (head != nullptr && current->tile->label != label)
 	    {
-            if (current->tile->label != tileLabel)
+            current = current->next;
+            if (current->tile->label == tileLabel)
             {
-                current = current->next;
-            }
-            else
-            {
-                return current->tile;
+                tilePtr = current->tile;
             }
         }
+	    return tilePtr;
 }
 
 

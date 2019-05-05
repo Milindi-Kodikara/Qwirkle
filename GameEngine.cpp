@@ -15,7 +15,41 @@ GameEngine::GameEngine(std::string fileName)
 
 std::string GameEngine::boardToString()
 {
-    //TODO
+	std::string output = "   ";
+
+	Tile boardPiece = NULL;
+
+	for (int header = 0; header < 26; header++)
+	{
+		output += std::to_string(header) + " ";
+	}
+
+	output += "\n  -"
+
+	for (int dash = 0; dash < 26; dash++)
+	{
+		output += "---"
+	}
+
+	for (int y = 0; y < 26; y++)
+	{
+		char ch = char(65 + y);
+		output += "\n" + ch + " |"
+
+		for (int x = 0, x < 26, x++)
+		{
+			boardPiece = board[x][y];
+			if (boardPiece == NULL) {
+				output += "  |"
+			}
+			else
+			{
+				output += boardPiece->label + "|"
+			}
+		}
+	}
+
+	return output;
 }
 
 void GameEngine::displayGameState()
@@ -80,52 +114,25 @@ void GameEngine::getInput()
 void GameEngine::displayGameState()
 {
 	LinkedList playerHand = NULL;
-	Tile boardPiece = NULL;
+	
 
 	if (playerOneTurn == true)
 	{
 		playerHand = playerOneHand;
-		printf("%s, it's your turn", playerOneName);
+		std::cout << playerOneName << ", it's your turn"<< endl;
+
 	}
 	else 
 	{
 		playerHand = playerTwoHand;
-		printf("%s, it's your turn", playerTwoName);
+		std::cout << playerTwoName << ", it's your turn" << endl;
 	}
 
-	printf("Score for %s: %d\n", playerOneName, playerOneScore);
-	printf("Score for %s: %d\n   ", playerTwoName, playerTwoScore);
+	std::cout << "Score for " << playerOneName << ": " << playerOneScore << endl;
+	std::cout << "Score for " << playerTwoName << ": " << playerTwoScore << endl;
 
-	for (int header = 0; header < 26; header++)
-	{
-		printf("%d  ", header);
-	}
+	std::cout << boardToString;
 
-	printf("/n  -")
-
-	for (int dash = 0; dash < 26; dash++)
-	{
-		printf("---");
-	}
-	
-	for (int y = 0; y < 26; y++)
-	{
-		char ch = char(65 + y);
-		printf("%c |", ch);
-
-		for (int x = 0, x < 26, x++) 
-		{
-			boardPiece = board[x][y];
-			if (boardPiece == NULL) {
-				printf("  |");
-			}
-			else
-			{
-				printf("%s|", boardPiece->label);
-			}
-		}
-	}
-	
 	printf("\n\nYour hand is\n");
 	playerHand.display();
 }

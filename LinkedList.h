@@ -24,6 +24,9 @@ public:
 	// Removes the specified tile from the list
 	bool remove(Tile* tile);
 
+	//Output all Tiles inside linked list
+	void display();
+
 private:
     Node* head;
     Node* tail;

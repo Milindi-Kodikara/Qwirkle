@@ -104,3 +104,20 @@ bool LinkedList::remove(Tile* tile)
 	}
 	return found;
 }
+
+//Output all Tiles inside linked list
+void LinkedList::display()
+{
+	node* temp = new node;
+	temp = head;
+	std::string output = "";
+	
+	while (temp != NULL)
+	{
+		output += temp->tile->label + ",";
+		temp = temp->next;
+	}
+	output.pop_back();
+
+	printf("%s", output);
+}

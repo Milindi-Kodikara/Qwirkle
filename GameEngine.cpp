@@ -79,7 +79,55 @@ void GameEngine::getInput()
 
 void GameEngine::displayGameState()
 {
-    //TODO
+	LinkedList playerHand = NULL;
+	Tile boardPiece = NULL;
+
+	if (playerOneTurn == true)
+	{
+		playerHand = playerOneHand;
+		printf("%s, it's your turn", playerOneName);
+	}
+	else 
+	{
+		playerHand = playerTwoHand;
+		printf("%s, it's your turn", playerTwoName);
+	}
+
+	printf("Score for %s: %d\n", playerOneName, playerOneScore);
+	printf("Score for %s: %d\n   ", playerTwoName, playerTwoScore);
+
+	for (int header = 0; header < 26; header++)
+	{
+		printf("%d  ", header);
+	}
+
+	printf("/n  -")
+
+	for (int dash = 0; dash < 26; dash++)
+	{
+		printf("---");
+	}
+	
+	for (int y = 0; y < 26; y++)
+	{
+		char ch = char(65 + y);
+		printf("%c |", ch);
+
+		for (int x = 0, x < 26, x++) 
+		{
+			boardPiece = board[x][y];
+			if (boardPiece == NULL) {
+				printf("  |");
+			}
+			else
+			{
+				printf("%s|", boardPiece->label);
+			}
+		}
+	}
+	
+	printf("\n\nYour hand is\n");
+	playerHand.display();
 }
 
 bool GameEngine::placeTile(std::string tile, std::string position)

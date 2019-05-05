@@ -15,7 +15,41 @@ GameEngine::GameEngine(std::string fileName)
 
 std::string GameEngine::boardToString()
 {
-    //TODO
+	std::string output = "   ";
+
+	Tile boardPiece = NULL;
+
+	for (int header = 0; header < 26; header++)
+	{
+		output += std::to_string(header) + " ";
+	}
+
+	output += "\n  -"
+
+	for (int dash = 0; dash < 26; dash++)
+	{
+		output += "---"
+	}
+
+	for (int y = 0; y < 26; y++)
+	{
+		char ch = char(65 + y);
+		output += "\n" + ch + " |"
+
+		for (int x = 0, x < 26, x++)
+		{
+			boardPiece = board[x][y];
+			if (boardPiece == NULL) {
+				output += "  |"
+			}
+			else
+			{
+				output += boardPiece->label + "|"
+			}
+		}
+	}
+
+	return output;
 }
 
 void GameEngine::displayGameState()
@@ -79,7 +113,28 @@ void GameEngine::getInput()
 
 void GameEngine::displayGameState()
 {
-    //TODO
+	LinkedList playerHand = NULL;
+	
+
+	if (playerOneTurn == true)
+	{
+		playerHand = playerOneHand;
+		std::cout << playerOneName << ", it's your turn"<< endl;
+
+	}
+	else 
+	{
+		playerHand = playerTwoHand;
+		std::cout << playerTwoName << ", it's your turn" << endl;
+	}
+
+	std::cout << "Score for " << playerOneName << ": " << playerOneScore << endl;
+	std::cout << "Score for " << playerTwoName << ": " << playerTwoScore << endl;
+
+	std::cout << boardToString;
+
+	printf("\n\nYour hand is\n");
+	playerHand.display();
 }
 
 bool GameEngine::placeTile(std::string tileLabel, std::string positionLabel)

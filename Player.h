@@ -6,9 +6,18 @@
 #define APT_ASSIGNMENT_2_PLAYER_H
 
 
-class Player {
+#include <string>
+#include "LinkedList.h"
 
-    Player();
+class Player
+{
+
+public:
+    Player(std::string name);
+
+    std::string name;
+    int score;
+    LinkedList hand;
 
 };
 

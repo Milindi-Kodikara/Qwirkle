@@ -5,6 +5,9 @@
 #include "Tile.h"
 #include "LinkedList.h"
 #include "Position.h"
+#include "Player.h"
+
+#define BOARD_SIZE  26
 
 
 class GameEngine
@@ -57,7 +60,7 @@ public:
 	 * bag. If the tile is not contained within the player's hand or the 
 	 * placement is invalid, then the function returns false
      */
-    bool placeTile(std::string tile, std::string position);
+    bool placeTile(std::string tileLabel, std::string positionLabel);
 
 	/*
 	 * Attemps to remove the specified tile from the current player's hand,
@@ -65,7 +68,7 @@ public:
 	 * player's hand. If the tile is not contained within the player's hand
 	 * then the function returns false
 	 */
-    bool replaceTile(std::string tile);
+    bool replaceTile(std::string tileLabel);
 
 	/*
 	 * Opens the specified file and saves within it the current game state
@@ -80,15 +83,10 @@ private:
     //2D array of tiles as board 26*26
     Tile*** board;
     LinkedList tileBag;
-    LinkedList playerOneHand;
-    LinkedList playerTwoHand;
+    Player* player1;
+    Player* player2;
 
-    int playerOneScore;
-    int playerTwoScore;
-    bool playerOneTurn;
-
-    std::string playerOneName;
-    std::string playerTwoName;
+    bool player1Turn;
 
 	bool exitGame;
 };

@@ -82,18 +82,153 @@ void GameEngine::displayGameState()
     //TODO
 }
 
-bool GameEngine::placeTile(std::string tile, std::string position)
+bool GameEngine::placeTile(std::string tileLabel, std::string positionLabel)
 {
-    //TODO
+	bool success = false;
+   	Player* player = player1Turn ? player1 : player2;
+	Position* position;
+	Tile* tile = player->hand.find(tileLabel);
+
+	if (tile != nullptr)
+	{
+		position = Position::labelToPosition(positionLabel);
+
+		if(position != nullptr)
+		{
+			if(board[position->x][position->y] == nullptr)
+			{
+				//Indicates whether the surrounding tiles allow the placement
+				// of the supplied tile
+				bool valid = true;
+				Position offsets[4];
+
+				//translation up
+				offsets[0].x = 0;
+				offsets[0].y = -1;
+
+				//translation right
+				offsets[1].x = 1;
+				offsets[1].y = 0;
+
+				//translation down
+				offsets[2].x = 0;
+				offsets[2].y = 1;
+
+				//translation left
+				offsets[3].x = -1;
+				offsets[3].y = 0;
+
+				//Indicates whether the corresponding offset position contains
+				//a valid tile that the supplied tile can be connected to
+				bool connected[4] = {false, false, false, false};
+
+
+				for (int i = 0; i < 4 && valid; i++)
+				{
+					Position tempPosition = *position + offsets[i];
+					if (tempPosition.x < BOARD_SIZE && tempPosition.x >= 0
+						&& tempPosition.y < BOARD_SIZE && tempPosition.y >= 0)
+					{
+						Tile* tempTile = board[tempPosition.x][tempPosition.y];
+
+						if (tempTile != nullptr)
+						{
+							//Checks whether the two tiles only have one type of similarity
+							if ((tile->colour == tempTile->colour) !=
+								(tile->shape == tempTile->shape))
+							{
+								connected[i] = true;
+							}
+							else
+							{
+								valid = false;
+							}
+						}
+					}
+				}
+
+				if (valid)
+				{
+					//Starts with 1 for the tile itself
+					int score = 1;
+					//Keeps track of how many valid tiles are within the segment
+					int qwirkleCount = 0;
+					bool qwirkle = false;
+
+					for (int i = 0; i < 4; i++)
+					{
+						//TODO : check opposite segments for tile similarity
+						//TODO : Possibility of multiple qwirkles
+						if(connected[i])
+						{
+							//Indicates if there is a tile in tempPosition
+							bool empty = false;
+							Position tempPosition = *position + offsets[i];
+							while (!empty && valid && tempPosition.x < BOARD_SIZE && tempPosition.x >= 0
+								   && tempPosition.y < BOARD_SIZE && tempPosition.y >= 0)
+							{
+								Tile* tempTile = board[tempPosition.x][tempPosition.y];
+								if(tempTile != nullptr)
+								{
+									if ((tile->colour == tempTile->colour) &&
+										(tile->shape == tempTile->shape))
+									{
+										valid = false;
+									}
+									else
+									{
+										score++;
+										qwirkleCount++;
+									}
+								}
+								else empty = true;
+
+								tempPosition += offsets[i];
+
+								if(qwirkleCount == 6)
+								{
+									qwirkle = true;
+									score += 6;
+								}
+							}
+						}
+					}
+
+					if (valid)
+					{
+						//If tile is part of a vertical and horizontal
+						// segment score is increased by 1
+						if ((connected[0] || connected[2]) && (connected[1] || connected[3]))
+						{
+							score++;
+						}
+						player->hand.remove(tile);
+						board[position->x][position->y] = tile;
+
+						Tile* newTile = tileBag.pop_front();
+						if (newTile != nullptr)
+						{
+							player->hand.add_back(newTile);
+						}
+						success = true;
+					}
+				}
+			}
+		}
+	}
+
+	delete position;
+	return success;
+
 }
 
-bool GameEngine::replaceTile(std::string tile)
+bool GameEngine::replaceTile(std::string tileLabel)
 {
     bool replaced = false;
 
     if (playerOneTurn == true)
     {
-        if (playerOneHand.remove(playerOneHand.find(tile)) == true)
+        if (playerOneHand.remove(playerOneHand.find(tileLabel)) == true)
         {
             playerOneHand.add_back(tileBag.pop_front());
 
@@ -102,7 +237,7 @@ bool GameEngine::replaceTile(std::string tile)
     }
     else
     {
-        if (playerTwoHand.remove(playerTwoHand.find(tile)) == true)
+        if (playerTwoHand.remove(playerTwoHand.find(tileLabel)) == true)
         {
             playerTwoHand.add_back(tileBag.pop_front());
 

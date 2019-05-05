@@ -4,21 +4,25 @@
 
 #ifndef APT_ASSIGNMENT_2_POSITION_H
 #define APT_ASSIGNMENT_2_POSITION_H
+#define BOARD_SIZE  26
 
 
 #include <string>
 
 class Position {
-
-    Position(std::string xy);
+public:
+    //requires string conversion functionality
+    Position();
     Position(int x, int y);
 
-public:
+    static Position* labelToPosition(std::string positionLabel);
+
+    Position operator+(const Position& position);
+    Position& operator+=(const Position& position);
+
     int x;
     int y;
 
-//requires string conversion functionality
 };
-
 
 #endif //APT_ASSIGNMENT_2_POSITION_H

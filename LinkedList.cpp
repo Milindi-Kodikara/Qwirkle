@@ -47,7 +47,6 @@ Tile* LinkedList::pop_front()
 // if it isn't
 Tile* LinkedList::find(std::string tileLabel)
 {
-	//TODO
 	    Node* current = head;
 	    Tile* tilePtr = nullptr;
 	    bool found = false;

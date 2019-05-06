@@ -19,7 +19,6 @@ LinkedList::~LinkedList()
 	}
 }
 
-// Adds the supplied tile to the back of the list
 void LinkedList::add_back(Tile* tile)
 {
 	Node* temp = new Node(tile, nullptr);
@@ -27,8 +26,6 @@ void LinkedList::add_back(Tile* tile)
 	tail = tail->next;
 }
 
-// Removes the tile at the start of the list and returns it
-// Returns nullptr if the list is empty
 Tile* LinkedList::pop_front()
 {
 	Tile* tempTile = nullptr;
@@ -42,9 +39,7 @@ Tile* LinkedList::pop_front()
 	return tempTile;
 }
 
-// Searches through the list for the tile with the specified
-// tileLabel, returning it if it is found and returning nullptr
-// if it isn't
+// the logic and indentation need to be cleaned up here, I'll talk more about it in the tut
 Tile* LinkedList::find(std::string tileLabel)
 {
 	    Node* current = head;
@@ -70,9 +65,6 @@ Tile* LinkedList::find(std::string tileLabel)
 	    return tilePtr;
 }
 
-
-/* Removes the specified tile from the list and returns true if
- * the tile was successfully removed*/
 bool LinkedList::remove(Tile* tile)
 {
 	Node* current = head;
@@ -104,7 +96,9 @@ bool LinkedList::remove(Tile* tile)
 	return found;
 }
 
-//Output all Tiles inside linked list
+// line 101 is incorrect syntax and logic, you do not want to create a new Node here
+// you should be comparing against nullptr rather than NULL
+// printf is uneeded here, cout is fine
 void LinkedList::display()
 {
 	node* temp = new node;

@@ -13,6 +13,12 @@ GameEngine::GameEngine(std::string fileName)
     //TODO
 }
 
+// boardPiece should be a pointer and should be compared against a nullptr
+// ints can be appended directly to to strings
+// use BOARD_SIZE instead of 26
+// use literal char addition rather than casting, eg. 'A' + y
+// remember to use semicolons when adding to output
+// chars can't be added to strings with +, only += (I'm pretty sure)
 std::string GameEngine::boardToString()
 {
 	std::string output = "   ";
@@ -50,11 +56,6 @@ std::string GameEngine::boardToString()
 	}
 
 	return output;
-}
-
-void GameEngine::displayGameState()
-{
-    //TODO
 }
 
 void GameEngine::getInput()
@@ -111,6 +112,10 @@ void GameEngine::getInput()
 	}
 }
 
+// playerOneTurn is now player1Turn
+// the player hands are now stored inside the respective player1 and player1 objects
+// you should be consistent with your use of cout and printf, generally choose one or the other
+// endl requires the std:: prefix
 void GameEngine::displayGameState()
 {
 	LinkedList playerHand = NULL;
@@ -277,6 +282,8 @@ bool GameEngine::placeTile(std::string tileLabel, std::string positionLabel)
 
 }
 
+// the migration of the player info into the two Player objects needs to be taken into account here
+// when the tile is removed from the player's hand it needs to be put back into the tile bag
 bool GameEngine::replaceTile(std::string tileLabel)
 {
     bool replaced = false;

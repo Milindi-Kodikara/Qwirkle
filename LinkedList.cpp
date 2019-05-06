@@ -96,21 +96,18 @@ bool LinkedList::remove(Tile* tile)
 	return found;
 }
 
-// line 101 is incorrect syntax and logic, you do not want to create a new Node here
-// you should be comparing against nullptr rather than NULL
-// printf is uneeded here, cout is fine
 void LinkedList::display()
 {
-	node* temp = new node;
+	node* temp = nullptr;
 	temp = head;
 	std::string output = "";
 	
-	while (temp != NULL)
+	while (temp != nullptr)
 	{
 		output += temp->tile->label + ",";
 		temp = temp->next;
 	}
 	output.pop_back();
 
-	printf("%s", output);
+	std::cout << output << std::endl);
 }

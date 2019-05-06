@@ -13,44 +13,38 @@ GameEngine::GameEngine(std::string fileName)
     //TODO
 }
 
-// boardPiece should be a pointer and should be compared against a nullptr
-// ints can be appended directly to to strings
-// use BOARD_SIZE instead of 26
-// use literal char addition rather than casting, eg. 'A' + y
-// remember to use semicolons when adding to output
-// chars can't be added to strings with +, only += (I'm pretty sure)
 std::string GameEngine::boardToString()
 {
 	std::string output = "   ";
 
-	Tile boardPiece = NULL;
+	Tile* boardPiece = nullptr;
 
-	for (int header = 0; header < 26; header++)
+	for (int header = 0; header < BOARD_SIZE; header++)
 	{
-		output += std::to_string(header) + " ";
+		output += header + " ";
 	}
 
-	output += "\n  -"
+	output += "\n  -";
 
-	for (int dash = 0; dash < 26; dash++)
+	for (int dash = 0; dash < BOARD_SIZE; dash++)
 	{
-		output += "---"
+		output += "---";
 	}
 
-	for (int y = 0; y < 26; y++)
+	for (int y = 0; y < BOARD_SIZE; y++)
 	{
-		char ch = char(65 + y);
-		output += "\n" + ch + " |"
+		char ch = 'A' + y;
+		output += "\n" + ch + " |";
 
-		for (int x = 0, x < 26, x++)
+		for (int x = 0, x < BOARD_SIZE, x++)
 		{
 			boardPiece = board[x][y];
-			if (boardPiece == NULL) {
-				output += "  |"
+			if (boardPiece == nullptr) {
+				output += "  |";
 			}
 			else
 			{
-				output += boardPiece->label + "|"
+				output += boardPiece->label + "|";
 			}
 		}
 	}
@@ -112,34 +106,19 @@ void GameEngine::getInput()
 	}
 }
 
-// playerOneTurn is now player1Turn
-// the player hands are now stored inside the respective player1 and player1 objects
-// you should be consistent with your use of cout and printf, generally choose one or the other
-// endl requires the std:: prefix
 void GameEngine::displayGameState()
 {
-	LinkedList playerHand = NULL;
-	
+	Player* player = player1Turn ? player1 : player2;
 
-	if (playerOneTurn == true)
-	{
-		playerHand = playerOneHand;
-		std::cout << playerOneName << ", it's your turn"<< endl;
+	std::cout << player->name << ", it's your turn" << endl;
 
-	}
-	else 
-	{
-		playerHand = playerTwoHand;
-		std::cout << playerTwoName << ", it's your turn" << endl;
-	}
+	std::cout << "Score for " << player1->name << ": " << playerOneScore << std::endl;
+	std::cout << "Score for " << player2->name << ": " << playerTwoScore << std::endl;
 
-	std::cout << "Score for " << playerOneName << ": " << playerOneScore << endl;
-	std::cout << "Score for " << playerTwoName << ": " << playerTwoScore << endl;
+	std::cout << boardToString();
 
-	std::cout << boardToString;
-
-	printf("\n\nYour hand is\n");
-	playerHand.display();
+	std::cout << "\n\nYour hand is" << std::endl;
+	player->hand.display();
 }
 
 bool GameEngine::placeTile(std::string tileLabel, std::string positionLabel)

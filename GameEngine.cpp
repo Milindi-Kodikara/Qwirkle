@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <unordered_set>
 
 GameEngine::GameEngine()
 {
@@ -149,55 +150,76 @@ bool GameEngine::placeTile(std::string tileLabel, std::string positionLabel)
 	Position* position;
 	Tile* tile = player->hand.find(tileLabel);
 
+	// Tile found in player's hand
 	if (tile != nullptr)
 	{
 		position = Position::labelToPosition(positionLabel);
 
+		// Position is within board bounds
 		if(position != nullptr)
 		{
+			// Position on the board is empty
 			if(board[position->x][position->y] == nullptr)
 			{
-				//Indicates whether the surrounding tiles allow the placement
+				// Indicates whether the surrounding tiles allow the placement
 				// of the supplied tile
 				bool valid = true;
 				Position offsets[4];
 
-				//translation up
+				// Translation up
 				offsets[0].x = 0;
 				offsets[0].y = -1;
 
-				//translation right
+				// Translation right
 				offsets[1].x = 1;
 				offsets[1].y = 0;
 
-				//translation down
+				// Translation down
 				offsets[2].x = 0;
 				offsets[2].y = 1;
 
-				//translation left
+				// Translation left
 				offsets[3].x = -1;
 				offsets[3].y = 0;
 
-				//Indicates whether the corresponding offset position contains
-				//a valid tile that the supplied tile can be connected to
-				bool connected[4] = {false, false, false, false};
+				// Indicates whether the corresponding offset tile is a valid connection
+				bool connected[4] = { false, false, false, false };
 
+				// Indicates each dimension's similarity type (colour or shape)
+				bool verColourSimilarity = false;
+				bool horColourSimilarity = false;
 
-				for (int i = 0; i < 4 && valid; i++)
+				for (int i = 0; i < 4 && valid; ++i)
 				{
-					Position tempPosition = *position + offsets[i];
-					if (tempPosition.x < BOARD_SIZE && tempPosition.x >= 0
-						&& tempPosition.y < BOARD_SIZE && tempPosition.y >= 0)
+					Position offsetPosition = *position + offsets[i];
+					if (offsetPosition.x < BOARD_SIZE && offsetPosition.x >= 0
+						&& offsetPosition.y < BOARD_SIZE && offsetPosition.y >= 0)
 					{
-						Tile* tempTile = board[tempPosition.x][tempPosition.y];
+						Tile* currTile = board[offsetPosition.x][offsetPosition.y];
 
-						if (tempTile != nullptr)
+						if (currTile != nullptr)
 						{
-							//Checks whether the two tiles only have one type of similarity
-							if ((tile->colour == tempTile->colour) !=
-								(tile->shape == tempTile->shape))
+							// Checks whether the two tiles only have one type of similarity
+							if ((tile->colour == currTile->colour) !=
+								(tile->shape == currTile->shape))
 							{
 								connected[i] = true;
+								if (i < 2)
+								{
+									// Sets the similarity type for the current diemsion
+									(i == 0 ? verColourSimilarity : horColourSimilarity)
+										= tile->colour == currTile->colour;
+								}
+								else
+								{
+									// If the opposite tile is also connected
+									if (connected[i - 2])
+									{
+										// If the opposite tile has a different similarity type
+										if ((i == 2 ? verColourSimilarity : horColourSimilarity)
+											!= (tile->colour == currTile->colour)) valid = false;
+									}
+								}
 							}
 							else
 							{
@@ -207,48 +229,57 @@ bool GameEngine::placeTile(std::string tileLabel, std::string positionLabel)
 					}
 				}
 
-				if (valid)
+				if (valid && (connected[0] || connected[1] || connected[2] || connected[3]))
 				{
-					//Starts with 1 for the tile itself
+					// Score starts with 1 for the tile itself
 					int score = 1;
-					//Keeps track of how many valid tiles are within the segment
-					int qwirkleCount = 0;
-					bool qwirkle = false;
 
-					for (int i = 0; i < 4; i++)
+					// Indicates which elements of the similarity type have been found
+					// in each dimension
+					std::unordered_set<int> verTypeSet;
+					std::unordered_set<int> horTypeSet;
+					verTypeSet.insert(verColourSimilarity ? tile->shape : tile->colour);
+					horTypeSet.insert(horColourSimilarity ? tile->shape : tile->colour);
+
+					for (int i = 0; i < 4 && valid; ++i)
 					{
-						//TODO : check opposite segments for tile similarity
-						//TODO : Possibility of multiple qwirkles
-						if(connected[i])
+						if (connected[i])
 						{
-							//Indicates if there is a tile in tempPosition
-							bool empty = false;
-							Position tempPosition = *position + offsets[i];
-							while (!empty && valid && tempPosition.x < BOARD_SIZE && tempPosition.x >= 0
-								   && tempPosition.y < BOARD_SIZE && tempPosition.y >= 0)
+							Position currPosition = *position + offsets[i];
+							while (valid && currPosition.x < BOARD_SIZE && currPosition.x >= 0
+								&& currPosition.y < BOARD_SIZE && currPosition.y >= 0)
 							{
-								Tile* tempTile = board[tempPosition.x][tempPosition.y];
-								if(tempTile != nullptr)
+								Tile* currTile = board[currPosition.x][currPosition.y];
+								if (currTile != nullptr)
 								{
-									if ((tile->colour == tempTile->colour) &&
-										(tile->shape == tempTile->shape))
+									// Indicates the current dimension
+									bool vertical = i % 2 == 0;
+
+									// The type set for the current dimension
+									std::unordered_set<int>& typeSet =
+										(vertical ? verTypeSet : horTypeSet);
+
+									// Indicates the current dimension's similarity type
+									bool colorSimilarity =
+										(vertical ? verColourSimilarity : horColourSimilarity);
+
+									// Used to check for duplicate tiles in the segment
+									int signature =
+										(colorSimilarity ? currTile->colour : currTile->shape);
+
+									// If a tile is found that is already contained 
+									// within the segment
+									if (typeSet.count(signature) != 0)
 									{
 										valid = false;
 									}
 									else
 									{
-										score++;
-										qwirkleCount++;
+										typeSet.insert(signature);
+										++score;
 									}
-								}
-								else empty = true;
 
-								tempPosition += offsets[i];
-
-								if(qwirkleCount == 6)
-								{
-									qwirkle = true;
-									score += 6;
+									currPosition += offsets[i];
 								}
 							}
 						}
@@ -256,12 +287,27 @@ bool GameEngine::placeTile(std::string tileLabel, std::string positionLabel)
 
 					if (valid)
 					{
-						//If tile is part of a vertical and horizontal
+						// If tile is part of a vertical and horizontal
 						// segment score is increased by 1
-						if ((connected[0] || connected[2]) && (connected[1] || connected[3]))
+						if (verTypeSet.size() > 0 && horTypeSet.size() > 0)
 						{
-							score++;
+							++score;
 						}
+
+						// Qwirkle checking
+						bool qwirkle = false;
+						if (verTypeSet.size() == 6)
+						{
+							score += 6;
+							qwirkle = true;
+						}
+						if (horTypeSet.size() == 6)
+						{
+							score += 6;
+							qwirkle = true;
+						}
+						if (qwirkle) std::cout << "QWIRKLE!!!" << std::endl;
+
 						player->hand.remove(tile);
 						board[position->x][position->y] = tile;
 
@@ -279,7 +325,6 @@ bool GameEngine::placeTile(std::string tileLabel, std::string positionLabel)
 
 	delete position;
 	return success;
-
 }
 
 // the migration of the player info into the two Player objects needs to be taken into account here

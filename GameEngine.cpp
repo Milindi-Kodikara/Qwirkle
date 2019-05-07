@@ -325,17 +325,14 @@ bool GameEngine::placeTile(std::string tileLabel, std::string positionLabel)
 bool GameEngine::replaceTile(std::string tileLabel)
 {
     Player* player = player1Turn ? player1 : player2;
+    Tile* tile = find(tileLabel);
     bool replaced = false;
 
-    //checks if the tile is in the player's hand
-    if (player.remove(player.find(tileLabel)) == true)
+    if (tile != nullptr)
     {
-        //adds the removed tile to end of the tile bag
-        tileBag.add_back(tileBag.find(tileLabel));
-        player.add_back(tileBag.pop_front());
-        replaced = true;
+        tileBag.add_back(tile);
+        player->hand.remove(tile);
     }
-    return replaced;
 }
 
 bool GameEngine::saveGame(std::string fileName)

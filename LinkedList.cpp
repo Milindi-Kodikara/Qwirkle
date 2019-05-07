@@ -66,11 +66,10 @@ Tile* LinkedList::find(std::string tileLabel)
     return tilePtr;
 }
 
-bool LinkedList::remove(Tile* tile)
+void LinkedList::remove(Tile* tile)
 {
 	Node* current = head;
 	Node* previous = nullptr;
-	bool found = false;
 
 	while (current != nullptr && !found)
 	{		
@@ -86,7 +85,6 @@ bool LinkedList::remove(Tile* tile)
 				previous->next = current->next;
 				delete current;
 			}
-			found = true;
 		}
 		else 
 		{
@@ -94,7 +92,6 @@ bool LinkedList::remove(Tile* tile)
 			current = previous->next;
 		}
 	}
-	return found;
 }
 
 void LinkedList::display()

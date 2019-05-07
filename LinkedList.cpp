@@ -1,3 +1,4 @@
+#include <iostream>
 #include "LinkedList.h"
 
 LinkedList::LinkedList() 
@@ -98,7 +99,7 @@ bool LinkedList::remove(Tile* tile)
 
 void LinkedList::display()
 {
-	node* temp = nullptr;
+	Node* temp = nullptr;
 	temp = head;
 	std::string output = "";
 	
@@ -109,5 +110,5 @@ void LinkedList::display()
 	}
 	output.pop_back();
 
-	std::cout << output << std::endl);
+	std::cout << output << std::endl;
 }

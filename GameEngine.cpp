@@ -14,43 +14,9 @@ GameEngine::GameEngine(std::string fileName)
     //TODO
 }
 
-std::string GameEngine::boardToString()
+void GameEngine::runGame()
 {
-	std::string output = "   ";
-
-	Tile* boardPiece = nullptr;
-
-	for (int header = 0; header < BOARD_SIZE; header++)
-	{
-		output += header + " ";
-	}
-
-	output += "\n  -";
-
-	for (int dash = 0; dash < BOARD_SIZE; dash++)
-	{
-		output += "---";
-	}
-
-	for (int y = 0; y < BOARD_SIZE; y++)
-	{
-		char ch = 'A' + y;
-		output += "\n" + ch + " |";
-
-		for (int x = 0, x < BOARD_SIZE, x++)
-		{
-			boardPiece = board[x][y];
-			if (boardPiece == nullptr) {
-				output += "  |";
-			}
-			else
-			{
-				output += boardPiece->label + "|";
-			}
-		}
-	}
-
-	return output;
+	//TODO
 }
 
 void GameEngine::getInput()
@@ -107,14 +73,55 @@ void GameEngine::getInput()
 	}
 }
 
+std::string GameEngine::boardToString()
+{
+	std::string output = "   ";
+
+	Tile* boardPiece = nullptr;
+
+	for (int header = 0; header < BOARD_SIZE; header++)
+	{
+		output += header + " ";
+	}
+
+	output += "\n  -";
+
+	for (int dash = 0; dash < BOARD_SIZE; dash++)
+	{
+		output += "---";
+	}
+
+	for (int y = 0; y < BOARD_SIZE; y++)
+	{
+		char ch = 'A' + y;
+		output += "\n";
+		output += ch;
+		output += " |";
+
+		for (int x = 0; x < BOARD_SIZE; x++)
+		{
+			boardPiece = board[x][y];
+			if (boardPiece == nullptr) {
+				output += "  |";
+			}
+			else
+			{
+				output += boardPiece->label + "|";
+			}
+		}
+	}
+
+	return output;
+}
+
 void GameEngine::displayGameState()
 {
 	Player* player = player1Turn ? player1 : player2;
 
-	std::cout << player->name << ", it's your turn" << endl;
+	std::cout << player->name << ", it's your turn" << std::endl;
 
-	std::cout << "Score for " << player1->name << ": " << playerOneScore << std::endl;
-	std::cout << "Score for " << player2->name << ": " << playerTwoScore << std::endl;
+	std::cout << "Score for " << player1->name << ": " << player->score << std::endl;
+	std::cout << "Score for " << player2->name << ": " << player->score << std::endl;
 
 	std::cout << boardToString();
 
@@ -334,12 +341,8 @@ bool GameEngine::replaceTile(std::string tileLabel)
     return replaced;
 }
 
-void GameEngine::runGame()
-{
-    //TODO
-}
-
 bool GameEngine::saveGame(std::string fileName)
 {
     //TODO
+	return false;
 }

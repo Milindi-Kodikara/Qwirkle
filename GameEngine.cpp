@@ -322,31 +322,19 @@ bool GameEngine::placeTile(std::string tileLabel, std::string positionLabel)
 	return success;
 }
 
-// the migration of the player info into the two Player objects needs to be taken into account here
-// when the tile is removed from the player's hand it needs to be put back into the tile bag
 bool GameEngine::replaceTile(std::string tileLabel)
 {
+    Player* player = player1Turn ? player1 : player2;
     bool replaced = false;
 
-    if (playerOneTurn == true)
+    //checks if the tile is in the player's hand
+    if (player.remove(player.find(tileLabel)) == true)
     {
-        if (playerOneHand.remove(playerOneHand.find(tileLabel)) == true)
-        {
-            playerOneHand.add_back(tileBag.pop_front());
-
-            replaced = true;
-        }
+        //adds the removed tile to end of the tile bag
+        tileBag.add_back(tileBag.find(tileLabel));
+        player.add_back(tileBag.pop_front());
+        replaced = true;
     }
-    else
-    {
-        if (playerTwoHand.remove(playerTwoHand.find(tileLabel)) == true)
-        {
-            playerTwoHand.add_back(tileBag.pop_front());
-
-            replaced = true;
-        }
-    }
-
     return replaced;
 }
 

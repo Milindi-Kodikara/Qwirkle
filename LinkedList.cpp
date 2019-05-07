@@ -40,30 +40,30 @@ Tile* LinkedList::pop_front()
 	return tempTile;
 }
 
-// the logic and indentation need to be cleaned up here, I'll talk more about it in the tut
 Tile* LinkedList::find(std::string tileLabel)
 {
-	    Node* current = head;
-	    Tile* tilePtr = nullptr;
-	    bool found = false;
+    Node* current = head;
+    Tile* tilePtr = nullptr;
+    bool found = false;
 
-	    if (current->tile->label != tileLabel)
-	    {
-            while (head != nullptr && found == false)
+    //checks if the first node contains the tile label
+    if (current->tile->label != tileLabel)
+    {
+        while (head != nullptr && !found)
+        {
+            current = current->next;
+            if (current->tile->label == tileLabel)
             {
-                current = current->next;
-                if (current->tile->label == tileLabel)
-                {
-                    tilePtr = current->tile;
-                    found = true;
-                }
+                tilePtr = current->tile;
+                found = true;
             }
         }
-	    if (current->tile->label == tileLabel)
-        {
-	        tilePtr = current->tile;
-        }
-	    return tilePtr;
+    }
+    else
+    {
+        tilePtr = current->tile;
+    }
+    return tilePtr;
 }
 
 bool LinkedList::remove(Tile* tile)

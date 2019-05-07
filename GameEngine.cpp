@@ -16,7 +16,12 @@ GameEngine::GameEngine(std::string fileName)
 
 void GameEngine::runGame()
 {
-	//TODO
+	while (!exitGame)
+	{
+		displayGameState();
+		getInput();
+	}
+	std::cout << "Goodbye" << std::endl;
 }
 
 void GameEngine::getInput()
@@ -46,7 +51,11 @@ void GameEngine::getInput()
 			while (is >> word) commands.push_back(word);
 
 			// Checks whether the correct number of words was inputted
-			if (commands.size() == 2)
+			if (commands.size() == 1)
+			{
+				if (commands[0] == "quit") exitGame = true;
+			}
+			else if (commands.size() == 2)
 			{
 				if (commands[0] == "replace")
 				{

@@ -64,6 +64,7 @@ void display_menu()
 			{
 				valid_input = true;
 				exit = true;
+				std::cout << "Goodbye" << std::endl;
 			}
 			else std::cout << "Invalid input" << std::endl;
 		}

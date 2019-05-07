@@ -23,8 +23,16 @@ LinkedList::~LinkedList()
 void LinkedList::add_back(Tile* tile)
 {
 	Node* temp = new Node(tile, nullptr);
-	tail->next = temp;
-	tail = tail->next;
+	if (head == nullptr)
+	{
+		head = temp;
+		tail = temp;
+	}
+	else
+	{
+		tail->next = temp;
+		tail = temp;
+	}
 }
 
 Tile* LinkedList::pop_front()
@@ -46,24 +54,16 @@ Tile* LinkedList::find(std::string tileLabel)
     Tile* tilePtr = nullptr;
     bool found = false;
 
-    //checks if the first node contains the tile label
-    if (current->tile->label != tileLabel)
-    {
-        while (head != nullptr && !found)
-        {
-            current = current->next;
-            if (current->tile->label == tileLabel)
-            {
-                tilePtr = current->tile;
-                found = true;
-            }
-        }
-    }
-    else
-    {
-        tilePtr = current->tile;
-    }
-    return tilePtr;
+	while (current != nullptr && !found)
+	{
+		current = current->next;
+		if (current->tile->label == tileLabel)
+		{
+			tilePtr = current->tile;
+			found = true;
+		}
+	}
+	return tilePtr;
 }
 
 bool LinkedList::remove(Tile* tile)

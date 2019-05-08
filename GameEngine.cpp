@@ -9,23 +9,29 @@ GameEngine::GameEngine()
     std::string player1Name;
     std::string player2Name;
     //regex to ensure player name is only uppercase alphabets
-    std::regex r("[A-Z\\s]+");
+    std::regex r("[a-zA-Z\\s]+");
     std::smatch m;
     std::cout << "Starting a new game" << std::endl;
 
+    //prompts the user again if the given name does not follow the regex
     while (!std::regex_search(player1Name,m,r)
     {
-        std::cout << "Enter a name for player 1(uppercase characters only)" << std::endl;
+        std::cout << "Enter a name for player 1 (no numbers or symbols)" << std::endl;
         std::getline(std::cin, player1Name);
     }
     player1->name = player1Name;
 
     while (!std::regex_search(player2Name,m,r)
     {
-        std::cout << "Enter a name for player 2(uppercase characters only)" << std::endl;
+        std::cout << "Enter a name for player 2 (no numbers or symbols)" << std::endl;
         std::getline(std::cin, player2Name);
     }
     player2->name = player2Name;
+
+    //fill the tile bag
+    tileBag.add_back()
+
+    //distribute six tiles to each player
 
     std::cout << "Let's Play!" << std::endl;
     runGame();

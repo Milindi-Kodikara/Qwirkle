@@ -71,7 +71,7 @@ void LinkedList::remove(Tile* tile)
 	Node* current = head;
 	Node* previous = nullptr;
 
-	while (current != nullptr && !found)
+	while (current != nullptr)
 	{		
 		if (current->tile == tile)
 		{
@@ -92,6 +92,32 @@ void LinkedList::remove(Tile* tile)
 			current = previous->next;
 		}
 	}
+}
+
+void LinkedList::removeAt(int index)
+{
+    Node* current = head;
+    Node* previous = nullptr;
+
+    if (index == 0)
+    {
+        pop_front();
+    }
+
+    else
+    {
+        for (int i = 1; i < index; i++)
+        {
+            current = current->next;
+        }
+        previous = current->next;
+        current->next = previous.next;
+
+        delete previous;
+        previous = nullptr;
+    }
+
+
 }
 
 void LinkedList::display()

@@ -22,7 +22,10 @@ public:
 	Tile* find(std::string tileLabel);
 
 	// Removes the specified tile from the list
-	bool remove(Tile* tile);
+	void remove(Tile* tile);
+
+	// Removes a tile from given index
+    void removeAt(int index);
 
 	//Output all Tiles inside linked list
 	void display();

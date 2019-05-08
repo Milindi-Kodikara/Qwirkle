@@ -330,9 +330,11 @@ bool GameEngine::replaceTile(std::string tileLabel)
 
     if (tile != nullptr)
     {
-        tileBag.add_back(tile);
         player->hand.remove(tile);
+        tileBag.add_back(tile);
+        replaced = true;
     }
+    return replaced;
 }
 
 bool GameEngine::saveGame(std::string fileName)

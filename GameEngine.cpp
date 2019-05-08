@@ -6,7 +6,29 @@
 
 GameEngine::GameEngine()
 {
-    //TODO
+    std::string player1Name;
+    std::string player2Name;
+    //regex to ensure player name is only uppercase alphabets
+    std::regex r("[A-Z\\s]+");
+    std::smatch m;
+    std::cout << "Starting a new game" << std::endl;
+
+    while (!std::regex_search(player1Name,m,r)
+    {
+        std::cout << "Enter a name for player 1(uppercase characters only)" << std::endl;
+        std::getline(std::cin, player1Name);
+    }
+    player1->name = player1Name;
+
+    while (!std::regex_search(player2Name,m,r)
+    {
+        std::cout << "Enter a name for player 2(uppercase characters only)" << std::endl;
+        std::getline(std::cin, player2Name);
+    }
+    player2->name = player2Name;
+
+    std::cout << "Let's Play!" << std::endl;
+    runGame();
 }
 
 GameEngine::GameEngine(std::string fileName)

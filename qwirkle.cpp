@@ -8,30 +8,38 @@
 void new_game()
 {
 	GameEngine engine;
+	engine.newGame();
 }
 
 void load_game()
 {
-	std::cout << "Enter the filename from which to load a game\n> ";
-	std::string fileName;
-	std::getline(std::cin, fileName);
-	GameEngine engine(fileName);
+	GameEngine engine;
+	engine.loadGame();
 }
 
 void show_student_info()
 {
+	std::cout << endl;
+	for (int i = 0; i < 30; ++i) std::cout << "-";
+	std::cout << endl;
 	printf("Name: %s\nStudent ID: %s\nEmail: %s\n\n", "Flynn Swainston-Calcutt", "s3720879", "s3720879@student.rmit.edu.au");
 	printf("Name: %s\nStudent ID: %s\nEmail: %s\n\n", "Angelo Parlade", "s3688144", "s3688144@student.rmit.edu.au");
 	printf("Name: %s\nStudent ID: %s\nEmail: %s\n\n", "TODO", "TODO", "TODO");
 	printf("Name: %s\nStudent ID: %s\nEmail: %s\n\n", "TODO", "TODO", "TODO");
+	for (int i = 0; i < 30; ++i) std::cout << "-";
+	std::cout << endl;
 }
 
-void display_menu()
+
+int main(void) 
 {
+	std::cout << "Welcome to Qwirkle!" << std::endl;
+	std::cout << "-------------------\n" << std::endl;
+
 	bool exit = false;
 	while (!exit)
 	{
-		std::cout << "Menu\n"
+		std::cout << "\nMenu\n"
 			<< "----\n"
 			<< "1. New Game\n"
 			<< "2. Load Game\n"
@@ -69,12 +77,6 @@ void display_menu()
 			else std::cout << "Invalid input" << std::endl;
 		}
 	}
-}
 
-int main(void) 
-{
-	std::cout << "Welcome to Qwirkle!" << std::endl;
-	std::cout << "-------------------" << std::endl;
-	display_menu();
 	return EXIT_SUCCESS;
 }

@@ -4,7 +4,7 @@
 #include <vector>
 #include <unordered_set>
 
-GameEngine::GameEngine()
+void GameEngine::newGame()
 {
     std::string player1Name;
     std::string player2Name;
@@ -37,7 +37,7 @@ GameEngine::GameEngine()
     runGame();
 }
 
-GameEngine::GameEngine(std::string fileName)
+void GameEngine::loadGame()
 {
     //TODO
 }
@@ -331,6 +331,7 @@ bool GameEngine::placeTile(std::string tileLabel, std::string positionLabel)
 						}
 						if (qwirkle) std::cout << "QWIRKLE!!!" << std::endl;
 
+						player->score += score;
 						player->hand.remove(tile);
 						board[position->x][position->y] = tile;
 

@@ -17,14 +17,16 @@ public:
 	 * Initialises the GameEngine's state from scratch, and then 
 	 * begins the game
 	 */
-	GameEngine();
+	void newGame();
 
 	/*
-	 * Initialises the GameEngine's state from the provided file,
-	 * and then begins the game. If loading the game state from the
-	 * file fails, then the game quits
+	 * Requests a file name from the user, uses the contents
+	 * to initialise the game state and then continues with the
+	 * game. If the file does not exist or the format is invalid,
+	 * then the user is asked for a different file name until a 
+	 * correct one is inputted or they quit with Ctrl D
 	 */
-    GameEngine(std::string fileName);
+    void loadGame();
 
 	/*
 	 * Contains the main game loop, performing each player's turn

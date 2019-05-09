@@ -24,9 +24,10 @@ public:
 	 * to initialise the game state and then continues with the
 	 * game. If the file does not exist or the format is invalid,
 	 * then the user is asked for a different file name until a 
-	 * correct one is inputted or they quit with Ctrl D
+	 * correct one is inputted or they quit with Ctrl D. Returns
+	 * whether the load was successful or not
 	 */
-    void loadGame();
+    bool loadGame();
 
 	/*
 	 * Contains the main game loop, performing each player's turn

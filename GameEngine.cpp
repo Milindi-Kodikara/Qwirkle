@@ -29,7 +29,7 @@ void GameEngine::newGame()
     player2->name = player2Name;
 
     //fill the tile bag
-    tileBag.add_back()
+    tileBag.add_back();
 
     //distribute six tiles to each player
 
@@ -37,7 +37,7 @@ void GameEngine::newGame()
     runGame();
 }
 
-void GameEngine::loadGame()
+bool GameEngine::loadGame()
 {
     //TODO
 }
@@ -49,7 +49,6 @@ void GameEngine::runGame()
 		displayGameState();
 		getInput();
 	}
-	std::cout << "Goodbye" << std::endl;
 }
 
 void GameEngine::getInput()

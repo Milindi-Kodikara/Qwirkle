@@ -1,7 +1,3 @@
-//
-// Created by Milindi Kodikara on 2019-04-30.
-//
-
 #ifndef APT_ASSIGNMENT_2_POSITION_H
 #define APT_ASSIGNMENT_2_POSITION_H
 #define BOARD_SIZE  26

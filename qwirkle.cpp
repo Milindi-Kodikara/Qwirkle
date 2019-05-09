@@ -5,18 +5,6 @@
 
 #define EXIT_SUCCESS    0
 
-void new_game()
-{
-	GameEngine engine;
-	engine.newGame();
-}
-
-void load_game()
-{
-	GameEngine engine;
-	engine.loadGame();
-}
-
 void show_student_info()
 {
 	std::cout << std::endl;
@@ -53,15 +41,18 @@ int main(void)
 			std::getline(std::cin, input);
 			if (input[0] == '1')
 			{
-				new_game();
+				GameEngine engine;
+				engine.newGame();
 				valid_input = true;
 				exit = true;
 			}
 			else if (input[0] == '2')
 			{
-				load_game();
+				GameEngine engine;
+				// Exits if the load was successful, returns to menu if it wasn't
+				if (engine.loadGame()) exit = true;
+				else std::cout << "Invalid file name, try again" << std::endl;
 				valid_input = true;
-				exit = true;
 			}
 			else if (input[0] == '3')
 			{
@@ -72,11 +63,11 @@ int main(void)
 			{
 				valid_input = true;
 				exit = true;
-				std::cout << "Goodbye" << std::endl;
 			}
 			else std::cout << "Invalid input" << std::endl;
 		}
 	}
+	std::cout << "Goodbye" << std::endl;
 
 	return EXIT_SUCCESS;
 }

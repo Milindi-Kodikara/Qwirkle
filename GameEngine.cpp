@@ -354,7 +354,7 @@ bool GameEngine::placeTile(std::string tileLabel, std::string positionLabel)
 bool GameEngine::replaceTile(std::string tileLabel)
 {
     Player* player = player1Turn ? player1 : player2;
-    Tile* tile = find(tileLabel);
+    Tile* tile = player->hand.find(tileLabel);
     bool replaced = false;
 
     if (tile != nullptr)

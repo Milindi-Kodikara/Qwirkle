@@ -19,15 +19,15 @@ void load_game()
 
 void show_student_info()
 {
-	std::cout << endl;
+	std::cout << std::endl;
 	for (int i = 0; i < 30; ++i) std::cout << "-";
-	std::cout << endl;
+	std::cout << std::endl;
 	printf("Name: %s\nStudent ID: %s\nEmail: %s\n\n", "Flynn Swainston-Calcutt", "s3720879", "s3720879@student.rmit.edu.au");
 	printf("Name: %s\nStudent ID: %s\nEmail: %s\n\n", "Angelo Parlade", "s3688144", "s3688144@student.rmit.edu.au");
 	printf("Name: %s\nStudent ID: %s\nEmail: %s\n\n", "TODO", "TODO", "TODO");
 	printf("Name: %s\nStudent ID: %s\nEmail: %s\n\n", "TODO", "TODO", "TODO");
 	for (int i = 0; i < 30; ++i) std::cout << "-";
-	std::cout << endl;
+	std::cout << std::endl;
 }
 
 

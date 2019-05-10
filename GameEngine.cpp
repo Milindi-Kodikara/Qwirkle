@@ -371,6 +371,7 @@ bool GameEngine::saveGame(std::string fileName)
 {
 	Player* player = player1Turn ? player1 : player2;
 	std::ofstream outFile(fileName);
+	bool saved = true;
 
    /* if(std::ifstream(fileName)){
     	//append to existing file
@@ -401,7 +402,7 @@ bool GameEngine::saveGame(std::string fileName)
     	else
 		{
     		std::cout<<"Error: File could not be saved!"<<std::endl;
-    		return false;
+    		saved = false;
 		}
 
     }
@@ -409,8 +410,8 @@ bool GameEngine::saveGame(std::string fileName)
 	{
     	//Error if file wasn't saved/written to successfully
     	std::cout<<"Error: File does not exist!"<<std::endl;
-    	return false;
+    	saved = false;
 	}
 
-	return true;
+	return saved;
 }

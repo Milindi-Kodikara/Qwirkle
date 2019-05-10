@@ -28,7 +28,7 @@ public:
     void removeAt(int index);
 
 	//Output all Tiles inside linked list
-	void display();
+	std::string display();
 
 private:
     Node* head;

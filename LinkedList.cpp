@@ -120,7 +120,7 @@ void LinkedList::removeAt(int index)
 
 }
 
-void LinkedList::display()
+std::string LinkedList::display()
 {
 	Node* temp = nullptr;
 	temp = head;
@@ -133,5 +133,5 @@ void LinkedList::display()
 	}
 	output.pop_back();
 
-	std::cout << output << std::endl;
+	return output;
 }

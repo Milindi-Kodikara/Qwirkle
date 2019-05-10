@@ -1,8 +1,10 @@
 #include "GameEngine.h"
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <vector>
 #include <unordered_set>
+#include <regex>
 
 void GameEngine::newGame()
 {
@@ -162,7 +164,7 @@ void GameEngine::displayGameState()
 	std::cout << boardToString();
 
 	std::cout << "\n\nYour hand is" << std::endl;
-	player->hand.display();
+	std::cout<<player->hand.display()<<std::endl;
 }
 
 bool GameEngine::placeTile(std::string tileLabel, std::string positionLabel)
@@ -367,6 +369,48 @@ bool GameEngine::replaceTile(std::string tileLabel)
 
 bool GameEngine::saveGame(std::string fileName)
 {
-    //TODO
-	return false;
+	Player* player = player1Turn ? player1 : player2;
+	std::ofstream outFile(fileName);
+
+   /* if(std::ifstream(fileName)){
+    	//append to existing file
+    }
+    else
+	{
+    	//create new file
+    	outFile.open(fileName);
+	}
+    */
+
+    if(outFile.is_open())
+    {
+    	if(!outFile.bad())
+		{
+			outFile.open(fileName, std::ofstream::app);
+			outFile<<player1->name<<std::endl;
+			outFile<<player1->score<<std::endl;
+			outFile<<player1->hand.display()<<std::endl;
+			outFile<<player2->name<<std::endl;
+			outFile<<player2->score<<std::endl;
+			outFile<<player2->hand.display()<<std::endl;
+			outFile<<boardToString()<<std::endl;
+			outFile<<tileBag.display()<<std::endl;
+			outFile<<player->name<<std::endl;
+			outFile.close();
+		}
+    	else
+		{
+    		std::cout<<"Error: File could not be saved!"<<std::endl;
+    		return false;
+		}
+
+    }
+    else
+	{
+    	//Error if file wasn't saved/written to successfully
+    	std::cout<<"Error: File does not exist!"<<std::endl;
+    	return false;
+	}
+
+	return true;
 }

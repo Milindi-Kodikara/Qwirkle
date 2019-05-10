@@ -80,7 +80,6 @@ public:
 	 */
     bool saveGame(std::string fileName);
 
-
 private:
 
     //2D array of tiles as board 26*26

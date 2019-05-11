@@ -98,7 +98,7 @@ bool GameEngine::loadGame()
 			if (line == 1)
 			{
 				//Check if there are any non ASCII charaters in line 1 or Player1 name
-				for (unsigned int i = 0; i < input.length(); i++)
+				for (unsigned int i = 0; i < (input.length() - 1); i++)
 				{
 					if (input[i] == -62)
 					{
@@ -106,19 +106,17 @@ bool GameEngine::loadGame()
 						return false;
 					}
 				}
-				std::cout << "test" << std::endl;
+				//std::cout << "test" << std::endl;
 				player1 = new Player(input);
-
-				//player1->name = input;
-				std::cout << "test" << std::endl;
 			}
 			else if (line == 2)
 			{
 				//Check if line 2 is a single valid number
-				for (unsigned int i = 0; i < input.length(); i++)
+				for (unsigned int i = 0; i < (input.length()-1); i++)
 				{
-					if (!(input[i] >= 90 && input[i] <= 100))
+					if (!(input[i] >= 48 && input[i] <= 57))
 					{
+						
 						std::cout << "Invalid Player 1 score" << std::endl;
 						return false;
 					}
@@ -128,11 +126,12 @@ bool GameEngine::loadGame()
 			else if (line == 3)
 			{
 				//Check if all tiles are valid
-				for (unsigned int i = 0; i < input.length(); i++)
+				for (unsigned int i = 0; i < (input.length() - 1); i++)
 				{
 					tile = Tile::stringToTile(input[i], input[i+1]);
 					if (tile == nullptr)
 					{
+						std::cout << input[i] << input[i + 1] << std::endl;
 						std::cout << "Invalid tile found int line 3" << std::endl;
 						return false;
 					}
@@ -143,7 +142,7 @@ bool GameEngine::loadGame()
 			else if (line == 4)
 			{
 				//Check if there are any non ASCII charaters in line 4 or Player2 name
-				for (unsigned int i = 0; i < input.length(); i++)
+				for (unsigned int i = 0; i < (input.length() - 1); i++)
 				{
 					if (input[i] == -62)
 					{
@@ -151,14 +150,14 @@ bool GameEngine::loadGame()
 						return false;
 					}
 				}
-				player2->name = input;
+				player2 = new Player(input);
 			}
 			else if (line == 5)
 			{
 				//Check if line 5 is a single valid number
-				for (unsigned int i = 0; i < input.length(); i++)
+				for (unsigned int i = 0; i < (input.length() - 1); i++)
 				{
-					if (!(input[i] >= 90 && input[i] <= 100))
+					if (!(input[i] >= 48 && input[i] <= 57))
 					{
 						std::cout << "Invalid Player 2 score" << std::endl;
 						return false;
@@ -169,7 +168,7 @@ bool GameEngine::loadGame()
 			else if (line == 6)
 			{
 				//Check if all tiles are valid
-				for (unsigned int i = 0; i < input.length(); i++)
+				for (unsigned int i = 0; i < (input.length() - 1); i++)
 				{
 					tile = Tile::stringToTile(input[i], input[i+1]);
 					if (tile == nullptr)
@@ -183,8 +182,21 @@ bool GameEngine::loadGame()
 			}
 			else if (line >= 9 && line <= 34)
 			{
+				//Initialize the board
+				board = new Tile**[BOARD_SIZE];
+				for (int i = 0; i < BOARD_SIZE; ++i) {
+					board[i] = new Tile*[BOARD_SIZE];
+				}
+
+				//Fill board with NULLPTRs
+				for (int i = 0; i < BOARD_SIZE; i++) {
+					for (int j = 0; j < BOARD_SIZE; j++) {
+						board[i][j] = nullptr;
+					}
+				}
+
 				//Check all tiles in board are valid
-				for (unsigned int i = 3; i < input.size(); i++)
+				for (unsigned int i = 3; i < (input.length() - 1); i++)
 				{
 					if (input[i] == ' ')
 						i = i + 2;
@@ -198,16 +210,18 @@ bool GameEngine::loadGame()
 						}
 						else
 						{
+							
 							board[i-3][line-9] = tile;
 							i = i + 2;
 						}
 					}
 				}
+				
 			}
 			else if (line == 35)
 			{
 				//Check if all tiles are valid
-				for (unsigned int i = 0; i < input.length(); i++)
+				for (unsigned int i = 0; i < (input.length() - 1); i++)
 				{
 					tile = Tile::stringToTile(input[i], input[i+1]);
 					if (tile == nullptr)
@@ -221,6 +235,7 @@ bool GameEngine::loadGame()
 			}
 			else if (line == 36)
 			{
+				//Chech if name of Playerturn is part of players
 				if (input == player1->name)
 				{
 					player1Turn = true;
@@ -238,7 +253,19 @@ bool GameEngine::loadGame()
 			getline(file, input);
 		}
 	}
-	runGame();
+	std::cout << "Success?" << std::endl;
+
+	//std::string testing = "";
+
+	std::cout << player1->name << std::endl;
+	std::cout << player1->score << std::endl;
+
+	//testing = player1->hand.display;
+	//std::cout << testing << std::endl;
+
+	std::cout << player2->name << std::endl;
+	std::cout << player2->score << std::endl;
+
 	return true;
 }
 
@@ -247,7 +274,6 @@ void GameEngine::runGame()
 	while (!exitGame)
 	{
 		displayGameState();
-		getInput();
 	}
 }
 

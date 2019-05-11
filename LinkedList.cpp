@@ -94,30 +94,37 @@ void LinkedList::remove(Tile* tile)
 	}
 }
 
-void LinkedList::removeAt(int index)
+Tile* LinkedList::removeAt(int index)
 {
     Node* current = head;
-    Node* previous = nullptr;
+    Tile* tile = nullptr;
 
     if (index == 0)
     {
-        pop_front();
+        head = head->next;
+        tile = head->tile;
+        delete current;
     }
 
     else
     {
-        for (int i = 1; i < index; i++)
+        for (int i = 0; i < index - 1; ++i)
         {
-            current = current->next;
+            current = current ->next
         }
-        previous = current->next;
-        current->next = previous.next;
 
-        delete previous;
-        previous = nullptr;
+        if (current != nullptr)
+        {
+            if (current->next != nullptr)
+            {
+                Node* previous = current->next;
+                current->next = current->next->next;
+                tile = previous->tile;
+                delete previous;
+            }
+        }
     }
-
-
+    return tile;
 }
 
 std::string LinkedList::display()

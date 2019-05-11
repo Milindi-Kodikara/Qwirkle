@@ -25,7 +25,7 @@ public:
 	void remove(Tile* tile);
 
 	// Removes a tile from given index
-    void removeAt(int index);
+    Tile* removeAt(int index);
 
 	//Output all Tiles inside linked list
 	std::string display();

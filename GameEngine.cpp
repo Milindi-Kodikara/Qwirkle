@@ -30,10 +30,36 @@ void GameEngine::newGame()
     }
     player2->name = player2Name;
 
-    //fill the tile bag
-    tileBag.add_back();
+    //create an array to store all the colours
+    char colours[6] = {'R','O','Y','G','B','P'};
+    //create a temporary linked list
+    LinkedList temp;
+    int shapes = 6;
+    //fill the temporary linked list with two of every tile
+    for(int k = 0; k <= 1; k++)
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            for (int j = 1; j <= shapes; j++)
+            {
+                temp.add_back(new Tile(colours[i],j));
+            }
+        }
+    }
+
+    std::random_device rd; // obtain a random number from hardware
+    std::mt19937 eng(rd()); // seed the generator
+
+    // randomly add tiles
+    for (int i = 72; i > 0; i--)
+    {
+        uniform_int_distribution<> distr(0,i-1);
+        tileBag.add_back(temp.removeAt(distr(eng)));
+    }
 
     //distribute six tiles to each player
+    player1->hand.add_back(tileBag.pop_front());
+    player2->hand.add_back(tileBag.pop_front());
 
     std::cout << "Let's Play!" << std::endl;
     runGame();

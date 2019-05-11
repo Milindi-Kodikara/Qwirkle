@@ -8,7 +8,61 @@
 
 void GameEngine::newGame()
 {
+	std::string player1Name;
+	std::string player2Name;
+	//regex to ensure player name is only uppercase alphabets
+	std::regex r("[a-zA-Z\\s]+");
+	std::smatch m;
+	std::cout << "Starting a new game" << std::endl;
 
+	//prompts the user again if the given name does not follow the regex
+	while (!std::regex_search(player1Name, m, r)
+	{
+		std::cout << "Enter a name for player 1 (no numbers or symbols)" << std::endl;
+		std::getline(std::cin, player1Name);
+	}
+	player1->name = player1Name;
+
+	while (!std::regex_search(player2Name, m, r)
+	{
+		std::cout << "Enter a name for player 2 (no numbers or symbols)" << std::endl;
+		std::getline(std::cin, player2Name);
+	}
+	player2->name = player2Name;
+
+	//create an array to store all the colours
+	char colours[6] = { 'R','O','Y','G','B','P' };
+	//create a temporary linked list
+	LinkedList temp;
+	int shapes = 6;
+	//fill the temporary linked list with two of every tile
+	for (int k = 0; k <= 1; k++)
+	{
+		for (int i = 0; i < 6; i++)
+		{
+			for (int j = 1; j <= shapes; j++)
+			{
+				temp.add_back(new Tile(colours[i], j));
+			}
+		}
+	}
+
+	std::random_device rd; // obtain a random number from hardware
+	std::mt19937 eng(rd()); // seed the generator
+
+	// randomly add tiles
+	for (int i = 72; i > 0; i--)
+	{
+		uniform_int_distribution<> distr(0, i - 1);
+		tileBag.add_back(temp.removeAt(distr(eng)));
+	}
+
+	//distribute six tiles to each player
+	player1->hand.add_back(tileBag.pop_front());
+	player2->hand.add_back(tileBag.pop_front());
+
+	std::cout << "Let's Play!" << std::endl;
+	runGame();
 }
 
 bool GameEngine::loadGame()

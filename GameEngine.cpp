@@ -8,66 +8,184 @@
 
 void GameEngine::newGame()
 {
-    std::string player1Name;
-    std::string player2Name;
-    //regex to ensure player name is only uppercase alphabets
-    std::regex r("[a-zA-Z\\s]+");
-    std::smatch m;
-    std::cout << "Starting a new game" << std::endl;
 
-    //prompts the user again if the given name does not follow the regex
-    while (!std::regex_search(player1Name,m,r)
-    {
-        std::cout << "Enter a name for player 1 (no numbers or symbols)" << std::endl;
-        std::getline(std::cin, player1Name);
-    }
-    player1->name = player1Name;
-
-    while (!std::regex_search(player2Name,m,r)
-    {
-        std::cout << "Enter a name for player 2 (no numbers or symbols)" << std::endl;
-        std::getline(std::cin, player2Name);
-    }
-    player2->name = player2Name;
-
-    //create an array to store all the colours
-    char colours[6] = {'R','O','Y','G','B','P'};
-    //create a temporary linked list
-    LinkedList temp;
-    int shapes = 6;
-    //fill the temporary linked list with two of every tile
-    for(int k = 0; k <= 1; k++)
-    {
-        for (int i = 0; i < 6; i++)
-        {
-            for (int j = 1; j <= shapes; j++)
-            {
-                temp.add_back(new Tile(colours[i],j));
-            }
-        }
-    }
-
-    std::random_device rd; // obtain a random number from hardware
-    std::mt19937 eng(rd()); // seed the generator
-
-    // randomly add tiles
-    for (int i = 72; i > 0; i--)
-    {
-        uniform_int_distribution<> distr(0,i-1);
-        tileBag.add_back(temp.removeAt(distr(eng)));
-    }
-
-    //distribute six tiles to each player
-    player1->hand.add_back(tileBag.pop_front());
-    player2->hand.add_back(tileBag.pop_front());
-
-    std::cout << "Let's Play!" << std::endl;
-    runGame();
 }
 
 bool GameEngine::loadGame()
 {
-    //TODO
+	std::ifstream file;
+	std::string input;
+	Tile* tile = nullptr;
+
+	int line = 1;
+
+	std::cout << "Enter the filename from which load a game" << std::endl;
+	std::cin >> input;
+	file.open("tests/" + input + ".save");
+
+	//Check if file exists
+	if (!file)
+	{
+		std::cout << "Unable to open/find file " << input << ".txt" << std::endl;
+		return false;
+	}
+	else
+	{
+		//Check if file is empty or not
+		if (file.eof())
+		{
+			std::cout << "Unable to open/find file " << input << ".txt" << std::endl;
+			return false;
+		}
+		
+		getline(file, input);
+		while (!file.eof())
+		{
+			if (line == 1)
+			{
+				//Check if there are any non ASCII charaters in line 1 or Player1 name
+				for (unsigned int i = 0; i < input.length(); i++)
+				{
+					if (input[i] == -62)
+					{
+						std::cout << "Player 1 name contains non ASCII characters" << std::endl;
+						return false;
+					}
+				}
+				std::cout << "test" << std::endl;
+				player1 = new Player(input);
+
+				//player1->name = input;
+				std::cout << "test" << std::endl;
+			}
+			else if (line == 2)
+			{
+				//Check if line 2 is a single valid number
+				for (unsigned int i = 0; i < input.length(); i++)
+				{
+					if (!(input[i] >= 90 && input[i] <= 100))
+					{
+						std::cout << "Invalid Player 1 score" << std::endl;
+						return false;
+					}
+				}
+				std::istringstream(input) >> player1->score;;
+			}
+			else if (line == 3)
+			{
+				//Check if all tiles are valid
+				for (unsigned int i = 0; i < input.length(); i++)
+				{
+					tile = Tile::stringToTile(input[i], input[i+1]);
+					if (tile == nullptr)
+					{
+						std::cout << "Invalid tile found int line 3" << std::endl;
+						return false;
+					}
+					player1->hand.add_back(tile);
+					i = i + 2;
+				}
+			}
+			else if (line == 4)
+			{
+				//Check if there are any non ASCII charaters in line 4 or Player2 name
+				for (unsigned int i = 0; i < input.length(); i++)
+				{
+					if (input[i] == -62)
+					{
+						std::cout << "Player 2 name contains non ASCII characters" << std::endl;
+						return false;
+					}
+				}
+				player2->name = input;
+			}
+			else if (line == 5)
+			{
+				//Check if line 5 is a single valid number
+				for (unsigned int i = 0; i < input.length(); i++)
+				{
+					if (!(input[i] >= 90 && input[i] <= 100))
+					{
+						std::cout << "Invalid Player 2 score" << std::endl;
+						return false;
+					}
+				}
+				std::istringstream(input) >> player2->score;;
+			}
+			else if (line == 6)
+			{
+				//Check if all tiles are valid
+				for (unsigned int i = 0; i < input.length(); i++)
+				{
+					tile = Tile::stringToTile(input[i], input[i+1]);
+					if (tile == nullptr)
+					{
+						std::cout << "Invalid tile found int line 6" << std::endl;
+						return false;
+					}
+					player1->hand.add_back(tile);
+					i = i + 2;
+				}
+			}
+			else if (line >= 9 && line <= 34)
+			{
+				//Check all tiles in board are valid
+				for (unsigned int i = 3; i < input.size(); i++)
+				{
+					if (input[i] == ' ')
+						i = i + 2;
+					else 
+					{
+						tile = Tile::stringToTile(input[i], input[i + 1]);
+						if (tile == nullptr)
+						{
+							std::cout << "Invalid tile found in board" << std::endl;
+							return false;
+						}
+						else
+						{
+							board[i-3][line-9] = tile;
+							i = i + 2;
+						}
+					}
+				}
+			}
+			else if (line == 35)
+			{
+				//Check if all tiles are valid
+				for (unsigned int i = 0; i < input.length(); i++)
+				{
+					tile = Tile::stringToTile(input[i], input[i+1]);
+					if (tile == nullptr)
+					{
+						std::cout << "Invalid tile found in tile bag" << std::endl;
+						return false;
+					}
+					tileBag.add_back(tile);
+					i = i + 2;
+				}
+			}
+			else if (line == 36)
+			{
+				if (input == player1->name)
+				{
+					player1Turn = true;
+				}
+				else if (input == player2->name)
+				{
+					player1Turn = false;
+				} 
+				else
+				{
+					std::cout << "Name at line 36 is not a player" << std::endl;
+				}
+			}
+			line++;
+			getline(file, input);
+		}
+	}
+	runGame();
+	return true;
 }
 
 void GameEngine::runGame()
@@ -374,7 +492,7 @@ bool GameEngine::placeTile(std::string tileLabel, std::string positionLabel)
 		}
 	}
 
-	delete position;
+	//delete position;
 	return success;
 }
 

@@ -107,16 +107,10 @@ Tile* LinkedList::removeAt(int index)
     }
 
     tile = current->tile;
+    if (previous == nullptr) head = current->next;
+    else previous->next = current->next;
 
-    if (previous == nullptr)
-    {
-        head = current->next;
-    }
-
-    else
-    {
-        previous->next = current->next
-    }
+	delete current;
     return tile;
 }
 

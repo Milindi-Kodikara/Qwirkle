@@ -5,9 +5,11 @@
 #include <vector>
 #include <unordered_set>
 #include <regex>
+#include <random>
 
 void GameEngine::newGame()
 {
+	
 	std::string player1Name;
 	std::string player2Name;
 	//regex to ensure player name is only uppercase alphabets
@@ -16,19 +18,19 @@ void GameEngine::newGame()
 	std::cout << "Starting a new game" << std::endl;
 
 	//prompts the user again if the given name does not follow the regex
-	while (!std::regex_search(player1Name, m, r)
+	while (!std::regex_search(player1Name, m, r))
 	{
 		std::cout << "Enter a name for player 1 (no numbers or symbols)" << std::endl;
 		std::getline(std::cin, player1Name);
 	}
-	player1->name = player1Name;
+	player1 = new Player(player1Name);
 
-	while (!std::regex_search(player2Name, m, r)
+	while (!std::regex_search(player2Name, m, r))
 	{
 		std::cout << "Enter a name for player 2 (no numbers or symbols)" << std::endl;
 		std::getline(std::cin, player2Name);
 	}
-	player2->name = player2Name;
+	player2 = new Player(player2Name);
 
 	//create an array to store all the colours
 	char colours[6] = { 'R','O','Y','G','B','P' };
@@ -50,7 +52,7 @@ void GameEngine::newGame()
 	// randomly add tiles
 	for (int i = 71; i > 0; i--)
 	{
-		uniform_int_distribution<> distr(0, i);
+		std::uniform_int_distribution<> distr(0, i);
 		tileBag.add_back(temp.removeAt(distr(eng)));
 	}
 

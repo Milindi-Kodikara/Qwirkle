@@ -10,9 +10,9 @@ Menu
 > 
 Enter the filename from which to load a game
 > 
-Player1, it's your turn
-Score for Player1: 0
-Score for player2: 0
+PlayerOne, it's your turn
+Score for PlayerOne: 0
+Score for PlayerTwo: 0
    0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
   -------------------------------------------------------------------------------
 A |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
@@ -46,9 +46,9 @@ R4,R5
 > 
 Invalid input
 > 
-Player2, it's your turn
-Score for Player1: 6
-Score for player2: 0
+PlayerTwo, it's your turn
+Score for PlayerOne: 6
+Score for PlayerTwo: 0
    0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
   -------------------------------------------------------------------------------
 A |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
@@ -82,9 +82,9 @@ R4,R6
 > 
 Invalid input
 > 
-Player1, it's your turn
-Score for Player1: 6
-Score for player2: 6
+PlayerOne, it's your turn
+Score for PlayerOne: 6
+Score for PlayerTwo: 6
    0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
   -------------------------------------------------------------------------------
 A |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |

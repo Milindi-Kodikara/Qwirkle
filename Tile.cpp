@@ -24,9 +24,7 @@ Tile* Tile::stringToTile(char x, char y)
 		{
 			tile = new Tile(colour, shape);
 		}
-		else std::cout << "shape not found" << std::endl;
 	}
-	else std::cout << "color not found" << std::endl;
 	
 	return tile;
 }

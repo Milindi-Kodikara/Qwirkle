@@ -13,7 +13,7 @@ void GameEngine::newGame()
 	std::string player1Name;
 	std::string player2Name;
 	//regex to ensure player name is only uppercase alphabets
-	std::regex r("[a-zA-Z\\s]+");
+	std::regex r("[a-zA-Z]+");
 	std::smatch m;
 	std::cout << "Starting a new game" << std::endl;
 
@@ -68,204 +68,138 @@ bool GameEngine::loadGame()
 {
 	std::ifstream file;
 	std::string input;
-	Tile* tile = nullptr;
-
-	int line = 1;
-
+	bool valid = true;
+	
 	std::cout << "Enter the filename from which load a game" << std::endl;
 	std::cin >> input;
-	file.open("tests/" + input + ".save");
+	file.open(input);
 
 	//Check if file exists
-	if (!file)
+	if (file)
 	{
-		std::cout << "Unable to open/find file " << input << ".txt" << std::endl;
-		return false;
-	}
-	else
-	{
-		//Check if file is empty or not
-		if (file.eof())
+		std::regex r("[a-zA-Z]+");
+		std::smatch m;
+		//Checks both player's information
+		for (int i = 0; i < 2 && valid; i++)
 		{
-			std::cout << "Unable to open/find file " << input << ".txt" << std::endl;
-			return false;
-		}
-		
-		getline(file, input);
-		while (!file.eof())
-		{
-			if (line == 1)
-			{
-				//Check if there are any non ASCII charaters in line 1 or Player1 name
-				for (unsigned int i = 0; i < (input.length() - 1); i++)
-				{
-					if (input[i] == -62)
-					{
-						std::cout << "Player 1 name contains non ASCII characters" << std::endl;
-						return false;
-					}
-				}
-				//std::cout << "test" << std::endl;
-				player1 = new Player(input);
-			}
-			else if (line == 2)
-			{
-				//Check if line 2 is a single valid number
-				for (unsigned int i = 0; i < (input.length()-1); i++)
-				{
-					if (!(input[i] >= 48 && input[i] <= 57))
-					{
-						
-						std::cout << "Invalid Player 1 score" << std::endl;
-						return false;
-					}
-				}
-				std::istringstream(input) >> player1->score;;
-			}
-			else if (line == 3)
-			{
-				//Check if all tiles are valid
-				for (unsigned int i = 0; i < (input.length() - 1); i++)
-				{
-					tile = Tile::stringToTile(input[i], input[i+1]);
-					if (tile == nullptr)
-					{
-						std::cout << input[i] << input[i + 1] << std::endl;
-						std::cout << "Invalid tile found int line 3" << std::endl;
-						return false;
-					}
-					player1->hand.add_back(tile);
-					i = i + 2;
-				}
-			}
-			else if (line == 4)
-			{
-				//Check if there are any non ASCII charaters in line 4 or Player2 name
-				for (unsigned int i = 0; i < (input.length() - 1); i++)
-				{
-					if (input[i] == -62)
-					{
-						std::cout << "Player 2 name contains non ASCII characters" << std::endl;
-						return false;
-					}
-				}
-				player2 = new Player(input);
-			}
-			else if (line == 5)
-			{
-				//Check if line 5 is a single valid number
-				for (unsigned int i = 0; i < (input.length() - 1); i++)
-				{
-					if (!(input[i] >= 48 && input[i] <= 57))
-					{
-						std::cout << "Invalid Player 2 score" << std::endl;
-						return false;
-					}
-				}
-				std::istringstream(input) >> player2->score;;
-			}
-			else if (line == 6)
-			{
-				//Check if all tiles are valid
-				for (unsigned int i = 0; i < (input.length() - 1); i++)
-				{
-					tile = Tile::stringToTile(input[i], input[i+1]);
-					if (tile == nullptr)
-					{
-						std::cout << "Invalid tile found int line 6" << std::endl;
-						return false;
-					}
-					player1->hand.add_back(tile);
-					i = i + 2;
-				}
-			}
-			else if (line >= 9 && line <= 34)
-			{
-				//Initialize the board
-				board = new Tile**[BOARD_SIZE];
-				for (int i = 0; i < BOARD_SIZE; ++i) {
-					board[i] = new Tile*[BOARD_SIZE];
-				}
+			
+			getline(file, input);
 
-				//Fill board with NULLPTRs
-				for (int i = 0; i < BOARD_SIZE; i++) {
-					for (int j = 0; j < BOARD_SIZE; j++) {
-						board[i][j] = nullptr;
-					}
-				}
-
-				//Check all tiles in board are valid
-				for (unsigned int i = 3; i < (input.length() - 1); i++)
+			if (!file.eof() && std::regex_search(input, m, r))
+			{
+				Player* player = new Player(input);
+			}
+			else valid = false;
+			if (valid)
+			{
+				getline(file, input);
+				std::istringstream iss(input);
+				int score;
+				iss >> score;
+				if (!file.eof() && iss.good()) player->score = score;
+				else valid = false;
+			} 
+			if (valid)
+			{
+				getline(file, input);
+				if (!file.eof())
 				{
-					if (input[i] == ' ')
-						i = i + 2;
-					else 
+					for (unsigned int i = 0; i < input.size() && valid; i += 3)
 					{
 						tile = Tile::stringToTile(input[i], input[i + 1]);
-						if (tile == nullptr)
-						{
-							std::cout << "Invalid tile found in board" << std::endl;
-							return false;
-						}
+						if (tile == nullptr) valid = false;
 						else
 						{
-							
-							board[i-3][line-9] = tile;
-							i = i + 2;
+							player->hand.add_back(tile);
 						}
 					}
 				}
-				
-			}
-			else if (line == 35)
-			{
-				//Check if all tiles are valid
-				for (unsigned int i = 0; i < (input.length() - 1); i++)
-				{
-					tile = Tile::stringToTile(input[i], input[i+1]);
-					if (tile == nullptr)
-					{
-						std::cout << "Invalid tile found in tile bag" << std::endl;
-						return false;
-					}
-					tileBag.add_back(tile);
-					i = i + 2;
-				}
-			}
-			else if (line == 36)
-			{
-				//Chech if name of Playerturn is part of players
-				if (input == player1->name)
-				{
-					player1Turn = true;
-				}
-				else if (input == player2->name)
-				{
-					player1Turn = false;
-				} 
-				else
-				{
-					std::cout << "Name at line 36 is not a player" << std::endl;
-				}
-			}
-			line++;
-			getline(file, input);
+				else valid = false;
+			}		
 		}
+		if (valid)
+		{
+			//Initialize the board
+			board = new Tile * *[BOARD_SIZE];
+			for (int i = 0; i < BOARD_SIZE; ++i)
+			{
+				board[i] = new Tile * [BOARD_SIZE];
+				for (int j = 0; j < BOARD_SIZE; j++)
+				{
+					board[i][j] = nullptr;
+				}
+			}
+			getline(file, input);
+			if (!file.eof() && input == "   0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25")
+			{
+				getline(file, input);
+				if (file.eof() || input != "  -------------------------------------------------------------------------------") valid = false;
+			}
+			else valid = false;
+
+			if (valid)
+			{
+				std::string rowLabel = "A |";
+				
+
+				for (int i = 0; i < BOARD_SIZE && valid; i++)
+				{
+					getline(file, input);
+					if (file.eof() || input.substr(0, 3) != rowLabel) valid = false;
+
+					
+					//Check all tiles in board are valid
+					for (unsigned int j = 3; j < input.size() && valid; j += 3)
+					{
+						if (input.substr(j, 3) != "  |")
+						{
+							tile = Tile::stringToTile(input[j], input[j + 1]);
+							if (tile == nullptr) valid = false;
+							else board[j - 3][i] = tile;
+						}
+					}
+					//Update row label to next letter
+					++rowLabel[0];
+				}
+			}
+		}
+		if (valid)
+		{
+			getline(file, input);
+			if (!file.eof())
+			{
+				for (unsigned int i = 0; i < input.size() && valid; i += 3)
+				{
+					tile = Tile::stringToTile(input[i], input[i + 1]);
+					if (tile == nullptr) valid = false;
+					else tileBag.add_back(tile);
+				}
+			} 
+			else valid = false;
+		}
+		if (valid)
+		{
+			getline(file, input);
+
+			//Checks if this is the eof rather than not eof
+			if (file.eof())
+			{
+				if (input == player1->name) player1Turn = true;
+				else if (input == player2->name) player1Turn = false;
+				else valid = false;
+			}
+			else valid = false;
+		}
+
 	}
-	std::cout << "Success?" << std::endl;
+	else valid = false;
+	if (valid)
+	{
+		std::cout << "Qwirkle game successfully loaded" << std::endl;
+		runGame();
 
-	//std::string testing = "";
-
-	std::cout << player1->name << std::endl;
-	std::cout << player1->score << std::endl;
-
-	//testing = player1->hand.display;
-	//std::cout << testing << std::endl;
-
-	std::cout << player2->name << std::endl;
-	std::cout << player2->score << std::endl;
-
-	return true;
+	}
+	return valid;
 }
 
 void GameEngine::runGame()

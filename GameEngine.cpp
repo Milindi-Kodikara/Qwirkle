@@ -82,12 +82,12 @@ bool GameEngine::loadGame()
 		//Checks both player's information
 		for (int i = 0; i < 2 && valid; i++)
 		{
-			
+			Player* player;
 			getline(file, input);
 
 			if (!file.eof() && std::regex_search(input, m, r))
 			{
-				Player* player = new Player(input);
+				player = new Player(input);
 			}
 			else valid = false;
 			if (valid)
@@ -104,14 +104,17 @@ bool GameEngine::loadGame()
 				getline(file, input);
 				if (!file.eof())
 				{
+					int tileCount = 0;
 					for (unsigned int i = 0; i < input.size() && valid; i += 3)
 					{
-						tile = Tile::stringToTile(input[i], input[i + 1]);
+						Tile* tile = Tile::stringToTile(input[i], input[i + 1]);
 						if (tile == nullptr) valid = false;
 						else
 						{
 							player->hand.add_back(tile);
+							++tileCount;
 						}
+						if (tileCount > 6) valid = false;
 					}
 				}
 				else valid = false;
@@ -153,7 +156,7 @@ bool GameEngine::loadGame()
 					{
 						if (input.substr(j, 3) != "  |")
 						{
-							tile = Tile::stringToTile(input[j], input[j + 1]);
+							Tile* tile = Tile::stringToTile(input[j], input[j + 1]);
 							if (tile == nullptr) valid = false;
 							else board[j - 3][i] = tile;
 						}
@@ -170,7 +173,7 @@ bool GameEngine::loadGame()
 			{
 				for (unsigned int i = 0; i < input.size() && valid; i += 3)
 				{
-					tile = Tile::stringToTile(input[i], input[i + 1]);
+					Tile* tile = Tile::stringToTile(input[i], input[i + 1]);
 					if (tile == nullptr) valid = false;
 					else tileBag.add_back(tile);
 				}

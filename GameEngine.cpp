@@ -611,7 +611,7 @@ bool GameEngine::saveGame(std::string fileName)
 //    {
 //    	if(!outFile.bad())
 //		{
-//			outFile.open(fileName, std::ofstream::app);
+			outFile.open(fileName, std::ofstream::app);
 			outFile<<player1->name<<std::endl;
 			outFile<<player1->score<<std::endl;
 			outFile<<player1->hand.display()<<std::endl;

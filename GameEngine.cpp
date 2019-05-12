@@ -595,47 +595,16 @@ bool GameEngine::saveGame(std::string fileName)
 {
 	Player* player = player1Turn ? player1 : player2;
 	std::ofstream outFile(fileName);
-	//bool saved = true;
-
-   /* if(std::ifstream(fileName)){
-    	//append to existing file
-    }
-    else
-	{
-    	//create new file
-    	outFile.open(fileName);
-	}
-    */
-
-//    if(outFile.is_open())
-//    {
-//    	if(!outFile.bad())
-//		{
-			outFile.open(fileName, std::ofstream::app);
-			outFile<<player1->name<<std::endl;
-			outFile<<player1->score<<std::endl;
-			outFile<<player1->hand.display()<<std::endl;
-			outFile<<player2->name<<std::endl;
-			outFile<<player2->score<<std::endl;
-			outFile<<player2->hand.display()<<std::endl;
-			outFile<<boardToString()<<std::endl;
-			outFile<<tileBag.display()<<std::endl;
-			outFile<<player->name<<std::endl;
-			outFile.close();
-//		}
-//    	else
-//		{
-//    		std::cout<<"Error: File could not be saved!"<<std::endl;
-//    		saved = false;
-//		}
-//
-//    }
-//    else
-//	{
-//    	//Error if file wasn't saved/written to successfully
-//    	std::cout<<"Error: File does not exist!"<<std::endl;
-//    	saved = false;
-//	}
-
+	outFile.open(fileName, std::ofstream::app);
+	outFile << player1->name << std::endl;
+	outFile << player1->score << std::endl;
+	outFile << player1->hand.display() << std::endl;
+	outFile << player2->name << std::endl;
+	outFile << player2->score << std::endl;
+	outFile << player2->hand.display() << std::endl;
+	outFile << boardToString() << std::endl;
+	outFile << tileBag.display() << std::endl;
+	outFile << player->name << std::endl;
+	outFile.close();
 	return true;
 }

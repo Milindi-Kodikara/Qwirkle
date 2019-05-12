@@ -69,6 +69,7 @@ bool GameEngine::loadGame()
 	std::ifstream file;
 	std::string input;
 	bool valid = true;
+	int totalTileCount = 0;
 	
 	std::cout << "Enter the filename from which load a game" << std::endl;
 	std::cin >> input;
@@ -112,6 +113,7 @@ bool GameEngine::loadGame()
 						else
 						{
 							player->hand.add_back(tile);
+							++totalTileCount;
 							++tileCount;
 						}
 						if (tileCount > 6) valid = false;
@@ -148,7 +150,8 @@ bool GameEngine::loadGame()
 				for (int i = 0; i < BOARD_SIZE && valid; i++)
 				{
 					getline(file, input);
-					if (file.eof() || input.substr(0, 3) != rowLabel) valid = false;
+					
+					if (file.eof() || input.substr(0, 3) != rowLabel || input.size() > (3+(BOARD_SIZE*3))) valid = false;
 
 					
 					//Check all tiles in board are valid
@@ -158,7 +161,11 @@ bool GameEngine::loadGame()
 						{
 							Tile* tile = Tile::stringToTile(input[j], input[j + 1]);
 							if (tile == nullptr) valid = false;
-							else board[j - 3][i] = tile;
+							else
+							{
+								++totalTileCount;
+								board[j - 3][i] = tile;
+							}
 						}
 					}
 					//Update row label to next letter
@@ -175,8 +182,14 @@ bool GameEngine::loadGame()
 				{
 					Tile* tile = Tile::stringToTile(input[i], input[i + 1]);
 					if (tile == nullptr) valid = false;
-					else tileBag.add_back(tile);
+					else 
+					{
+						++totalTileCount;
+						tileBag.add_back(tile);
+					}
 				}
+				//Check if total number of tiles found in save file total to 72
+				if (totalTileCount != 72) valid = false;
 			} 
 			else valid = false;
 		}

@@ -1,4 +1,5 @@
 #include "Tile.h"
+#include <iostream>
 
 Tile::Tile(Colour colour, Shape shape)
 {
@@ -7,4 +8,25 @@ Tile::Tile(Colour colour, Shape shape)
 	label = "";
 	label += colour;
 	label += std::to_string(shape);
+}
+
+Tile* Tile::stringToTile(char x, char y)
+{
+	Tile* tile = nullptr;
+	int colour = x;
+	int shape = y - '0';
+
+	if (colour == RED || colour == ORANGE || colour == YELLOW ||
+		colour == GREEN || colour == BLUE || colour == PURPLE)
+	{
+		if (shape == CIRCLE || shape == STAR_4 || shape == DIAMOND
+			|| shape == SQUARE || shape == STAR_6 || shape == CLOVER)
+		{
+			tile = new Tile(colour, shape);
+		}
+		else std::cout << "shape not found" << std::endl;
+	}
+	else std::cout << "color not found" << std::endl;
+	
+	return tile;
 }

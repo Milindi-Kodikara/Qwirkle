@@ -36,24 +36,21 @@ void GameEngine::newGame()
 	LinkedList temp;
 	int shapes = 6;
 	//fill the temporary linked list with two of every tile
-	for (int k = 0; k <= 1; k++)
+	for (int i = 0; i < 6; i++)
 	{
-		for (int i = 0; i < 6; i++)
-		{
-			for (int j = 1; j <= shapes; j++)
-			{
-				temp.add_back(new Tile(colours[i], j));
-			}
-		}
+	    for (int j = 1; j <= shapes; j++)
+	    {
+	        temp.add_back(new Tile(colours[i], j));
+	    }
 	}
 
 	std::random_device rd; // obtain a random number from hardware
 	std::mt19937 eng(rd()); // seed the generator
 
 	// randomly add tiles
-	for (int i = 72; i > 0; i--)
+	for (int i = 71; i > 0; i--)
 	{
-		uniform_int_distribution<> distr(0, i - 1);
+		uniform_int_distribution<> distr(0, i);
 		tileBag.add_back(temp.removeAt(distr(eng)));
 	}
 

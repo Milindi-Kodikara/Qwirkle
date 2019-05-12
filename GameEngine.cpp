@@ -7,6 +7,9 @@
 #include <regex>
 #include <random>
 
+using std::cout;
+using std::endl;
+
 void GameEngine::newGame()
 {
 	
@@ -15,19 +18,19 @@ void GameEngine::newGame()
 	//regex to ensure player name is only uppercase alphabets
 	std::regex r("[a-zA-Z]+");
 	std::smatch m;
-	std::cout << "Starting a new game" << std::endl;
+	cout << "Starting a new game" << endl;
 
 	//prompts the user again if the given name does not follow the regex
 	while (!std::regex_search(player1Name, m, r))
 	{
-		std::cout << "Enter a name for player 1 (no numbers or symbols)" << std::endl;
+		cout << "Enter a name for player 1 (no numbers or symbols)" << endl;
 		std::getline(std::cin, player1Name);
 	}
 	player1 = new Player(player1Name);
 
 	while (!std::regex_search(player2Name, m, r))
 	{
-		std::cout << "Enter a name for player 2 (no numbers or symbols)" << std::endl;
+		cout << "Enter a name for player 2 (no numbers or symbols)" << endl;
 		std::getline(std::cin, player2Name);
 	}
 	player2 = new Player(player2Name);
@@ -43,6 +46,7 @@ void GameEngine::newGame()
 	    for (int j = 1; j <= shapes; j++)
 	    {
 	        temp.add_back(new Tile(colours[i], j));
+			temp.add_back(new Tile(colours[i], j));
 	    }
 	}
 
@@ -50,17 +54,26 @@ void GameEngine::newGame()
 	std::mt19937 eng(rd()); // seed the generator
 
 	// randomly add tiles
-	for (int i = 71; i > 0; i--)
+	for (int i = 72; i > 0; i--)
 	{
-		std::uniform_int_distribution<> distr(0, i);
+		std::uniform_int_distribution<> distr(0, i - 1);
 		tileBag.add_back(temp.removeAt(distr(eng)));
 	}
-
 	//distribute six tiles to each player
 	player1->hand.add_back(tileBag.pop_front());
 	player2->hand.add_back(tileBag.pop_front());
 
-	std::cout << "Let's Play!" << std::endl;
+	// Creates the empty board
+	board = new Tile**[BOARD_SIZE];
+	for (int i = 0; i < BOARD_SIZE; ++i)
+	{
+		board[i] = new Tile*[BOARD_SIZE];
+		for (int j = 0; j < BOARD_SIZE; ++j)
+		{
+			board[i][j] = nullptr;
+		}
+	}
+	cout << "Let's Play!" << endl;
 	runGame();
 }
 
@@ -71,8 +84,8 @@ bool GameEngine::loadGame()
 	bool valid = true;
 	int totalTileCount = 0;
 	
-	std::cout << "Enter the filename from which load a game" << std::endl;
-	std::cin >> input;
+	cout << "\nEnter the filename from which load a game\n> ";
+	getline(file, input);
 	file.open(input);
 
 	//Check if file exists
@@ -211,7 +224,7 @@ bool GameEngine::loadGame()
 	else valid = false;
 	if (valid)
 	{
-		std::cout << "Qwirkle game successfully loaded" << std::endl;
+		cout << "\nQwirkle game successfully loaded" << endl;
 		runGame();
 
 	}
@@ -223,6 +236,7 @@ void GameEngine::runGame()
 	while (!exitGame)
 	{
 		displayGameState();
+		getInput();
 	}
 }
 
@@ -231,7 +245,7 @@ void GameEngine::getInput()
 	bool valid = false;
 	while (!valid)
 	{
-		std::cout << "> ";
+		cout << "> ";
 		std::string input;
 		std::getline(std::cin, input);
 
@@ -280,7 +294,7 @@ void GameEngine::getInput()
 			}
 		}
 
-		if (!valid) std::cout << "Invalid input" << std::endl;
+		if (!valid) cout << "Invalid input" << endl;
 	}
 }
 
@@ -289,14 +303,12 @@ std::string GameEngine::boardToString()
 	std::string output = "   ";
 
 	Tile* boardPiece = nullptr;
-
 	for (int header = 0; header < BOARD_SIZE; header++)
 	{
 		output += header + " ";
 	}
 
 	output += "\n  -";
-
 	for (int dash = 0; dash < BOARD_SIZE; dash++)
 	{
 		output += "---";
@@ -329,15 +341,15 @@ void GameEngine::displayGameState()
 {
 	Player* player = player1Turn ? player1 : player2;
 
-	std::cout << player->name << ", it's your turn" << std::endl;
+	cout << player->name << ", it's your turn" << endl;
 
-	std::cout << "Score for " << player1->name << ": " << player->score << std::endl;
-	std::cout << "Score for " << player2->name << ": " << player->score << std::endl;
+	cout << "Score for " << player1->name << ": " << player->score << endl;
+	cout << "Score for " << player2->name << ": " << player->score << endl;
 
-	std::cout << boardToString();
+	cout << boardToString();
 
-	std::cout << "\n\nYour hand is" << std::endl;
-	std::cout<<player->hand.display()<<std::endl;
+	cout << "\n\nYour hand is" << endl;
+	cout<<player->hand.display()<<endl;
 }
 
 bool GameEngine::placeTile(std::string tileLabel, std::string positionLabel)
@@ -503,7 +515,7 @@ bool GameEngine::placeTile(std::string tileLabel, std::string positionLabel)
 							score += 6;
 							qwirkle = true;
 						}
-						if (qwirkle) std::cout << "QWIRKLE!!!" << std::endl;
+						if (qwirkle) cout << "QWIRKLE!!!" << endl;
 
 						player->score += score;
 						player->hand.remove(tile);
@@ -545,15 +557,15 @@ bool GameEngine::saveGame(std::string fileName)
 	Player* player = player1Turn ? player1 : player2;
 	std::ofstream outFile(fileName);
 	outFile.open(fileName, std::ofstream::app);
-	outFile << player1->name << std::endl;
-	outFile << player1->score << std::endl;
-	outFile << player1->hand.display() << std::endl;
-	outFile << player2->name << std::endl;
-	outFile << player2->score << std::endl;
-	outFile << player2->hand.display() << std::endl;
-	outFile << boardToString() << std::endl;
-	outFile << tileBag.display() << std::endl;
-	outFile << player->name << std::endl;
+	outFile << player1->name << endl;
+	outFile << player1->score << endl;
+	outFile << player1->hand.display() << endl;
+	outFile << player2->name << endl;
+	outFile << player2->score << endl;
+	outFile << player2->hand.display() << endl;
+	outFile << boardToString() << endl;
+	outFile << tileBag.display() << endl;
+	outFile << player->name << endl;
 	outFile.close();
 	return true;
 }

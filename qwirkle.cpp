@@ -22,7 +22,7 @@ void show_student_info()
 int main(void) 
 {
 	std::cout << "Welcome to Qwirkle!" << std::endl;
-	std::cout << "-------------------\n" << std::endl;
+	std::cout << "-------------------" << std::endl;
 
 	bool exit = false;
 	while (!exit)
@@ -51,7 +51,7 @@ int main(void)
 				GameEngine engine;
 				// Exits if the load was successful, returns to menu if it wasn't
 				if (engine.loadGame()) exit = true;
-				else std::cout << "Invalid file name, try again" << std::endl;
+				else std::cout << "\nInvalid file name, try again" << std::endl;
 				valid_input = true;
 			}
 			else if (input[0] == '3')
@@ -67,7 +67,7 @@ int main(void)
 			else std::cout << "Invalid input" << std::endl;
 		}
 	}
-	std::cout << "Goodbye" << std::endl;
+	std::cout << "\nGoodbye" << std::endl;
 
 	return EXIT_SUCCESS;
 }

@@ -85,7 +85,8 @@ bool GameEngine::loadGame()
 	int totalTileCount = 0;
 	
 	cout << "\nEnter the filename from which load a game\n> ";
-	getline(file, input);
+
+	getline(std::cin, input);
 	file.open(input);
 
 	//Check if file exists
@@ -98,7 +99,7 @@ bool GameEngine::loadGame()
 		{
 			Player* player;
 			getline(file, input);
-
+			
 			if (!file.eof() && std::regex_search(input, m, r))
 			{
 				player = new Player(input);
@@ -148,13 +149,21 @@ bool GameEngine::loadGame()
 				}
 			}
 			getline(file, input);
+
+			/*Just for testing
+			if (input != "   0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25")
+			{
+				cout << input << "\n   0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25" << "\nNot the same\n" << valid;
+			}
+			*/
+
 			if (!file.eof() && input == "   0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25")
 			{
 				getline(file, input);
 				if (file.eof() || input != "  -------------------------------------------------------------------------------") valid = false;
 			}
 			else valid = false;
-
+			
 			if (valid)
 			{
 				std::string rowLabel = "A |";
@@ -163,9 +172,7 @@ bool GameEngine::loadGame()
 				for (int i = 0; i < BOARD_SIZE && valid; i++)
 				{
 					getline(file, input);
-					
 					if (file.eof() || input.substr(0, 3) != rowLabel || input.size() > (3+(BOARD_SIZE*3))) valid = false;
-
 					
 					//Check all tiles in board are valid
 					for (unsigned int j = 3; j < input.size() && valid; j += 3)

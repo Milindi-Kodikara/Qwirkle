@@ -441,7 +441,7 @@ bool GameEngine::placeTile(std::string tileLabel, std::string positionLabel)
 								connected[i] = true;
 								if (i < 2)
 								{
-									// Sets the similarity type for the current diemsion
+									// Sets the similarity type for the current dimension
 									(i == 0 ? verColourSimilarity : horColourSimilarity)
 										= tile->colour == currTile->colour;
 								}
@@ -491,6 +491,8 @@ bool GameEngine::placeTile(std::string tileLabel, std::string positionLabel)
 							bool colorSimilarity =
 								(vertical ? verColourSimilarity : horColourSimilarity);
 							
+							cout << colorSimilarity << endl;
+
 							Position currPosition = *position + offsets[i];
 							Tile* currTile;
 							bool empty = false;

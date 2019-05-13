@@ -1,4 +1,5 @@
 #include "GameEngine.h"
+#include "getline.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -9,13 +10,14 @@
 
 using std::cout;
 using std::endl;
+using std::string;
 
 void GameEngine::newGame()
 {
 	player1Turn = true;
 	firstTile = true;
-	std::string player1Name;
-	std::string player2Name;
+	string player1Name;
+	string player2Name;
 	//regex to ensure player name is only uppercase alphabets
 	std::regex r("[a-zA-Z]+");
 	std::smatch m;
@@ -25,14 +27,14 @@ void GameEngine::newGame()
 	while (!std::regex_search(player1Name, m, r))
 	{
 		cout << "Enter a name for player 1 (no numbers or symbols)" << endl;
-		std::getline(std::cin, player1Name);
+		getline(std::cin, player1Name);
 	}
 	player1 = new Player(player1Name);
 
 	while (!std::regex_search(player2Name, m, r))
 	{
 		cout << "Enter a name for player 2 (no numbers or symbols)" << endl;
-		std::getline(std::cin, player2Name);
+		getline(std::cin, player2Name);
 	}
 	player2 = new Player(player2Name);
 
@@ -87,7 +89,7 @@ void GameEngine::newGame()
 bool GameEngine::loadGame()
 {
 	std::ifstream file;
-	std::string input;
+	string input;
 	bool valid = true;
 	int totalTileCount = 0;
 
@@ -106,7 +108,6 @@ bool GameEngine::loadGame()
 		{
 			Player* player = nullptr;
 			getline(file, input);
-			input.pop_back();
 			if (!file.eof() && std::regex_search(input, m, r))
 			{
 				player = new Player(input);
@@ -118,7 +119,7 @@ bool GameEngine::loadGame()
 				std::istringstream iss(input);
 				int score;
 				iss >> score;
-				if (!file.eof() && iss.good()) player->score = score;
+				if (!file.eof() && !iss.bad()) player->score = score;
 				else valid = false;
 			}
 			if (valid)
@@ -161,25 +162,19 @@ bool GameEngine::loadGame()
 				}
 			}
 			getline(file, input);
-			input.pop_back();
 
 			if (!file.eof() && input == "   0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25")
 			{
 				getline(file, input);
-				input.pop_back();
 				if (file.eof() || input != "  -------------------------------------------------------------------------------") valid = false;
 			}
 			else valid = false;
 			if (valid)
 			{
-				std::string rowLabel = "A |";
-
-				
-
+				string rowLabel = "A |";
 				for (int i = 0; i < BOARD_SIZE && valid; i++)
 				{
 					getline(file, input);
-					input.pop_back();
 					if (file.eof() || input.substr(0, 3) != rowLabel || input.size() > (3 + (BOARD_SIZE * 3))) valid = false;
 					//Check all tiles in board are valid
 					for (unsigned int j = 3; j < input.size() && valid; j += 3)
@@ -204,7 +199,6 @@ bool GameEngine::loadGame()
 		if (valid)
 		{
 			getline(file, input);
-			input.pop_back();
 			if (!file.eof())
 			{
 				for (unsigned int i = 0; i < input.size() && valid; i += 3)
@@ -266,8 +260,8 @@ void GameEngine::getInput()
 	while (!valid)
 	{
 		cout << "> ";
-		std::string input;
-		std::getline(std::cin, input);
+		string input;
+		getline(std::cin, input);
 
 		// Causes the game to exit if eof is encountered
 		if (std::cin.eof())
@@ -278,9 +272,9 @@ void GameEngine::getInput()
 
 		if (input.size() != 0)
 		{
-			std::vector<std::string> commands;
+			std::vector<string> commands;
 			std::istringstream iss(input);
-			std::string word;
+			string word;
 
 			// Splits the input line insto individual words
 			// and puts them into a vector
@@ -314,11 +308,11 @@ void GameEngine::getInput()
 			}
 		}
 
-		if (!valid) cout << "Invalid input" << endl;
+		if (!valid) cout << "\nInvalid input" << endl;
 	}
 }
 
-std::string GameEngine::boardToString()
+string GameEngine::boardToString()
 {
 	std::ostringstream output;
 	output << "   ";
@@ -361,7 +355,7 @@ void GameEngine::displayGameState()
 {
 	Player* player = player1Turn ? player1 : player2;
 
-	cout << player->name << ", it's your turn" << endl;
+	cout << "\n" << player->name << ", it's your turn" << endl;
 
 	cout << "Score for " << player1->name << ": " << player1->score << endl;
 	cout << "Score for " << player2->name << ": " << player2->score << endl;
@@ -372,7 +366,7 @@ void GameEngine::displayGameState()
 	cout<<player->hand.display()<<endl;
 }
 
-bool GameEngine::placeTile(std::string tileLabel, std::string positionLabel)
+bool GameEngine::placeTile(string tileLabel, string positionLabel)
 {
 	bool success = false;
    	Player* player = player1Turn ? player1 : player2;
@@ -495,8 +489,6 @@ bool GameEngine::placeTile(std::string tileLabel, std::string positionLabel)
 							bool colorSimilarity =
 								(vertical ? verColourSimilarity : horColourSimilarity);
 							
-							cout << colorSimilarity << endl;
-
 							Position currPosition = *position + offsets[i];
 							Tile* currTile;
 							bool empty = false;
@@ -572,7 +564,7 @@ bool GameEngine::placeTile(std::string tileLabel, std::string positionLabel)
 	return success;
 }
 
-bool GameEngine::replaceTile(std::string tileLabel)
+bool GameEngine::replaceTile(string tileLabel)
 {
     Player* player = player1Turn ? player1 : player2;
     Tile* tile = player->hand.find(tileLabel);
@@ -587,7 +579,7 @@ bool GameEngine::replaceTile(std::string tileLabel)
     return replaced;
 }
 
-bool GameEngine::saveGame(std::string fileName)
+bool GameEngine::saveGame(string fileName)
 {
 	Player* player = player1Turn ? player1 : player2;
 	std::ofstream outFile(fileName);

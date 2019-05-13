@@ -89,6 +89,7 @@ private:
     Player* player2;
 
     bool player1Turn;
+	bool firstTile;
 
 	bool exitGame;
 };

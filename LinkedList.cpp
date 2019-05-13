@@ -51,19 +51,19 @@ Tile* LinkedList::pop_front()
 Tile* LinkedList::find(std::string tileLabel)
 {
     Node* current = head;
-    Tile* tilePtr = nullptr;
+    Tile* tile = nullptr;
     bool found = false;
 
 	while (current != nullptr && !found)
 	{
-		current = current->next;
 		if (current->tile->label == tileLabel)
 		{
-			tilePtr = current->tile;
+			tile = current->tile;
 			found = true;
 		}
+		current = current->next;
 	}
-	return tilePtr;
+	return tile;
 }
 
 void LinkedList::remove(Tile* tile)

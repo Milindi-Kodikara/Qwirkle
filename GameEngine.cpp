@@ -12,7 +12,8 @@ using std::endl;
 
 void GameEngine::newGame()
 {
-	
+	player1Turn = true;
+	firstTile = true;
 	std::string player1Name;
 	std::string player2Name;
 	//regex to ensure player name is only uppercase alphabets
@@ -60,8 +61,14 @@ void GameEngine::newGame()
 		tileBag.add_back(temp.removeAt(distr(eng)));
 	}
 	//distribute six tiles to each player
-	player1->hand.add_back(tileBag.pop_front());
-	player2->hand.add_back(tileBag.pop_front());
+	for (int i = 0; i < 6; ++i)
+	{
+		player1->hand.add_back(tileBag.pop_front());
+	}
+	for (int i = 0; i < 6; ++i)
+	{
+		player2->hand.add_back(tileBag.pop_front());
+	}
 
 	// Creates the empty board
 	board = new Tile**[BOARD_SIZE];
@@ -183,8 +190,9 @@ bool GameEngine::loadGame()
 							if (tile == nullptr) valid = false;
 							else
 							{
-								++totalTileCount;
+								firstTile = false;
 								board[j - 3][i] = tile;
+								++totalTileCount;
 							}
 						}
 					}
@@ -204,8 +212,8 @@ bool GameEngine::loadGame()
 					if (tile == nullptr) valid = false;
 					else 
 					{
-						++totalTileCount;
 						tileBag.add_back(tile);
+						++totalTileCount;
 					}
 				}
 				//Check if total number of tiles found in save file total to 72
@@ -244,6 +252,7 @@ void GameEngine::runGame()
 	{
 		displayGameState();
 		getInput();
+		player1Turn = !player1Turn;
 	}
 }
 
@@ -266,12 +275,12 @@ void GameEngine::getInput()
 		if (input.size() != 0)
 		{
 			std::vector<std::string> commands;
-			std::istringstream is(input);
+			std::istringstream iss(input);
 			std::string word;
 
 			// Splits the input line insto individual words
 			// and puts them into a vector
-			while (is >> word) commands.push_back(word);
+			while (iss >> word) commands.push_back(word);
 
 			// Checks whether the correct number of words was inputted
 			if (commands.size() == 1)
@@ -307,41 +316,41 @@ void GameEngine::getInput()
 
 std::string GameEngine::boardToString()
 {
-	std::string output = "   ";
+	std::ostringstream output;
+	output << "   ";
 
-	Tile* boardPiece = nullptr;
+	Tile* tile = nullptr;
 	for (int header = 0; header < BOARD_SIZE; header++)
 	{
-		output += header + " ";
+		output << header << " ";
+		if (header < 10) output << " ";
 	}
 
-	output += "\n  -";
+	output << "\n  -";
 	for (int dash = 0; dash < BOARD_SIZE; dash++)
 	{
-		output += "---";
+		output << "---";
 	}
 
 	for (int y = 0; y < BOARD_SIZE; y++)
 	{
 		char ch = 'A' + y;
-		output += "\n";
-		output += ch;
-		output += " |";
+		output << "\n" << ch << " |";
 
 		for (int x = 0; x < BOARD_SIZE; x++)
 		{
-			boardPiece = board[x][y];
-			if (boardPiece == nullptr) {
-				output += "  |";
+			tile = board[x][y];
+			if (tile == nullptr) {
+				output << "  |";
 			}
 			else
 			{
-				output += boardPiece->label + "|";
+				output << tile->label << "|";
 			}
 		}
 	}
 
-	return output;
+	return output.str();
 }
 
 void GameEngine::displayGameState()
@@ -350,8 +359,8 @@ void GameEngine::displayGameState()
 
 	cout << player->name << ", it's your turn" << endl;
 
-	cout << "Score for " << player1->name << ": " << player->score << endl;
-	cout << "Score for " << player2->name << ": " << player->score << endl;
+	cout << "Score for " << player1->name << ": " << player1->score << endl;
+	cout << "Score for " << player2->name << ": " << player2->score << endl;
 
 	cout << boardToString();
 
@@ -365,17 +374,27 @@ bool GameEngine::placeTile(std::string tileLabel, std::string positionLabel)
    	Player* player = player1Turn ? player1 : player2;
 	Position* position;
 	Tile* tile = player->hand.find(tileLabel);
-
 	// Tile found in player's hand
 	if (tile != nullptr)
 	{
 		position = Position::labelToPosition(positionLabel);
-
 		// Position is within board bounds
 		if(position != nullptr)
 		{
-			// Position on the board is empty
-			if(board[position->x][position->y] == nullptr)
+			if (firstTile)
+			{
+				++player->score;
+				player->hand.remove(tile);
+				board[position->x][position->y] = tile;
+				Tile* newTile = tileBag.pop_front();
+				if (newTile != nullptr)
+				{
+					player->hand.add_back(newTile);
+				}
+				firstTile = false;
+				success = true;
+			}
+			else if(board[position->x][position->y] == nullptr)
 			{
 				// Indicates whether the surrounding tiles allow the placement
 				// of the supplied tile
@@ -461,24 +480,26 @@ bool GameEngine::placeTile(std::string tileLabel, std::string positionLabel)
 					{
 						if (connected[i])
 						{
+							// Indicates the current dimension
+							bool vertical = i % 2 == 0;
+
+							// The type set for the current dimension
+							std::unordered_set<int>& typeSet =
+								(vertical ? verTypeSet : horTypeSet);
+
+							// Indicates the current dimension's similarity type
+							bool colorSimilarity =
+								(vertical ? verColourSimilarity : horColourSimilarity);
+							
 							Position currPosition = *position + offsets[i];
+							Tile* currTile;
+							bool empty = false;
 							while (valid && currPosition.x < BOARD_SIZE && currPosition.x >= 0
-								&& currPosition.y < BOARD_SIZE && currPosition.y >= 0)
+								&& currPosition.y < BOARD_SIZE && currPosition.y >= 0 && !empty)
 							{
-								Tile* currTile = board[currPosition.x][currPosition.y];
+								currTile = board[currPosition.x][currPosition.y];
 								if (currTile != nullptr)
 								{
-									// Indicates the current dimension
-									bool vertical = i % 2 == 0;
-
-									// The type set for the current dimension
-									std::unordered_set<int>& typeSet =
-										(vertical ? verTypeSet : horTypeSet);
-
-									// Indicates the current dimension's similarity type
-									bool colorSimilarity =
-										(vertical ? verColourSimilarity : horColourSimilarity);
-
 									// Used to check for duplicate tiles in the segment
 									int signature =
 										(colorSimilarity ? currTile->colour : currTile->shape);
@@ -494,9 +515,9 @@ bool GameEngine::placeTile(std::string tileLabel, std::string positionLabel)
 										typeSet.insert(signature);
 										++score;
 									}
-
 									currPosition += offsets[i];
 								}
+								else empty = true;
 							}
 						}
 					}
@@ -533,14 +554,15 @@ bool GameEngine::placeTile(std::string tileLabel, std::string positionLabel)
 						{
 							player->hand.add_back(newTile);
 						}
+						
 						success = true;
 					}
 				}
 			}
+			delete position;
 		}
 	}
 
-	//delete position;
 	return success;
 }
 

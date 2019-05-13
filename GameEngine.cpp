@@ -90,7 +90,7 @@ bool GameEngine::loadGame()
 	std::string input;
 	bool valid = true;
 	int totalTileCount = 0;
-	
+
 	cout << "\nEnter the filename from which load a game\n> ";
 
 	getline(std::cin, input);
@@ -104,9 +104,9 @@ bool GameEngine::loadGame()
 		//Checks both player's information
 		for (int i = 0; i < 2 && valid; i++)
 		{
-			Player* player;
+			Player* player = nullptr;
 			getline(file, input);
-			
+			input.pop_back();
 			if (!file.eof() && std::regex_search(input, m, r))
 			{
 				player = new Player(input);
@@ -120,7 +120,7 @@ bool GameEngine::loadGame()
 				iss >> score;
 				if (!file.eof() && iss.good()) player->score = score;
 				else valid = false;
-			} 
+			}
 			if (valid)
 			{
 				getline(file, input);
@@ -141,7 +141,12 @@ bool GameEngine::loadGame()
 					}
 				}
 				else valid = false;
-			}		
+			}
+			if (i == 0)
+			{
+				player1 = player;
+			}
+			else player2 = player;
 		}
 		if (valid)
 		{
@@ -156,31 +161,26 @@ bool GameEngine::loadGame()
 				}
 			}
 			getline(file, input);
-
-			/*Just for testing
-			if (input != "   0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25")
-			{
-				cout << input << "\n   0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25" << "\nNot the same\n" << valid;
-			}
-			*/
+			input.pop_back();
 
 			if (!file.eof() && input == "   0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25")
 			{
 				getline(file, input);
+				input.pop_back();
 				if (file.eof() || input != "  -------------------------------------------------------------------------------") valid = false;
 			}
 			else valid = false;
-			
 			if (valid)
 			{
 				std::string rowLabel = "A |";
+
 				
 
 				for (int i = 0; i < BOARD_SIZE && valid; i++)
 				{
 					getline(file, input);
-					if (file.eof() || input.substr(0, 3) != rowLabel || input.size() > (3+(BOARD_SIZE*3))) valid = false;
-					
+					input.pop_back();
+					if (file.eof() || input.substr(0, 3) != rowLabel || input.size() > (3 + (BOARD_SIZE * 3))) valid = false;
 					//Check all tiles in board are valid
 					for (unsigned int j = 3; j < input.size() && valid; j += 3)
 					{
@@ -190,9 +190,8 @@ bool GameEngine::loadGame()
 							if (tile == nullptr) valid = false;
 							else
 							{
-								firstTile = false;
-								board[j - 3][i] = tile;
 								++totalTileCount;
+								board[(j/3)][i] = tile;
 							}
 						}
 					}
@@ -200,35 +199,40 @@ bool GameEngine::loadGame()
 					++rowLabel[0];
 				}
 			}
+			
 		}
 		if (valid)
 		{
 			getline(file, input);
+			input.pop_back();
 			if (!file.eof())
 			{
 				for (unsigned int i = 0; i < input.size() && valid; i += 3)
 				{
 					Tile* tile = Tile::stringToTile(input[i], input[i + 1]);
 					if (tile == nullptr) valid = false;
-					else 
+					else
 					{
-						tileBag.add_back(tile);
 						++totalTileCount;
+						tileBag.add_back(tile);
 					}
 				}
 				//Check if total number of tiles found in save file total to 72
 				if (totalTileCount != 72) valid = false;
-			} 
+			}
 			else valid = false;
 		}
 		if (valid)
 		{
 			getline(file, input);
-
 			//Checks if this is the eof rather than not eof
 			if (file.eof())
 			{
-				if (input == player1->name) player1Turn = true;
+				
+				if (input == player1->name)
+				{
+					player1Turn = true;
+				}
 				else if (input == player2->name) player1Turn = false;
 				else valid = false;
 			}

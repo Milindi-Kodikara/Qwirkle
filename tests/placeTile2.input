@@ -1,5 +1,7 @@
 2
-tests/test1.save
+tests/placeTile2.save
+place Y2 at G1
+place Y2 at H2
 place R4 at B3
 place R4 at B6
 place R4 at E6

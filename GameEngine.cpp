@@ -283,7 +283,11 @@ void GameEngine::getInput()
 			// Checks whether the correct number of words was inputted
 			if (commands.size() == 1)
 			{
-				if (commands[0] == "quit") exitGame = true;
+				if (commands[0] == "quit")
+				{
+					valid = true;
+					exitGame = true;
+				}
 			}
 			else if (commands.size() == 2)
 			{
@@ -572,9 +576,14 @@ bool GameEngine::replaceTile(string tileLabel)
 
     if (tile != nullptr)
     {
-        player->hand.remove(tile);
-        tileBag.add_back(tile);
-        replaced = true;
+		Tile* newTile = tileBag.pop_front();
+		if (newTile != nullptr)
+		{
+			player->hand.remove(tile);
+			tileBag.add_back(tile);
+			player->hand.add_back(newTile);
+			replaced = true;
+		}
     }
     return replaced;
 }

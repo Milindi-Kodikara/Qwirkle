@@ -82,6 +82,7 @@ void LinkedList::remove(Tile* tile)
 			}
 			else 
 			{
+				if (current == tail) tail = previous;
 				previous->next = current->next;
 				delete current;
 			}

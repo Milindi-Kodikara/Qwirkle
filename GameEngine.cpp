@@ -93,7 +93,7 @@ bool GameEngine::loadGame()
 	bool valid = true;
 	int totalTileCount = 0;
 
-	cout << "\nEnter the filename from which load a game\n> ";
+	cout << "\nEnter the filename from which to load a game\n> ";
 
 	getline(std::cin, input);
 	file.open(input);
@@ -186,7 +186,7 @@ bool GameEngine::loadGame()
 							else
 							{
 								++totalTileCount;
-								board[(j/3)][i] = tile;
+								board[((j - 3)/3)][i] = tile;
 							}
 						}
 					}
@@ -257,7 +257,7 @@ void GameEngine::runGame()
 void GameEngine::getInput()
 {
 	bool valid = false;
-	while (!valid)
+	while (!valid && !exitGame)
 	{
 		cout << "> ";
 		string input;
@@ -276,7 +276,7 @@ void GameEngine::getInput()
 			std::istringstream iss(input);
 			string word;
 
-			// Splits the input line insto individual words
+			// Splits the input line into individual words
 			// and puts them into a vector
 			while (iss >> word) commands.push_back(word);
 
@@ -437,21 +437,21 @@ bool GameEngine::placeTile(string tileLabel, string positionLabel)
 								(tile->shape == currTile->shape))
 							{
 								connected[i] = true;
-								if (i < 2)
+								// If there are two connected segments in the current dimension
+								if (i >= 2 && connected[i - 2])
 								{
-									// Sets the similarity type for the current dimension
-									(i == 0 ? verColourSimilarity : horColourSimilarity)
-										= tile->colour == currTile->colour;
+									// If the opposite tile has a different similarity type
+									if ((i == 2 ? verColourSimilarity : horColourSimilarity)
+										!= (tile->colour == currTile->colour))
+									{
+										valid = false;
+									}
 								}
 								else
 								{
-									// If the opposite tile is also connected
-									if (connected[i - 2])
-									{
-										// If the opposite tile has a different similarity type
-										if ((i == 2 ? verColourSimilarity : horColourSimilarity)
-											!= (tile->colour == currTile->colour)) valid = false;
-									}
+									// Sets the current dimension's similarity type
+									(i % 2 == 0 ? verColourSimilarity : horColourSimilarity)
+										= tile->colour == currTile->colour;
 								}
 							}
 							else
@@ -488,7 +488,7 @@ bool GameEngine::placeTile(string tileLabel, string positionLabel)
 							// Indicates the current dimension's similarity type
 							bool colorSimilarity =
 								(vertical ? verColourSimilarity : horColourSimilarity);
-							
+
 							Position currPosition = *position + offsets[i];
 							Tile* currTile;
 							bool empty = false;
@@ -500,7 +500,7 @@ bool GameEngine::placeTile(string tileLabel, string positionLabel)
 								{
 									// Used to check for duplicate tiles in the segment
 									int signature =
-										(colorSimilarity ? currTile->colour : currTile->shape);
+										(colorSimilarity ? currTile->shape : currTile->colour);
 
 									// If a tile is found that is already contained 
 									// within the segment
@@ -524,7 +524,7 @@ bool GameEngine::placeTile(string tileLabel, string positionLabel)
 					{
 						// If tile is part of a vertical and horizontal
 						// segment score is increased by 1
-						if (verTypeSet.size() > 0 && horTypeSet.size() > 0)
+						if (verTypeSet.size() > 1 && horTypeSet.size() > 1)
 						{
 							++score;
 						}

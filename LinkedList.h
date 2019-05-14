@@ -30,10 +30,12 @@ public:
 	//Output all Tiles inside linked list
 	std::string display();
 
+	bool isEmpty();
+
 private:
     Node* head;
     Node* tail;
-    int size;
+    bool empty;
 };
 
 struct InvalidPopException {};

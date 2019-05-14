@@ -91,7 +91,6 @@ bool GameEngine::loadGame()
 	std::ifstream file;
 	string input;
 	bool valid = true;
-	int totalTileCount = 0;
 
 	cout << "\nEnter the filename from which to load a game\n> ";
 
@@ -135,7 +134,6 @@ bool GameEngine::loadGame()
 						else
 						{
 							player->hand.add_back(tile);
-							++totalTileCount;
 							++tileCount;
 						}
 						if (tileCount > 6) valid = false;
@@ -183,11 +181,7 @@ bool GameEngine::loadGame()
 						{
 							Tile* tile = Tile::stringToTile(input[j], input[j + 1]);
 							if (tile == nullptr) valid = false;
-							else
-							{
-								++totalTileCount;
-								board[((j - 3)/3)][i] = tile;
-							}
+							else board[((j - 3) / 3)][i] = tile;
 						}
 					}
 					//Update row label to next letter
@@ -207,12 +201,9 @@ bool GameEngine::loadGame()
 					if (tile == nullptr) valid = false;
 					else
 					{
-						++totalTileCount;
 						tileBag.add_back(tile);
 					}
 				}
-				//Check if total number of tiles found in save file total to 72
-				if (totalTileCount != 72) valid = false;
 			}
 			else valid = false;
 		}
@@ -547,16 +538,35 @@ bool GameEngine::placeTile(string tileLabel, string positionLabel)
 						}
 						if (qwirkle) cout << "QWIRKLE!!!" << endl;
 
+						// Score updating and tile placement
 						player->score += score;
 						player->hand.remove(tile);
 						board[position->x][position->y] = tile;
 
+						// Tile replenishment
 						Tile* newTile = tileBag.pop_front();
 						if (newTile != nullptr)
 						{
 							player->hand.add_back(newTile);
 						}
-						
+
+						// Game over checking
+						if (player->hand.isEmpty())
+						{
+							cout << "\nGame Over" << endl;
+							cout << "Score for " << player1->name << ": " << player1->score << endl;
+							cout << "Score for " << player2->name << ": " << player2->score << endl;
+							if (player1->score > player2->score)
+							{
+								cout << "Player " << player1->name << " won!" << endl;
+							}
+							else if (player2->score > player1->score)
+							{
+								cout << "Player " << player2->name << " won!" << endl;
+							}
+							else cout << "Draw..." << endl;
+							exitGame = true;
+						}
 						success = true;
 					}
 				}
@@ -576,9 +586,9 @@ bool GameEngine::replaceTile(string tileLabel)
 
     if (tile != nullptr)
     {
-		Tile* newTile = tileBag.pop_front();
-		if (newTile != nullptr)
+		if (!tileBag.isEmpty())
 		{
+			Tile* newTile = tileBag.pop_front();
 			player->hand.remove(tile);
 			tileBag.add_back(tile);
 			player->hand.add_back(newTile);

@@ -5,7 +5,7 @@ LinkedList::LinkedList()
 {
 	head = nullptr;
 	tail = nullptr;
-	size = 0;
+	empty = true;
 }
 
 LinkedList::~LinkedList() 
@@ -27,6 +27,7 @@ void LinkedList::add_back(Tile* tile)
 	{
 		head = temp;
 		tail = temp;
+		empty = false;
 	}
 	else
 	{
@@ -44,6 +45,7 @@ Tile* LinkedList::pop_front()
 		tempTile = head->tile;
 		head = head->next;
 		delete tempNode;
+		if (head == nullptr) empty = true;
 	}
 	return tempTile;
 }
@@ -79,6 +81,7 @@ void LinkedList::remove(Tile* tile)
 			{
 				head = head->next;
 				delete current;
+				if (head == nullptr) empty = true;
 			}
 			else 
 			{
@@ -108,7 +111,11 @@ Tile* LinkedList::removeAt(int index)
     }
 
     tile = current->tile;
-    if (previous == nullptr) head = current->next;
+	if (previous == nullptr)
+	{
+		head = current->next;
+		if (head == nullptr) empty = true;
+	}
     else previous->next = current->next;
 
 	delete current;
@@ -129,4 +136,9 @@ std::string LinkedList::display()
 	output.pop_back();
 
 	return output;
+}
+
+bool LinkedList::isEmpty()
+{
+	return empty;
 }

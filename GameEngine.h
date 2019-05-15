@@ -104,7 +104,6 @@ private:
     LinkedList tileBag;
     Player* player1;
     Player* player2;
-	Player* AI;
 	Difficulty AIDifficulty;
 	std::uniform_real_distribution<> choiceDistributions[3];
 

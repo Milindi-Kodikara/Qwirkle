@@ -367,7 +367,7 @@ void GameEngine::displayGameState()
 void GameEngine::processAITurn()
 {
 	std::vector<Placement> validPlacements;
-	std::vector<Tile*> hand = AI->hand.toVector();
+	std::vector<Tile*> hand = player2->hand.toVector();
 
 	// Finds all valid placements
 	for (int x = 0; x < BOARD_SIZE; ++x)

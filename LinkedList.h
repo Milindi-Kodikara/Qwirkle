@@ -1,6 +1,7 @@
 #ifndef ASSIGN2_LINKEDLIST_H
 #define ASSIGN2_LINKEDLIST_H
 
+#include <vector>
 #include "Node.h"
 
 class LinkedList {
@@ -27,8 +28,10 @@ public:
 	// Removes a tile from given index
     Tile* removeAt(int index);
 
-	//Output all Tiles inside linked list
+	// Outputs all Tiles inside linked list
 	std::string display();
+ 
+	std::vector<Tile*> toVector();
 
 	bool isEmpty();
 

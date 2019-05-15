@@ -4,9 +4,9 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <algorithm>
 #include <unordered_set>
 #include <regex>
-#include <random>
 
 using std::cout;
 using std::endl;
@@ -240,7 +240,8 @@ void GameEngine::runGame()
 	while (!exitGame)
 	{
 		displayGameState();
-		getInput();
+		if (!player1Turn && versingAI) processAITurn();
+		else getInput();
 		player1Turn = !player1Turn;
 	}
 }
@@ -361,6 +362,195 @@ void GameEngine::displayGameState()
 	cout<<player->hand.display()<<endl;
 }
 
+void GameEngine::processAITurn()
+{
+	std::vector<Placement> validPlacements;
+	std::vector<Tile*> hand = AI->hand.toVector();
+
+	// Finds all valid placements
+	for (int x = 0; x < BOARD_SIZE; ++x)
+	{
+		for (int y = 0; y < BOARD_SIZE; ++y)
+		{
+			if (board[x][y] != nullptr)
+			{
+				for (Tile* tile : hand)
+				{
+					bool qwirkle = false;
+					int score = testPlacement(tile, new Position(x, y), qwirkle);
+					if (score > 0)
+					{
+						validPlacements.push_back(Placement(tile, x, y, score, qwirkle));
+					}
+				}
+			}
+		}
+	}
+
+	// Sorts placements in terms of score
+	sort(validPlacements.begin(), validPlacements.end(), Placement::compare);
+
+	// Randomely picks from validPlacements from a distribution based on the AIDifficulty
+}
+
+int GameEngine::testPlacement(Tile* tile, Position* position, bool& qwirkle)
+{
+	int score = 0;
+	if (board[position->x][position->y] == nullptr)
+	{
+		// Indicates whether the surrounding tiles allow the placement
+		// of the supplied tile
+		bool valid = true;
+		Position offsets[4];
+
+		// Translation up
+		offsets[0].x = 0;
+		offsets[0].y = -1;
+
+		// Translation right
+		offsets[1].x = 1;
+		offsets[1].y = 0;
+
+		// Translation down
+		offsets[2].x = 0;
+		offsets[2].y = 1;
+
+		// Translation left
+		offsets[3].x = -1;
+		offsets[3].y = 0;
+
+		// Indicates whether the corresponding offset tile is a valid connection
+		bool connected[4] = { false, false, false, false };
+
+		// Indicates each dimension's similarity type (colour or shape)
+		bool verColourSimilarity = false;
+		bool horColourSimilarity = false;
+
+		for (int i = 0; i < 4 && valid; ++i)
+		{
+			Position offsetPosition = *position + offsets[i];
+			if (offsetPosition.x < BOARD_SIZE && offsetPosition.x >= 0
+				&& offsetPosition.y < BOARD_SIZE && offsetPosition.y >= 0)
+			{
+				Tile* currTile = board[offsetPosition.x][offsetPosition.y];
+
+				if (currTile != nullptr)
+				{
+					// Checks whether the two tiles only have one type of similarity
+					if ((tile->colour == currTile->colour) !=
+						(tile->shape == currTile->shape))
+					{
+						connected[i] = true;
+						// If there are two connected segments in the current dimension
+						if (i >= 2 && connected[i - 2])
+						{
+							// If the opposite tile has a different similarity type
+							if ((i == 2 ? verColourSimilarity : horColourSimilarity)
+								!= (tile->colour == currTile->colour))
+							{
+								valid = false;
+							}
+						}
+						else
+						{
+							// Sets the current dimension's similarity type
+							(i % 2 == 0 ? verColourSimilarity : horColourSimilarity)
+								= tile->colour == currTile->colour;
+						}
+					}
+					else
+					{
+						valid = false;
+					}
+				}
+			}
+		}
+
+		if (valid && (connected[0] || connected[1] || connected[2] || connected[3]))
+		{
+			// Indicates which elements of the similarity type have been found
+			// in each dimension
+			std::unordered_set<int> verTypeSet;
+			std::unordered_set<int> horTypeSet;
+			verTypeSet.insert(verColourSimilarity ? tile->shape : tile->colour);
+			horTypeSet.insert(horColourSimilarity ? tile->shape : tile->colour);
+
+			for (int i = 0; i < 4 && valid; ++i)
+			{
+				if (connected[i])
+				{
+					// Indicates the current dimension
+					bool vertical = i % 2 == 0;
+
+					// The type set for the current dimension
+					std::unordered_set<int>& typeSet =
+						(vertical ? verTypeSet : horTypeSet);
+
+					// Indicates the current dimension's similarity type
+					bool colorSimilarity =
+						(vertical ? verColourSimilarity : horColourSimilarity);
+
+					Position currPosition = *position + offsets[i];
+					Tile* currTile;
+					bool empty = false;
+					while (valid && currPosition.x < BOARD_SIZE && currPosition.x >= 0
+						&& currPosition.y < BOARD_SIZE && currPosition.y >= 0 && !empty)
+					{
+						currTile = board[currPosition.x][currPosition.y];
+						if (currTile != nullptr)
+						{
+							// Used to check for duplicate tiles in the segment
+							int signature =
+								(colorSimilarity ? currTile->shape : currTile->colour);
+
+							// If a tile is found that is already contained 
+							// within the segment
+							if (typeSet.count(signature) != 0)
+							{
+								score = 0;
+								valid = false;
+							}
+							else
+							{
+								typeSet.insert(signature);
+								++score;
+							}
+							currPosition += offsets[i];
+						}
+						else empty = true;
+					}
+				}
+			}
+
+			if (valid)
+			{
+				// Adds 1 point for the tile itself
+				++score;
+				
+				// If tile is part of a vertical and horizontal
+				// segment score is increased by 1
+				if (verTypeSet.size() > 1 && horTypeSet.size() > 1)
+				{
+					++score;
+				}
+
+				// Qwirkle checking
+				if (verTypeSet.size() == 6)
+				{
+					score += 6;
+					qwirkle = true;
+				}
+				if (horTypeSet.size() == 6)
+				{
+					score += 6;
+					qwirkle = true;
+				}
+			}
+		}
+	}
+	return score;
+}
+
 bool GameEngine::placeTile(string tileLabel, string positionLabel)
 {
 	bool success = false;
@@ -387,194 +577,51 @@ bool GameEngine::placeTile(string tileLabel, string positionLabel)
 				firstTile = false;
 				success = true;
 			}
-			else if(board[position->x][position->y] == nullptr)
+			else
 			{
-				// Indicates whether the surrounding tiles allow the placement
-				// of the supplied tile
-				bool valid = true;
-				Position offsets[4];
+				bool qwirkle = false;
+				int score = testPlacement(tile, position, qwirkle);
 
-				// Translation up
-				offsets[0].x = 0;
-				offsets[0].y = -1;
-
-				// Translation right
-				offsets[1].x = 1;
-				offsets[1].y = 0;
-
-				// Translation down
-				offsets[2].x = 0;
-				offsets[2].y = 1;
-
-				// Translation left
-				offsets[3].x = -1;
-				offsets[3].y = 0;
-
-				// Indicates whether the corresponding offset tile is a valid connection
-				bool connected[4] = { false, false, false, false };
-
-				// Indicates each dimension's similarity type (colour or shape)
-				bool verColourSimilarity = false;
-				bool horColourSimilarity = false;
-
-				for (int i = 0; i < 4 && valid; ++i)
+				// If placement was successful
+				if (score > 0)
 				{
-					Position offsetPosition = *position + offsets[i];
-					if (offsetPosition.x < BOARD_SIZE && offsetPosition.x >= 0
-						&& offsetPosition.y < BOARD_SIZE && offsetPosition.y >= 0)
-					{
-						Tile* currTile = board[offsetPosition.x][offsetPosition.y];
+					if (qwirkle) cout << "QWIRKLE!!!" << endl;
 
-						if (currTile != nullptr)
-						{
-							// Checks whether the two tiles only have one type of similarity
-							if ((tile->colour == currTile->colour) !=
-								(tile->shape == currTile->shape))
-							{
-								connected[i] = true;
-								// If there are two connected segments in the current dimension
-								if (i >= 2 && connected[i - 2])
-								{
-									// If the opposite tile has a different similarity type
-									if ((i == 2 ? verColourSimilarity : horColourSimilarity)
-										!= (tile->colour == currTile->colour))
-									{
-										valid = false;
-									}
-								}
-								else
-								{
-									// Sets the current dimension's similarity type
-									(i % 2 == 0 ? verColourSimilarity : horColourSimilarity)
-										= tile->colour == currTile->colour;
-								}
-							}
-							else
-							{
-								valid = false;
-							}
-						}
+					// Score updating and tile placement
+					player->score += score;
+					player->hand.remove(tile);
+					board[position->x][position->y] = tile;
+
+					// Tile replenishment
+					Tile* newTile = tileBag.pop_front();
+					if (newTile != nullptr)
+					{
+						player->hand.add_back(newTile);
 					}
+
+					// Game over checking
+					if (player->hand.isEmpty())
+					{
+						cout << "\nGame Over" << endl;
+						cout << "Score for " << player1->name << ": " << player1->score << endl;
+						cout << "Score for " << player2->name << ": " << player2->score << endl;
+						if (player1->score > player2->score)
+						{
+							cout << "Player " << player1->name << " won!" << endl;
+						}
+						else if (player2->score > player1->score)
+						{
+							cout << "Player " << player2->name << " won!" << endl;
+						}
+						else cout << "Draw..." << endl;
+						exitGame = true;
+					}
+					success = true;
 				}
-
-				if (valid && (connected[0] || connected[1] || connected[2] || connected[3]))
-				{
-					// Score starts with 1 for the tile itself
-					int score = 1;
-
-					// Indicates which elements of the similarity type have been found
-					// in each dimension
-					std::unordered_set<int> verTypeSet;
-					std::unordered_set<int> horTypeSet;
-					verTypeSet.insert(verColourSimilarity ? tile->shape : tile->colour);
-					horTypeSet.insert(horColourSimilarity ? tile->shape : tile->colour);
-
-					for (int i = 0; i < 4 && valid; ++i)
-					{
-						if (connected[i])
-						{
-							// Indicates the current dimension
-							bool vertical = i % 2 == 0;
-
-							// The type set for the current dimension
-							std::unordered_set<int>& typeSet =
-								(vertical ? verTypeSet : horTypeSet);
-
-							// Indicates the current dimension's similarity type
-							bool colorSimilarity =
-								(vertical ? verColourSimilarity : horColourSimilarity);
-
-							Position currPosition = *position + offsets[i];
-							Tile* currTile;
-							bool empty = false;
-							while (valid && currPosition.x < BOARD_SIZE && currPosition.x >= 0
-								&& currPosition.y < BOARD_SIZE && currPosition.y >= 0 && !empty)
-							{
-								currTile = board[currPosition.x][currPosition.y];
-								if (currTile != nullptr)
-								{
-									// Used to check for duplicate tiles in the segment
-									int signature =
-										(colorSimilarity ? currTile->shape : currTile->colour);
-
-									// If a tile is found that is already contained 
-									// within the segment
-									if (typeSet.count(signature) != 0)
-									{
-										valid = false;
-									}
-									else
-									{
-										typeSet.insert(signature);
-										++score;
-									}
-									currPosition += offsets[i];
-								}
-								else empty = true;
-							}
-						}
-					}
-
-					if (valid)
-					{
-						// If tile is part of a vertical and horizontal
-						// segment score is increased by 1
-						if (verTypeSet.size() > 1 && horTypeSet.size() > 1)
-						{
-							++score;
-						}
-
-						// Qwirkle checking
-						bool qwirkle = false;
-						if (verTypeSet.size() == 6)
-						{
-							score += 6;
-							qwirkle = true;
-						}
-						if (horTypeSet.size() == 6)
-						{
-							score += 6;
-							qwirkle = true;
-						}
-						if (qwirkle) cout << "QWIRKLE!!!" << endl;
-
-						// Score updating and tile placement
-						player->score += score;
-						player->hand.remove(tile);
-						board[position->x][position->y] = tile;
-
-						// Tile replenishment
-						Tile* newTile = tileBag.pop_front();
-						if (newTile != nullptr)
-						{
-							player->hand.add_back(newTile);
-						}
-
-						// Game over checking
-						if (player->hand.isEmpty())
-						{
-							cout << "\nGame Over" << endl;
-							cout << "Score for " << player1->name << ": " << player1->score << endl;
-							cout << "Score for " << player2->name << ": " << player2->score << endl;
-							if (player1->score > player2->score)
-							{
-								cout << "Player " << player1->name << " won!" << endl;
-							}
-							else if (player2->score > player1->score)
-							{
-								cout << "Player " << player2->name << " won!" << endl;
-							}
-							else cout << "Draw..." << endl;
-							exitGame = true;
-						}
-						success = true;
-					}
-				}
+				delete position;
 			}
-			delete position;
 		}
 	}
-
 	return success;
 }
 

@@ -2,13 +2,13 @@
 #define ASSIGN2_GAMEENGINE_H
 
 #include <string>
+#include <random>
 #include "Tile.h"
 #include "LinkedList.h"
 #include "Position.h"
 #include "Player.h"
 
 #define BOARD_SIZE  26
-
 
 class GameEngine
 {
@@ -55,6 +55,17 @@ public:
      */
     void displayGameState();
 
+	/*
+	 * Completes the AI's turn
+	 */
+	void processAITurn()
+
+	/*
+	 * Tests if the specified tile can be placed at the specified postition,
+	 * return the resulting score if it can and returning 0 if it can't
+	 */
+	int testPlacement(Tile* tile, Position* position, bool& qwirkle);
+
     /*
      * Attempts to remove the specified tile from the current player's 
 	 * hand and place it on the board in the specified postion, calculating
@@ -81,17 +92,44 @@ public:
     bool saveGame(std::string fileName);
 
 private:
+	enum Difficulty
+	{
+		EASY,
+		MEDIUM,
+		HARD
+	};
 
     //2D array of tiles as board 26*26
     Tile*** board;
     LinkedList tileBag;
     Player* player1;
     Player* player2;
+	Player* AI;
+	Difficulty AIDifficulty;
+	std::uniform_real_distribution<> choiceDistributions[];
 
     bool player1Turn;
 	bool firstTile;
+	bool versingAI;
 
 	bool exitGame;
+};
+
+struct Placement
+{
+	Placement(Tile* tile, int x, int y, int score, bool qwirkle)
+		: tile{ tile }, x{ x }, y{ y }, score{ score }, qwirkle{ qwirkle }{}
+	
+	bool compare(Placement& p1, Placement& p2)
+	{
+		return p1.score < p2.score;
+	}
+
+	Tile* tile;
+	int x;
+	int y;
+	int score;
+	bool qwirkle;
 };
 
 #endif // ASSIGN2_GAMEENGINE_H

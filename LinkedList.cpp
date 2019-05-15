@@ -138,6 +138,17 @@ std::string LinkedList::display()
 	return output;
 }
 
+std::vector<Tile*> LinkedList::toVector()
+{
+	std::vector<Tile*> temp;
+	Node* current = head;
+	while (current != nullptr)
+	{
+		temp.push_back(current->tile);
+	}
+	return temp;
+}
+
 bool LinkedList::isEmpty()
 {
 	return empty;

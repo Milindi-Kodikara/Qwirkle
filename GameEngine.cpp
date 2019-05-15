@@ -14,6 +14,7 @@ using std::string;
 
 void GameEngine::newGame()
 {
+    exitGame = false;
 	player1Turn = true;
 	firstTile = true;
 	string player1Name;
@@ -88,6 +89,7 @@ void GameEngine::newGame()
 
 bool GameEngine::loadGame()
 {
+    exitGame = false;
 	std::ifstream file;
 	string input;
 	bool valid = true;
@@ -589,11 +591,15 @@ bool GameEngine::replaceTile(string tileLabel)
 		if (!tileBag.isEmpty())
 		{
 			Tile* newTile = tileBag.pop_front();
-			player->hand.remove(tile);
+            player->hand.remove(tile);
 			tileBag.add_back(tile);
 			player->hand.add_back(newTile);
 			replaced = true;
 		}
+		else
+        {
+		    cout << "Tile Bag is empty!" << endl;
+        }
     }
     return replaced;
 }

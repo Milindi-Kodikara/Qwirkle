@@ -80,17 +80,15 @@ void LinkedList::remove(Tile* tile)
 			if (current == head)
 			{
                 head = head->next;
-				delete current;
 				if (head == nullptr) empty = true;
-				found = true;
 			}
 			else
 			{
                 if (current == tail) tail = previous;
 				previous->next = current->next;
-				delete current;
-				found = true;
 			}
+			delete current;
+			found = true;
 		}
 		else 
 		{

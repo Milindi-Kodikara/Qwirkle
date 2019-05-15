@@ -58,7 +58,7 @@ public:
 	/*
 	 * Completes the AI's turn
 	 */
-	void processAITurn()
+	void processAITurn();
 
 	/*
 	 * Tests if the specified tile can be placed at the specified postition,
@@ -106,7 +106,7 @@ private:
     Player* player2;
 	Player* AI;
 	Difficulty AIDifficulty;
-	std::uniform_real_distribution<> choiceDistributions[];
+	std::uniform_real_distribution<> choiceDistributions[3];
 
     bool player1Turn;
 	bool firstTile;
@@ -120,7 +120,7 @@ struct Placement
 	Placement(Tile* tile, int x, int y, int score, bool qwirkle)
 		: tile{ tile }, x{ x }, y{ y }, score{ score }, qwirkle{ qwirkle }{}
 	
-	bool compare(Placement& p1, Placement& p2)
+	static bool compare(Placement& p1, Placement& p2)
 	{
 		return p1.score < p2.score;
 	}

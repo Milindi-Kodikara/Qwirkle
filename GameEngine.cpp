@@ -143,6 +143,32 @@ bool GameEngine::loadGame()
 				}
 				else valid = false;
 			}
+			// Checks if player 2 is an AI
+			if (valid && i == 1)
+			{
+				getline(file, input);
+				versingAI = false;
+				if (!file.eof())
+				{
+					if (input == "EASY")
+					{
+						versingAI = true;
+						AIDifficulty = EASY;
+					}
+					if (input == "MEDIUM")
+					{
+						versingAI = true;
+						AIDifficulty = MEDIUM;
+					}
+					if (input == "HARD")
+					{
+						versingAI = true;
+						AIDifficulty = HARD;
+					}
+					else if (input != "HUMAN") valid = false;
+				}
+				else valid = false;
+			}
 			if (i == 0)
 			{
 				player1 = player;
@@ -171,6 +197,7 @@ bool GameEngine::loadGame()
 			else valid = false;
 			if (valid)
 			{
+				firstTile = true;
 				string rowLabel = "A |";
 				for (int i = 0; i < BOARD_SIZE && valid; i++)
 				{
@@ -183,14 +210,17 @@ bool GameEngine::loadGame()
 						{
 							Tile* tile = Tile::stringToTile(input[j], input[j + 1]);
 							if (tile == nullptr) valid = false;
-							else board[((j - 3) / 3)][i] = tile;
+							else
+							{
+								firstTile = false;
+								board[((j - 3) / 3)][i] = tile;
+							}
 						}
 					}
 					//Update row label to next letter
 					++rowLabel[0];
 				}
 			}
-			
 		}
 		if (valid)
 		{
@@ -662,6 +692,13 @@ bool GameEngine::saveGame(string fileName)
 	outFile << player2->name << endl;
 	outFile << player2->score << endl;
 	outFile << player2->hand.display() << endl;
+	if (versingAI)
+	{
+		if (AIDifficulty == EASY) outFile << "EASY" << endl;
+		else if (AIDifficulty == MEDIUM) outFile << "MEDIUM" << endl;
+		else outFile << "HARD" << endl;
+	}
+	else outFile << "HUMAN" << endl;
 	outFile << boardToString() << endl;
 	outFile << tileBag.display() << endl;
 	outFile << player->name << endl;

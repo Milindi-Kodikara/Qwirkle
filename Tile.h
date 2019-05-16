@@ -27,7 +27,7 @@ public:
     Shape  shape;
 	std::string label;
 
-	std::string colourOutput(Colour colour);
+	std::string getLabel(bool colouredOutput);
 };
 
 #endif // ASSIGN2_TILE_H

@@ -1,5 +1,6 @@
 #include "Tile.h"
 #include <iostream>
+#include <sstream>
 
 Tile::Tile(Colour colour, Shape shape)
 {
@@ -29,34 +30,42 @@ Tile* Tile::stringToTile(char x, char y)
 	return tile;
 }
 
-std::string Tile::colourOutput(Colour colour)
+std::string Tile::getLabel(bool displayColour)
 {
 	std::string output;
+	std::string outputColour;
 
 	if (colour == RED)
 	{
-		output = RED_OUTPUT;
+		outputColour = RED_OUTPUT;
 	}
 	else if (colour == ORANGE)
 	{
-		output = ORANGE_OUTPUT;
+		outputColour = ORANGE_OUTPUT;
 	}
 	else if (colour == YELLOW)
 	{
-		output = YELLOW_OUTPUT;
+		outputColour = YELLOW_OUTPUT;
 	}
 	else if (colour == GREEN)
 	{
-		output = GREEN_OUTPUT;
+		outputColour = GREEN_OUTPUT;
 	}
 	else if (colour == BLUE)
 	{
-		output = BLUE_OUTPUT;
+		outputColour = BLUE_OUTPUT;
 	}
 	else if (colour == PURPLE)
 	{
-		output = PURPLE_OUTPUT;
+		outputColour = PURPLE_OUTPUT;
 	}
+
+	if(displayColour)
+	{
+		output =  outputColour + this->label + RESET ;
+	}
+	else output = this->label;
+
 	return output;
 
 }

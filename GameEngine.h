@@ -30,6 +30,14 @@ public:
     bool loadGame();
 
 	/*
+	 * Adjusts the board from the orginal 6 x 6 board of a new game
+	 * only when needed. Must adjust to show all the tiles of the 
+	 * board together with empty slots at all four sides if max board 
+	 * size has not been met.
+	 */
+	void adjustBoard();
+
+	/*
 	 * Contains the main game loop, performing each player's turn
 	 * until the game ends
 	 */
@@ -90,6 +98,7 @@ public:
 	 * whether the save was successful
 	 */
     bool saveGame(std::string fileName);
+
 
 private:
 	enum Difficulty

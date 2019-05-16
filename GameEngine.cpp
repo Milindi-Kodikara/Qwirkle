@@ -295,10 +295,69 @@ bool GameEngine::loadGame()
 	return valid;
 }
 
+void GameEngine::adjustBoard()
+{
+	int x = 0;
+	int y = 0;
+
+	//Flag to not apply adjust if the last row/column already has a tile
+	bool rowChange = true;
+	bool colChange = true;
+
+	//Loop to first check the last then the first row and columns
+	for (int j = 0; j < 2; j++)
+	{
+		int line = BOARD_SIZE - 1;
+		if (j == 1) line = 0;
+
+		for (int i = 0; i < BOARD_SIZE; ++i)
+		{
+			if (board[i][line] != nullptr)
+			{
+				if (line != 0) rowChange = false;
+				else
+				{
+					y = 1;
+				}
+			}
+			if (board[line][i] != nullptr)
+			{
+				if (line != 0) colChange = false;
+				else
+				{
+					x = 1;
+				}
+			}
+		}
+	}
+
+	if (!rowChange) y = 0;
+	if (!colChange) x = 0;
+
+	//Adjust board as needed
+	for (int i = BOARD_SIZE - 2; i >= 0; --i)
+	{
+		for (int j = BOARD_SIZE - 2; j >= 0; --j)
+		{
+			board[i + x][j + y] = board[i][j];
+			if (i == 0 && rowChange)
+			{
+				board[i][j] = nullptr;
+			}
+			if (j == 0 && colChange)
+			{
+				board[i][j] = nullptr;
+			}
+
+		}
+	}
+}
+
 void GameEngine::runGame()
 {
 	while (!exitGame)
 	{
+		adjustBoard();
 		displayGameState();
 		if (!player1Turn && versingAI) processAITurn();
 		else getInput();
@@ -371,27 +430,42 @@ void GameEngine::getInput()
 string GameEngine::boardToString(bool colouredOutput)
 {
 	std::ostringstream output;
+	int maxRow = 5;
+	int maxCol = 5;
+
+	for (int i = 0; i < BOARD_SIZE; ++i)
+	{
+		for (int j = 0; j < BOARD_SIZE; j++)
+		{
+			if (board[i][j] != nullptr)
+			{
+				if (i >= maxCol) maxCol = i + 1;
+				if (j >= maxRow) maxRow = j + 1;
+			}
+		}
+	}
+
 	output << "   ";
 
 	Tile* tile = nullptr;
-	for (int header = 0; header < BOARD_SIZE; header++)
+	for (int header = 0; header <= maxCol; header++)
 	{
 		output << header << " ";
 		if (header < 10) output << " ";
 	}
 
 	output << "\n  -";
-	for (int dash = 0; dash < BOARD_SIZE; dash++)
+	for (int dash = 0; dash <= maxCol; dash++)
 	{
 		output << "---";
 	}
 
-	for (int y = 0; y < BOARD_SIZE; y++)
+	for (int y = 0; y <= maxRow; y++)
 	{
 		char ch = 'A' + y;
 		output << "\n" << ch << " |";
 
-		for (int x = 0; x < BOARD_SIZE; x++)
+		for (int x = 0; x <= maxCol; x++)
 		{
 			tile = board[x][y];
 			if (tile == nullptr) {

@@ -1,5 +1,6 @@
 #include <iostream>
 #include "LinkedList.h"
+#include "Tile.h"
 
 LinkedList::LinkedList() 
 {
@@ -122,7 +123,7 @@ Tile* LinkedList::removeAt(int index)
     return tile;
 }
 
-std::string LinkedList::display()
+std::string LinkedList::display(bool colouredOutput)
 {
 	Node* temp = nullptr;
 	temp = head;
@@ -130,7 +131,12 @@ std::string LinkedList::display()
 	
 	while (temp != nullptr)
 	{
-		output += temp->tile->label + ",";
+		if(colouredOutput)
+		{
+			std::string colour = temp->tile->colourOutput(temp->tile->colour);
+			output += colour +  temp->tile->label + RESET + ",";
+		}
+		else output += temp->tile->label + ",";
 		temp = temp->next;
 	}
 	output.pop_back();

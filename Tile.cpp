@@ -28,3 +28,35 @@ Tile* Tile::stringToTile(char x, char y)
 	
 	return tile;
 }
+
+std::string Tile::colourOutput(Colour colour)
+{
+	std::string output;
+
+	if (colour == RED)
+	{
+		output = RED_OUTPUT;
+	}
+	else if (colour == ORANGE)
+	{
+		output = ORANGE_OUTPUT;
+	}
+	else if (colour == YELLOW)
+	{
+		output = YELLOW_OUTPUT;
+	}
+	else if (colour == GREEN)
+	{
+		output = GREEN_OUTPUT;
+	}
+	else if (colour == BLUE)
+	{
+		output = BLUE_OUTPUT;
+	}
+	else if (colour == PURPLE)
+	{
+		output = PURPLE_OUTPUT;
+	}
+	return output;
+
+}

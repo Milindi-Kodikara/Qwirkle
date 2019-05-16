@@ -4,6 +4,7 @@
 #include <vector>
 #include "Node.h"
 
+
 class LinkedList {
 public:
 
@@ -29,7 +30,7 @@ public:
     Tile* removeAt(int index);
 
 	// Outputs all Tiles inside linked list
-	std::string display();
+	std::string display(bool colouredOutput);
  
 	std::vector<Tile*> toVector();
 

@@ -47,7 +47,7 @@ public:
 	 * Returns a string that contains the formatted representation of the
 	 * board as detailed in the assignment specification
 	 */
-	std::string boardToString();
+	std::string boardToString(bool colouredOutput);
 
     /*
      * Prints out the details of the current game state as specified in
@@ -113,6 +113,7 @@ private:
     bool player1Turn;
 	bool firstTile;
 	bool versingAI;
+	bool colouredOutput;
 
 	bool exitGame;
 };

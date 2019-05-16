@@ -5,6 +5,14 @@
 #include <string>
 #include "TileCodes.h"
 
+#define RESET   "\033[0m"
+#define RED_OUTPUT     "\033[31m"
+#define ORANGE_OUTPUT	"\033[91m"
+#define YELLOW_OUTPUT  "\033[33m"
+#define GREEN_OUTPUT   "\033[32m"
+#define BLUE_OUTPUT    "\033[34m"
+#define PURPLE_OUTPUT	"\033[35m"
+
 typedef char Colour;
 typedef int Shape;
 
@@ -18,6 +26,8 @@ public:
     Colour colour;
     Shape  shape;
 	std::string label;
+
+	std::string colourOutput(Colour colour);
 };
 
 #endif // ASSIGN2_TILE_H

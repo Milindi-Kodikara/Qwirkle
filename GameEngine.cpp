@@ -281,7 +281,8 @@ void GameEngine::runGame()
 void GameEngine::getInput()
 {
 	bool valid = false;
-	while (!valid && !exitGame)
+	colouredOutput = true;
+    while (!valid && !exitGame)
 	{
 		cout << "> ";
 		string input;
@@ -340,7 +341,7 @@ void GameEngine::getInput()
 	}
 }
 
-string GameEngine::boardToString()
+string GameEngine::boardToString(bool colouredOutput)
 {
 	std::ostringstream output;
 	output << "   ";
@@ -371,7 +372,13 @@ string GameEngine::boardToString()
 			}
 			else
 			{
-				output << tile->label << "|";
+				if(colouredOutput)
+				{
+					std::string colour = tile->colourOutput(tile->colour);
+					output<< colour << tile->label << RESET <<"|";
+				}
+				else output << tile->label << "|";
+
 			}
 		}
 	}
@@ -388,10 +395,10 @@ void GameEngine::displayGameState()
 	cout << "Score for " << player1->name << ": " << player1->score << endl;
 	cout << "Score for " << player2->name << ": " << player2->score << endl;
 
-	cout << boardToString();
+	cout << boardToString(true);
 
 	cout << "\n\nYour hand is" << endl;
-	cout<<player->hand.display()<<endl;
+	cout<<player->hand.display(colouredOutput)<<endl;
 }
 
 void GameEngine::processAITurn()
@@ -688,10 +695,10 @@ bool GameEngine::saveGame(string fileName)
 	outFile.open(fileName, std::ofstream::app);
 	outFile << player1->name << endl;
 	outFile << player1->score << endl;
-	outFile << player1->hand.display() << endl;
+	outFile << player1->hand.display(false) << endl;
 	outFile << player2->name << endl;
 	outFile << player2->score << endl;
-	outFile << player2->hand.display() << endl;
+	outFile << player2->hand.display(false) << endl;
 	if (versingAI)
 	{
 		if (AIDifficulty == EASY) outFile << "EASY" << endl;
@@ -699,8 +706,8 @@ bool GameEngine::saveGame(string fileName)
 		else outFile << "HARD" << endl;
 	}
 	else outFile << "HUMAN" << endl;
-	outFile << boardToString() << endl;
-	outFile << tileBag.display() << endl;
+	outFile << boardToString(false) << endl;
+	outFile << tileBag.display(false) << endl;
 	outFile << player->name << endl;
 	outFile.close();
 	return true;

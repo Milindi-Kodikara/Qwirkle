@@ -20,6 +20,8 @@ void GameEngine::newGame()
 	versingAI = false; // Need to be changed
 	string player1Name;
 	string player2Name;
+	string input;
+	string difficulty;
 	//regex to ensure player name is only uppercase alphabets
 	std::regex r("[a-zA-Z]+");
 	std::smatch m;
@@ -39,6 +41,31 @@ void GameEngine::newGame()
 		getline(std::cin, player2Name);
 	}
 	player2 = new Player(player2Name);
+
+    cout << "Do you want to play against the computer? Y/N" << endl;
+    getline(std::cin, input);
+    if (input == "Y")
+    {
+        versingAI = true;
+        cout << "Select a difficulty" << endl;
+        getline(std::cin, difficulty);
+        if (difficulty == "EASY")
+        {
+            AIDifficulty = EASY;
+        }
+        if (difficulty == "MEDIUM")
+        {
+            AIDifficulty = MEDIUM;
+        }
+        if (difficulty == "HARD")
+        {
+            AIDifficulty = HARD;
+        }
+    }
+    else if (input == "N")
+    {
+        versingAI = false;
+    }
 
 	//create an array to store all the colours
 	char colours[6] = { 'R','O','Y','G','B','P' };
@@ -395,36 +422,159 @@ void GameEngine::displayGameState()
 	cout << player->hand.display(true) << endl;
 }
 
+
 void GameEngine::processAITurn()
 {
-	std::vector<Placement> validPlacements;
-	std::vector<Tile*> hand = player2->hand.toVector();
+    std::vector <Placement> validPlacements;
+    std::vector < Tile * > hand = player2->hand.toVector();
 
-	// Finds all valid placements
-	for (int x = 0; x < BOARD_SIZE; ++x)
-	{
-		for (int y = 0; y < BOARD_SIZE; ++y)
-		{
-			if (board[x][y] != nullptr)
-			{
-				for (Tile* tile : hand)
-				{
-					bool qwirkle = false;
-					int score = testPlacement(tile, Position(x, y), qwirkle);
-					if (score > 0)
-					{
-						validPlacements.push_back(Placement(tile, x, y, score, qwirkle));
-					}
-				}
-			}
-		}
-	}
+    // Finds all valid placements
+    for (int x = 0; x < BOARD_SIZE; ++x) {
+        for (int y = 0; y < BOARD_SIZE; ++y) {
+            if (board[x][y] != nullptr) {
+                for (Tile *tile : hand) {
+                    bool qwirkle = false;
+                    int score = testPlacement(tile, Position(x, y), qwirkle);
+                    if (score > 0) {
+                        validPlacements.push_back(Placement(tile, x, y, score, qwirkle));
+                    }
+                }
+            }
+        }
+    }
 
-	// Sorts placements in terms of score
-	sort(validPlacements.begin(), validPlacements.end(), Placement::compare);
+    // Sorts placements in terms of score
+    sort(validPlacements.begin(), validPlacements.end(), Placement::compare);
 
-	// Randomely picks from validPlacements from a distribution based on the AIDifficulty
+    // Randomly picks from validPlacements from a distribution based on the AIDifficulty
+    std::random_device rd;
+    std::mt19937 eng(rd());
+
+    // Randomly picks from validPlacements from a distribution based on the AIDifficulty
+
+    /*
+        x = (inValue - minInRange) / (maxInRange - minInRange);
+        result = minOutRange + (maxOutRange - minOutRange) * x
+    */
+
+    if (AIDifficulty == EASY)
+    {
+        if (validPlacements.empty())
+        {
+            std::uniform_int_distribution<> randomIndex(0, hand.size() - 1);
+            Tile *tile = hand[randomIndex(eng)];
+            replaceTile(tile->label);
+        }
+        else
+        {
+        Placement aiPlacement = validPlacements[(validPlacements.size() - 1) * choiceDistributions[0](eng)];
+        //checks if placement gives qwirkle
+        if (aiPlacement.qwirkle) cout << "QWIRKLE!!!" << endl;
+
+        //Updates AI's score and places the tile
+        player2->score += (aiPlacement.score);
+        player2->hand.remove(aiPlacement.tile);
+        board[aiPlacement.x][aiPlacement.y] = aiPlacement.tile;
+
+        //Replenishes the AI's hand
+        Tile *newTile = tileBag.pop_front();
+        if (newTile != nullptr) {
+            player2->hand.add_back(newTile);
+        }
+
+        //Game over checking
+        if (player2->hand.isEmpty()) {
+            cout << "\nGame Over" << endl;
+            cout << "Score for " << player1->name << ": " << player1->score << endl;
+            cout << "Score for " << player2->name << ": " << player2->score << endl;
+            if (player1->score > player2->score) {
+                cout << "Player " << player1->name << " won!" << endl;
+            } else if (player2->score > player1->score) {
+                cout << "Player " << player2->name << " won!" << endl;
+            } else cout << "Draw..." << endl;
+            exitGame = true;
+        }
+
+
+    }
 }
+
+    if (AIDifficulty == MEDIUM) {
+        if (validPlacements.empty()) {
+            std::uniform_int_distribution<> randomIndex(0, hand.size() - 1);
+            Tile *tile = hand[randomIndex(eng)];
+            replaceTile(tile->label);
+        } else {
+            Placement aiPlacement = validPlacements[(validPlacements.size() - 1) * choiceDistributions[1](eng)];
+            //checks if placement gives qwirkle
+            if (aiPlacement.qwirkle) cout << "QWIRKLE!!!" << endl;
+
+            //Updates AI's score and places the tile
+            player2->score += (aiPlacement.score);
+            player2->hand.remove(aiPlacement.tile);
+            board[aiPlacement.x][aiPlacement.y] = aiPlacement.tile;
+
+            //Replenishes the AI's hand
+            Tile *newTile = tileBag.pop_front();
+            if (newTile != nullptr) {
+                player2->hand.add_back(newTile);
+            }
+
+            //Game over checking
+            if (player2->hand.isEmpty()) {
+                cout << "\nGame Over" << endl;
+                cout << "Score for " << player1->name << ": " << player1->score << endl;
+                cout << "Score for " << player2->name << ": " << player2->score << endl;
+                if (player1->score > player2->score) {
+                    cout << "Player " << player1->name << " won!" << endl;
+                } else if (player2->score > player1->score) {
+                    cout << "Player " << player2->name << " won!" << endl;
+                } else cout << "Draw..." << endl;
+                exitGame = true;
+            }
+        }
+    }
+
+        if (AIDifficulty == HARD)
+        {
+            if (validPlacements.empty())
+            {
+                std::uniform_int_distribution<> randomIndex(0, hand.size() - 1);
+                Tile *tile = hand[randomIndex(eng)];
+                replaceTile(tile->label);
+            }
+            else
+                {
+                Placement aiPlacement = validPlacements[(validPlacements.size() - 1) * choiceDistributions[2](eng)];
+                //checks if placement gives qwirkle
+                if (aiPlacement.qwirkle) cout << "QWIRKLE!!!" << endl;
+
+                //Updates AI's score and places the tile
+                player2->score += (aiPlacement.score);
+                player2->hand.remove(aiPlacement.tile);
+                board[aiPlacement.x][aiPlacement.y] = aiPlacement.tile;
+
+                //Replenishes the AI's hand
+                Tile *newTile = tileBag.pop_front();
+                if (newTile != nullptr) {
+                    player2->hand.add_back(newTile);
+                }
+
+                //Game over checking
+                if (player2->hand.isEmpty()) {
+                    cout << "\nGame Over" << endl;
+                    cout << "Score for " << player1->name << ": " << player1->score << endl;
+                    cout << "Score for " << player2->name << ": " << player2->score << endl;
+                    if (player1->score > player2->score) {
+                        cout << "Player " << player1->name << " won!" << endl;
+                    } else if (player2->score > player1->score) {
+                        cout << "Player " << player2->name << " won!" << endl;
+                    } else cout << "Draw..." << endl;
+                    exitGame = true;
+                }
+            }
+        }
+    }
 
 int GameEngine::testPlacement(Tile* tile, Position position, bool& qwirkle)
 {

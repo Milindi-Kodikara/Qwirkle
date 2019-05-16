@@ -17,6 +17,7 @@ void GameEngine::newGame()
     exitGame = false;
 	player1Turn = true;
 	firstTile = true;
+	versingAI = false; // Need to be changed
 	string player1Name;
 	string player2Name;
 	//regex to ensure player name is only uppercase alphabets
@@ -281,12 +282,12 @@ void GameEngine::runGame()
 void GameEngine::getInput()
 {
 	bool valid = false;
-	colouredOutput = true;
     while (!valid && !exitGame)
 	{
 		cout << "> ";
 		string input;
 		getline(std::cin, input);
+		cout << "*" << input << endl;
 
 		// Causes the game to exit if eof is encountered
 		if (std::cin.eof())
@@ -331,6 +332,7 @@ void GameEngine::getInput()
 			{
 				if (commands[0] == "place" && commands[2] == "at")
 				{
+					cout << "input place" << endl;
 					// Input is valid if the action was successful
 					valid = placeTile(commands[1], commands[3]);
 				}
@@ -398,7 +400,7 @@ void GameEngine::displayGameState()
 	cout << boardToString(true);
 
 	cout << "\n\nYour hand is" << endl;
-	cout<<player->hand.display(colouredOutput)<<endl;
+	cout << player->hand.display(true) << endl;
 }
 
 void GameEngine::processAITurn()
@@ -416,7 +418,7 @@ void GameEngine::processAITurn()
 				for (Tile* tile : hand)
 				{
 					bool qwirkle = false;
-					int score = testPlacement(tile, new Position(x, y), qwirkle);
+					int score = testPlacement(tile, Position(x, y), qwirkle);
 					if (score > 0)
 					{
 						validPlacements.push_back(Placement(tile, x, y, score, qwirkle));
@@ -432,10 +434,10 @@ void GameEngine::processAITurn()
 	// Randomely picks from validPlacements from a distribution based on the AIDifficulty
 }
 
-int GameEngine::testPlacement(Tile* tile, Position* position, bool& qwirkle)
+int GameEngine::testPlacement(Tile* tile, Position position, bool& qwirkle)
 {
 	int score = 0;
-	if (board[position->x][position->y] == nullptr)
+	if (board[position.x][position.y] == nullptr)
 	{
 		// Indicates whether the surrounding tiles allow the placement
 		// of the supplied tile
@@ -467,7 +469,7 @@ int GameEngine::testPlacement(Tile* tile, Position* position, bool& qwirkle)
 
 		for (int i = 0; i < 4 && valid; ++i)
 		{
-			Position offsetPosition = *position + offsets[i];
+			Position offsetPosition = position + offsets[i];
 			if (offsetPosition.x < BOARD_SIZE && offsetPosition.x >= 0
 				&& offsetPosition.y < BOARD_SIZE && offsetPosition.y >= 0)
 			{
@@ -529,7 +531,7 @@ int GameEngine::testPlacement(Tile* tile, Position* position, bool& qwirkle)
 					bool colorSimilarity =
 						(vertical ? verColourSimilarity : horColourSimilarity);
 
-					Position currPosition = *position + offsets[i];
+					Position currPosition = position + offsets[i];
 					Tile* currTile;
 					bool empty = false;
 					while (valid && currPosition.x < BOARD_SIZE && currPosition.x >= 0
@@ -619,7 +621,7 @@ bool GameEngine::placeTile(string tileLabel, string positionLabel)
 			else
 			{
 				bool qwirkle = false;
-				int score = testPlacement(tile, position, qwirkle);
+				int score = testPlacement(tile, *position, qwirkle);
 
 				// If placement was successful
 				if (score > 0)

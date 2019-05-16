@@ -113,7 +113,6 @@ private:
     bool player1Turn;
 	bool firstTile;
 	bool versingAI;
-	bool colouredOutput;
 
 	bool exitGame;
 };

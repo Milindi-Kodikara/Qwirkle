@@ -287,7 +287,6 @@ void GameEngine::getInput()
 		cout << "> ";
 		string input;
 		getline(std::cin, input);
-		cout << "*" << input << endl;
 
 		// Causes the game to exit if eof is encountered
 		if (std::cin.eof())
@@ -332,7 +331,6 @@ void GameEngine::getInput()
 			{
 				if (commands[0] == "place" && commands[2] == "at")
 				{
-					cout << "input place" << endl;
 					// Input is valid if the action was successful
 					valid = placeTile(commands[1], commands[3]);
 				}

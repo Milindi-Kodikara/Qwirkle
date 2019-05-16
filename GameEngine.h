@@ -64,7 +64,7 @@ public:
 	 * Tests if the specified tile can be placed at the specified postition,
 	 * return the resulting score if it can and returning 0 if it can't
 	 */
-	int testPlacement(Tile* tile, Position* position, bool& qwirkle);
+	int testPlacement(Tile* tile, Position position, bool& qwirkle);
 
     /*
      * Attempts to remove the specified tile from the current player's 

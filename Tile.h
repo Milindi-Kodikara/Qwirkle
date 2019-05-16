@@ -6,11 +6,11 @@
 #include "TileCodes.h"
 
 #define RESET   "\033[0m"
-#define RED_OUTPUT     "\033[31m"
-#define ORANGE_OUTPUT	"\033[91m"
+#define RED_OUTPUT     "\033[91m"
+#define ORANGE_OUTPUT	"\033[38;5;202m"
 #define YELLOW_OUTPUT  "\033[93m"
 #define GREEN_OUTPUT   "\033[92m"
-#define BLUE_OUTPUT    "\033[94m"
+#define BLUE_OUTPUT    "\033[96m"
 #define PURPLE_OUTPUT	"\033[95m"
 
 typedef char Colour;

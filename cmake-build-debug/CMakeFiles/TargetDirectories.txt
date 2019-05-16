@@ -1,3 +1,0 @@
-/Users/shadowking98/Documents/Year_2_Semester_1/APT 1076/Assignment_2/APT-Assignment-2/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/Users/shadowking98/Documents/Year_2_Semester_1/APT 1076/Assignment_2/APT-Assignment-2/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/shadowking98/Documents/Year_2_Semester_1/APT 1076/Assignment_2/APT-Assignment-2/cmake-build-debug/CMakeFiles/APT_Assignment_2.dir

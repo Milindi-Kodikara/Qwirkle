@@ -374,13 +374,7 @@ string GameEngine::boardToString(bool colouredOutput)
 			}
 			else
 			{
-				if(colouredOutput)
-				{
-					std::string colour = tile->colourOutput(tile->colour);
-					output<< colour << tile->label << RESET <<"|";
-				}
-				else output << tile->label << "|";
-
+					output << tile->getLabel(colouredOutput) <<"|";
 			}
 		}
 	}

@@ -131,12 +131,7 @@ std::string LinkedList::display(bool colouredOutput)
 	
 	while (temp != nullptr)
 	{
-		if(colouredOutput)
-		{
-			std::string colour = temp->tile->colourOutput(temp->tile->colour);
-			output += colour +  temp->tile->label + RESET + ",";
-		}
-		else output += temp->tile->label + ",";
+		output += temp->tile->getLabel(colouredOutput) +  ",";
 		temp = temp->next;
 	}
 	output.pop_back();

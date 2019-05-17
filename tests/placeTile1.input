@@ -2,8 +2,7 @@
 tests/placeTile1.save
 place R5 at F26
 place R6 at F10
-place R5 at M5
-place R5 at F10
+place R5 at L6
 place O1 at L6
 place O1 at C10
 place O1 at C11

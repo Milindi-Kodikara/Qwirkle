@@ -1,14 +1,15 @@
 2
-tests/placeTile3.save
+tests/placeTile1.save
 place R5 at F26
 place R6 at F10
 plac R5 at F3
 place R5 at M5
-place R5 at F5
+place R5 at F10
 place O1 at C11
 place R1 at G6
-place O6 at M8
+place O6 at M10
 place R6 at F10
 place O3 at M11
+quit
 
 

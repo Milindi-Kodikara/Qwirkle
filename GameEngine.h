@@ -35,7 +35,7 @@ public:
 	 * board together with empty slots at all four sides if max board 
 	 * size has not been met.
 	 */
-	void adjustBoard();
+	void adjustBoard(bool shrinkBoard);
 
 	/*
 	 * Contains the main game loop, performing each player's turn
@@ -55,7 +55,7 @@ public:
 	 * Returns a string that contains the formatted representation of the
 	 * board as detailed in the assignment specification
 	 */
-	std::string boardToString(bool colouredOutput);
+	std::string boardToString(bool colouredOutput, bool fullBoard);
 
     /*
      * Prints out the details of the current game state as specified in

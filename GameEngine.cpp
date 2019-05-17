@@ -289,27 +289,50 @@ bool GameEngine::loadGame()
 	if (valid)
 	{
 		cout << "\nQwirkle game successfully loaded" << endl;
+		adjustBoard(true);
 		runGame();
-
 	}
 	return valid;
 }
 
-void GameEngine::adjustBoard()
+void GameEngine::adjustBoard(bool shrinkBoard)
 {
 	int x = 0;
 	int y = 0;
+
+	if (shrinkBoard)
+	{
+		int minX = BOARD_SIZE;
+		int minY = BOARD_SIZE;
+
+		for (int h = 0; h < 2; ++h)
+		{
+			for (int i = 0; i < BOARD_SIZE; ++i)
+			{
+				for (int j = 0; j < BOARD_SIZE; ++j)
+				{
+					if (board[i][j] != nullptr && h == 0)
+					{
+						if (i < minX) minX = i;
+						if (j < minY) minY = j;
+					}
+					else if (board[i][j] != nullptr && h == 1)
+					{
+						board[i - minX][j - minY] = board[i][j];
+						board[i][j] = nullptr;
+					}
+				}
+			}
+		}
+	}
 
 	//Flag to not apply adjust if the last row/column already has a tile
 	bool rowChange = true;
 	bool colChange = true;
 
 	//Loop to first check the last then the first row and columns
-	for (int j = 0; j < 2; j++)
+	for (int line = BOARD_SIZE - 1; line >= 0; line -= BOARD_SIZE - 1)
 	{
-		int line = BOARD_SIZE - 1;
-		if (j == 1) line = 0;
-
 		for (int i = 0; i < BOARD_SIZE; ++i)
 		{
 			if (board[i][line] != nullptr)
@@ -357,7 +380,7 @@ void GameEngine::runGame()
 {
 	while (!exitGame)
 	{
-		adjustBoard();
+		adjustBoard(false);
 		displayGameState();
 		if (!player1Turn && versingAI) processAITurn();
 		else getInput();
@@ -427,11 +450,17 @@ void GameEngine::getInput()
 	}
 }
 
-string GameEngine::boardToString(bool colouredOutput)
+string GameEngine::boardToString(bool colouredOutput, bool fullBoard)
 {
 	std::ostringstream output;
 	int maxRow = 5;
 	int maxCol = 5;
+
+	if (fullBoard)
+	{
+		maxRow = BOARD_SIZE - 1;
+		maxCol = BOARD_SIZE - 1;
+	}
 
 	for (int i = 0; i < BOARD_SIZE; ++i)
 	{
@@ -490,7 +519,7 @@ void GameEngine::displayGameState()
 	cout << "Score for " << player1->name << ": " << player1->score << endl;
 	cout << "Score for " << player2->name << ": " << player2->score << endl;
 
-	cout << boardToString(true);
+	cout << boardToString(true, false);
 
 	cout << "\n\nYour hand is" << endl;
 	cout << player->hand.display(true) << endl;
@@ -766,16 +795,20 @@ bool GameEngine::placeTile(string tileLabel, string positionLabel)
 		{
 			if (firstTile)
 			{
-				++player->score;
-				player->hand.remove(tile);
-				board[position->x][position->y] = tile;
-				Tile* newTile = tileBag.pop_front();
-				if (newTile != nullptr)
+				//First tile of a new game must be played only inside shown board
+				if (position->x <= 5 && position->y <= 5)
 				{
-					player->hand.add_back(newTile);
+					++player->score;
+					player->hand.remove(tile);
+					board[position->x][position->y] = tile;
+					Tile* newTile = tileBag.pop_front();
+					if (newTile != nullptr)
+					{
+						player->hand.add_back(newTile);
+					}
+					firstTile = false;
+					success = true;
 				}
-				firstTile = false;
-				success = true;
 			}
 			else
 			{
@@ -867,7 +900,7 @@ bool GameEngine::saveGame(string fileName)
 		else outFile << "HARD" << endl;
 	}
 	else outFile << "HUMAN" << endl;
-	outFile << boardToString(false) << endl;
+	outFile << boardToString(false, true) << endl;
 	outFile << tileBag.display(false) << endl;
 	outFile << player->name << endl;
 	outFile.close();

@@ -278,13 +278,17 @@ bool GameEngine::loadGame()
 			//Checks if this is the eof rather than not eof
 			if (file.eof())
 			{
-				
-				if (input == player1->name)
+				// Finds which player's turn it is
+				bool found = false;
+				for (int i = 0; i < players.size() && !found; ++i)
 				{
-					player1Turn = true;
+					if (players[i]->name == input)
+					{
+						playerTurnIndex = i;
+						found = true;
+					}
 				}
-				else if (input == player2->name) player1Turn = false;
-				else valid = false;
+				if (!found) valid = false;
 			}
 			else valid = false;
 		}

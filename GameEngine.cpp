@@ -12,11 +12,12 @@ using std::cout;
 using std::endl;
 using std::string;
 
+// Needs fixing
 void GameEngine::newGame()
 {
     // Initialises game state
 	exitGame = false;
-	player1Turn = true;
+	playerTurnIndex = 0;
 	firstTile = true;
 	viewX = 6;
 	viewY = 6;
@@ -133,78 +134,79 @@ bool GameEngine::loadGame()
 	//Check if file exists
 	if (file)
 	{
-		std::regex r("[a-zA-Z]+");
-		std::smatch m;
-		//Checks both player's information
-		for (int i = 0; i < 2 && valid; i++)
+		getline(file, input);
+		std::istringstream iss(input);
+		int numberOfPlayers;
+		iss >> numberOfPlayers;
+		if (!file.eof() && !iss.bad()) player->score = score;
+		else valid = false;
+		if (valid)
 		{
-			Player* player = nullptr;
-			getline(file, input);
-			if (!file.eof() && std::regex_search(input, m, r))
+			std::regex r("[a-zA-Z]+");
+			std::smatch m;
+			//Checks all player's information
+			for (int i = 0; i < numberOfPlayers && valid; i++)
 			{
-				player = new Player(input);
-			}
-			else valid = false;
-			if (valid)
-			{
+				Player* player = nullptr;
+
+				// Checks player name
 				getline(file, input);
-				std::istringstream iss(input);
-				int score;
-				iss >> score;
-				if (!file.eof() && !iss.bad()) player->score = score;
-				else valid = false;
-			}
-			if (valid)
-			{
-				getline(file, input);
-				if (!file.eof())
+				if (!file.eof() && std::regex_search(input, m, r))
 				{
-					int tileCount = 0;
-					for (unsigned int i = 0; i < input.size() && valid; i += 3)
+					player = new Player(input);
+				}
+				else valid = false;
+
+				// Checks player score
+				if (valid)
+				{
+					getline(file, input);
+					std::istringstream iss(input);
+					int score;
+					iss >> score;
+					if (!file.eof() && !iss.bad()) player->score = score;
+					else valid = false;
+				}
+
+				// Checks player hand
+				if (valid)
+				{
+					getline(file, input);
+					if (!file.eof())
 					{
-						Tile* tile = Tile::stringToTile(input[i], input[i + 1]);
-						if (tile == nullptr) valid = false;
-						else
+						int tileCount = 0;
+						for (unsigned int i = 0; i < input.size() && valid; i += 3)
 						{
-							player->hand.add_back(tile);
-							++tileCount;
+							Tile* tile = Tile::stringToTile(input[i], input[i + 1]);
+							if (tile == nullptr) valid = false;
+							else
+							{
+								player->hand.add_back(tile);
+								++tileCount;
+							}
+							if (tileCount > 6) valid = false;
 						}
-						if (tileCount > 6) valid = false;
 					}
+					else valid = false;
 				}
-				else valid = false;
-			}
-			// Checks if player 2 is an AI
-			if (valid && i == 1)
-			{
-				getline(file, input);
-				versingAI = false;
-				if (!file.eof())
+
+				// Checks if player is an AI + difficulty
+				if (valid)
 				{
-					if (input == "EASY")
+					getline(file, input);
+					versingAI = false;
+					if (!file.eof())
 					{
-						versingAI = true;
-						aiDifficulty = EASY;
+						if (input == "EASY") player->difficulty = EASY;
+						if (input == "MEDIUM") player->difficulty = MEDIUM;
+						if (input == "HARD") player->difficulty = HARD;
+						if (input == "HUMAN") player->difficulty = HUMAN;
+						else valid = false;
 					}
-					if (input == "MEDIUM")
-					{
-						versingAI = true;
-						aiDifficulty = MEDIUM;
-					}
-					if (input == "HARD")
-					{
-						versingAI = true;
-						aiDifficulty = HARD;
-					}
-					else if (input != "HUMAN") valid = false;
+					else valid = false;
 				}
-				else valid = false;
+				players.push_back(player);
 			}
-			if (i == 0)
-			{
-				player1 = player;
-			}
-			else player2 = player;
 		}
 		if (valid)
 		{
@@ -385,9 +387,10 @@ void GameEngine::runGame()
 	{
 		adjustBoard(false);
 		displayGameState();
-		if (!player1Turn && versingAI) processAITurn();
-		else getInput();
-		player1Turn = !player1Turn;
+		if (players[playerTurnIndex]->difficulty == HUMAN) getInput();
+		else processAITurn();
+		playerTurnIndex = (playerTurnIndex == players.size() - 1) ? 
+			0 : playerTurnIndex + 1;
 	}
 }
 
@@ -513,6 +516,7 @@ string GameEngine::boardToString(bool colouredOutput, bool fullBoard)
 	return output.str();
 }
 
+// Needs fixing
 void GameEngine::displayGameState()
 {
 	Player* player = player1Turn ? player1 : player2;
@@ -528,6 +532,7 @@ void GameEngine::displayGameState()
 	cout << player->hand.display(true) << endl;
 }
 
+// Needs fixing
 void GameEngine::processAITurn()
 {
     std::vector<Placement> validPlacements;
@@ -764,6 +769,7 @@ int GameEngine::testPlacement(Tile* tile, Position position, bool& qwirkle)
 	return score;
 }
 
+// Needs fixing
 bool GameEngine::placeTile(string tileLabel, string positionLabel)
 {
 	bool success = false;
@@ -842,6 +848,7 @@ bool GameEngine::placeTile(string tileLabel, string positionLabel)
 	return success;
 }
 
+// Needs fixing
 bool GameEngine::replaceTile(string tileLabel)
 {
     Player* player = player1Turn ? player1 : player2;
@@ -868,25 +875,23 @@ bool GameEngine::replaceTile(string tileLabel)
 
 bool GameEngine::saveGame(string fileName)
 {
-	Player* player = player1Turn ? player1 : player2;
 	std::ofstream outFile(fileName);
-	outFile.open(fileName, std::ofstream::app);
-	outFile << player1->name << endl;
-	outFile << player1->score << endl;
-	outFile << player1->hand.display(false) << endl;
-	outFile << player2->name << endl;
-	outFile << player2->score << endl;
-	outFile << player2->hand.display(false) << endl;
-	if (versingAI)
+	// Line below may be uneeded
+	// outFile.open(fileName, std::ofstream::app);
+	for (unsigned int i = 0; i < players.size(); ++i)
 	{
-		if (aiDifficulty == EASY) outFile << "EASY" << endl;
-		else if (aiDifficulty == MEDIUM) outFile << "MEDIUM" << endl;
-		else outFile << "HARD" << endl;
+		Player* player = players[i];
+		outFile << player->name << endl;
+		outFile << player->score << endl;
+		outFile << player->hand.display(false) << endl;
+		if (player->difficulty == EASY) outFile << "EASY" << endl;
+		else if (player->difficulty == MEDIUM) outFile << "MEDIUM" << endl;
+		else if (player->difficulty == HARD) outFile << "HARD" << endl;
+		else outFile << "HUMAN" << endl;
 	}
-	else outFile << "HUMAN" << endl;
 	outFile << boardToString(false, true) << endl;
 	outFile << tileBag.display(false) << endl;
-	outFile << player->name << endl;
+	outFile << players[playerTurnIndex]->name << endl;
 	outFile.close();
 	return true;
 }

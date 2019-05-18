@@ -9,6 +9,7 @@
 #include "Player.h"
 
 #define BOARD_SIZE  26
+#define MAX_PLAYERS 12
 
 class GameEngine
 {
@@ -101,19 +102,13 @@ public:
 
 
 private:
-	enum Difficulty
-	{
-		EASY,
-		MEDIUM,
-		HARD
-	};
-
-    //2D array of tiles as board 26*26
+	//2D array of tiles as board 26*26
     Tile*** board;
     LinkedList tileBag;
-    Player* player1;
-    Player* player2;
-	Difficulty aiDifficulty;
+	std::vector<Player*> players;
+	int playerTurnIndex;
+
+	// Used for AI choice generation
 	std::uniform_real_distribution<> choiceDistributions[3] = { 
 		std::uniform_real_distribution<>(0, 0.3) , 
 		std::uniform_real_distribution<>(0.3, 0.6) , 
@@ -122,9 +117,7 @@ private:
 	int viewX;
 	int viewY;
 	
-	bool player1Turn;
 	bool firstTile;
-	bool versingAI;
 	bool exitGame;
 };
 

@@ -5,6 +5,14 @@
 #include <string>
 #include "LinkedList.h"
 
+enum Difficulty
+{
+	EASY,
+	MEDIUM,
+	HARD,
+	HUMAN
+};
+
 class Player
 {
 public:
@@ -13,6 +21,7 @@ public:
     std::string name;
     int score;
     LinkedList hand;
+	Difficulty difficulty;
 };
 
 

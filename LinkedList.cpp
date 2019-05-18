@@ -146,6 +146,7 @@ std::vector<Tile*> LinkedList::toVector()
 	while (current != nullptr)
 	{
 		temp.push_back(current->tile);
+		current = current->next;
 	}
 	return temp;
 }

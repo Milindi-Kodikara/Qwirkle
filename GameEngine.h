@@ -113,16 +113,18 @@ private:
     LinkedList tileBag;
     Player* player1;
     Player* player2;
-	Difficulty AIDifficulty;
+	Difficulty aiDifficulty;
 	std::uniform_real_distribution<> choiceDistributions[3] = { 
-		std::uniform_real_distribution<>(0, 0.5) , 
-		std::uniform_real_distribution<>(0.25, 0.75) , 
-		std::uniform_real_distribution<>(0.5, 1) };
+		std::uniform_real_distribution<>(0, 0.3) , 
+		std::uniform_real_distribution<>(0.3, 0.6) , 
+		std::uniform_real_distribution<>(0.6, 1) };
 
-    bool player1Turn;
+	int viewX;
+	int viewY;
+	
+	bool player1Turn;
 	bool firstTile;
 	bool versingAI;
-
 	bool exitGame;
 };
 

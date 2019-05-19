@@ -20,6 +20,8 @@ public:
 	 */
 	void newGame();
 
+	~GameEngine();
+
 	/*
 	 * Requests a file name from the user, uses the contents
 	 * to initialise the game state and then continues with the

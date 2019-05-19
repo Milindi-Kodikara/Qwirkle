@@ -7,10 +7,10 @@
 
 enum Difficulty
 {
-	EASY,
-	MEDIUM,
-	HARD,
-	HUMAN
+    EASY,
+    MEDIUM,
+    HARD,
+    HUMAN
 };
 
 class Player
@@ -21,7 +21,9 @@ public:
     std::string name;
     int score;
     LinkedList hand;
-	Difficulty difficulty;
+    Difficulty difficulty;
+
+    static bool compare(Player* p1, Player* p2);
 };
 
 

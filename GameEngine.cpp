@@ -15,6 +15,7 @@ using std::string;
 void GameEngine::newGame()
 {
     // Initialises game state
+    players = std::vector<Player*>();;
 	exitGame = false;
 	playerTurnIndex = 0;
 	firstTile = true;
@@ -123,6 +124,27 @@ void GameEngine::newGame()
     }
     cout << "Let's Play!" << endl;
     runGame();
+}
+
+GameEngine::~GameEngine()
+{
+    for(Player* player:players)
+    {
+        delete player;
+    }
+
+    for (int x = 0; x < viewX; ++x)
+    {
+        for (int y = 0; y < viewY; ++y)
+        {
+            if (board[x][y] != nullptr)
+            {
+                delete board[x][y];
+            }
+        }
+        delete[] board[x];
+    }
+    delete[] board;
 }
 
 bool GameEngine::loadGame()

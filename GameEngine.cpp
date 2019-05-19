@@ -131,13 +131,12 @@ bool GameEngine::loadGame()
 	if (file)
 	{
 		getline(file, input);
-		std::istringstream iss(input);
 		int numberOfPlayers;
 		
 		//Check if the first line is a vaild number of players
-		if (!file.eof() && !iss.bad()) iss >> numberOfPlayers;
+		if (!file.eof() && std::regex_match(input, std::regex("[0-9]+"))) 
+			std::istringstream(input) >> numberOfPlayers;
 		else valid = false;
-		if (numberOfPlayers > MAX_PLAYERS) valid = false;
 
 		if (valid)
 		{
@@ -150,7 +149,7 @@ bool GameEngine::loadGame()
 
 				// Checks player name
 				getline(file, input);
-				if (!file.eof() && std::regex_search(input, m, r))
+				if (!file.eof() && std::regex_match(input, m, r))
 				{
 					player = new Player(input);
 				}
@@ -160,10 +159,8 @@ bool GameEngine::loadGame()
 				if (valid)
 				{
 					getline(file, input);
-					std::istringstream iss(input);
-					int score;
-					iss >> score;
-					if (!file.eof() && !iss.bad()) player->score = score;
+					if (!file.eof() && std::regex_match(input, std::regex("[0-9]+"))) 
+						std::istringstream(input) >> player->score;
 					else valid = false;
 				}
 

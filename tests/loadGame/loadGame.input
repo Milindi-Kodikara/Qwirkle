@@ -1,11 +1,11 @@
 2
-tests/loadGame/loadGame1.save*
-tests/loadGame/loadGame2.save*
+tests/loadGame/loadGame1.save
+tests/loadGame/loadGame2.save
 tests/loadGame/loadGame3.save
 tests/loadGame/loadGame4.save
-tests/loadGame/loadGame5.save*
+tests/loadGame/loadGame5.save
 tests/loadGame/loadGame6.save
 tests/loadGame/loadGame7.save
-tests/loadGame/loadGame8.save*
+tests/loadGame/loadGame8.save
 tests/loadGame/loadGame9.save
 tests/loadGame/loadGame10.save

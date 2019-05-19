@@ -494,8 +494,8 @@ string GameEngine::boardToString(bool colouredOutput, bool fullBoard)
 		{
 			if (board[i][j] != nullptr)
 			{
-				if (i >= viewY-1) viewY = i + 2;
-				if (j >= viewX-1) viewX = j + 2;
+				if (i >= viewY-1 && viewY != BOARD_SIZE)) viewY = i + 2;
+				if (j >= viewX-1 && viewX != BOARD_SIZE)) viewX = j + 2;
 			}
 		}
 	}

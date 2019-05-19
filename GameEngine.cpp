@@ -21,32 +21,43 @@ void GameEngine::newGame()
 	firstTile = true;
 
     Difficulty aiDifficulty = HUMAN;
-    string playerName;
     string input;
     string difficulty;
-    int numOfPlayers;
+    string numOfPlayers;
+    int playerCount = 0;
     //regex to ensure player name is only uppercase alphabets
     std::regex r("[a-zA-Z]+");
     std::smatch m;
     cout << "Starting a new game" << endl;
-
-    cout << "How many players would you like?" << endl;
-    std::cin >> numOfPlayers;
-
-    for (int i = 0; i < numOfPlayers; i++)
+    while (playerCount < 1 || playerCount > MAX_PLAYERS)
     {
+        cout << "How many players would you like?" << endl;
+        getline(std::cin, numOfPlayers);
+        std::istringstream iss(numOfPlayers);
+        iss >> playerCount;
+    }
+
+    for (int i = 0; i < playerCount; i++)
+    {
+        string playerName;
         //prompts the user again if the given name does not follow the regex
         while (!std::regex_search(playerName, m, r))
         {
             cout << "Enter a name for player " << i + 1 << " (no numbers or symbols)" << endl;
             getline(std::cin, playerName);
         }
-        cout << "Would you like this player to be an AI?\n" << "Y/N" << endl;
-        getline(std::cin, input);
+        while (input != "Y" && input != "N")
+        {
+            cout << "Would you like this player to be an AI?\n" << "Y/N" << endl;
+            getline(std::cin, input);
+        }
         if (input == "Y")
         {
-            cout << "Select a difficulty (EASY, MEDIUM, HARD)" << endl;
-            getline(std::cin, difficulty);
+            while (difficulty != "EASY" && difficulty != "MEDIUM" && difficulty != "HARD")
+            {
+                cout << "Select a difficulty (EASY, MEDIUM, HARD)" << endl;
+                getline(std::cin, difficulty);
+            }
             if (difficulty == "EASY")
             {
                 aiDifficulty = EASY;

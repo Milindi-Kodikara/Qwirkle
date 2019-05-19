@@ -31,10 +31,8 @@ public:
     bool loadGame();
 
 	/*
-	 * Adjusts the board from the orginal 6 x 6 board of a new game
-	 * only when needed. Must adjust to show all the tiles of the 
-	 * board together with empty slots at all four sides if max board 
-	 * size has not been met.
+	 * Moves the tiles of the board to the right, down, left-most, or
+	 * right-most of the board when needed.
 	 */
 	void adjustBoard(bool shrinkBoard);
 
@@ -54,7 +52,8 @@ public:
 
 	/*
 	 * Returns a string that contains the formatted representation of the
-	 * board as detailed in the assignment specification
+	 * board with a size appropriate for the number of tiles in the board
+	 * or a full 26 * 26 board for saving the game.
 	 */
 	std::string boardToString(bool colouredOutput, bool fullBoard);
 

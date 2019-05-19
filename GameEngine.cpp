@@ -19,8 +19,6 @@ void GameEngine::newGame()
 	exitGame = false;
 	playerTurnIndex = 0;
 	firstTile = true;
-	viewX = 6;
-	viewY = 6;
 
 	string player1Name;
 	string player2Name;
@@ -137,9 +135,12 @@ bool GameEngine::loadGame()
 		getline(file, input);
 		std::istringstream iss(input);
 		int numberOfPlayers;
-		iss >> numberOfPlayers;
-		if (!file.eof() && !iss.bad()) player->score = score;
+		
+		//Check if the first line is a vaild number of players
+		if (!file.eof() && !iss.bad()) iss >> numberOfPlayers;
 		else valid = false;
+		if (numberOfPlayers > MAX_PLAYERS) valid = false;
+
 		if (valid)
 		{
 			std::regex r("[a-zA-Z]+");
@@ -194,7 +195,6 @@ bool GameEngine::loadGame()
 				if (valid)
 				{
 					getline(file, input);
-					versingAI = false;
 					if (!file.eof())
 					{
 						if (input == "EASY") player->difficulty = EASY;
@@ -280,7 +280,7 @@ bool GameEngine::loadGame()
 			{
 				// Finds which player's turn it is
 				bool found = false;
-				for (int i = 0; i < players.size() && !found; ++i)
+				for (unsigned int i = 0; i < players.size() && !found; ++i)
 				{
 					if (players[i]->name == input)
 					{
@@ -306,9 +306,9 @@ bool GameEngine::loadGame()
 
 void GameEngine::adjustBoard(bool shrinkBoard)
 {
-	int x = 0;
-	int y = 0;
 
+	//Move all the tiles in the board in the most top right position possible without
+	//breaking the sequence of the tiles
 	if (shrinkBoard)
 	{
 		int minX = BOARD_SIZE;
@@ -335,11 +335,18 @@ void GameEngine::adjustBoard(bool shrinkBoard)
 		}
 	}
 
-	//Flag to not apply adjust if the last row/column already has a tile
+	//Flags to know if adjusts should be made
 	bool rowChange = true;
 	bool colChange = true;
 
-	//Loop to first check the last then the first row and columns
+	//Values of how much right or down should the board adjust
+	int x = 0;
+	int y = 0;
+
+	//First checks the 26th row and col if there is alrady a tile meaning that the max
+	//row or col aleady has been met and will set their respective adjust flags to false.
+	//Then checks the 1st row and col for tiles to know if the board will need to move
+	//right or down to let players place tile above or to the right of the board.
 	for (int line = BOARD_SIZE - 1; line >= 0; line -= BOARD_SIZE - 1)
 	{
 		for (int i = 0; i < BOARD_SIZE; ++i)
@@ -363,10 +370,11 @@ void GameEngine::adjustBoard(bool shrinkBoard)
 		}
 	}
 
+	//Discards change values if max row or col has been met
 	if (!rowChange) y = 0;
 	if (!colChange) x = 0;
 
-	//Adjust board as needed
+	//Adjust tiles as needed
 	for (int i = BOARD_SIZE - 2; i >= 0; --i)
 	{
 		for (int j = BOARD_SIZE - 2; j >= 0; --j)
@@ -463,23 +471,28 @@ void GameEngine::getInput()
 string GameEngine::boardToString(bool colouredOutput, bool fullBoard)
 {
 	std::ostringstream output;
-	int maxRow = 5;
-	int maxCol = 5;
 
+	//Minimum size of the board
+	viewX = 6;
+	viewY = 6;
+
+	//Returns an output with a 26*26 board for saving a game
 	if (fullBoard)
 	{
-		maxRow = BOARD_SIZE - 1;
-		maxCol = BOARD_SIZE - 1;
+		viewX = BOARD_SIZE;
+		viewY = BOARD_SIZE;
 	}
 
+	//Looks for the tiles with the highest X coordinate & the highest Y coordinate
+	//to know how big the board should be
 	for (int i = 0; i < BOARD_SIZE; ++i)
 	{
 		for (int j = 0; j < BOARD_SIZE; j++)
 		{
 			if (board[i][j] != nullptr)
 			{
-				if (i >= maxCol) maxCol = i + 1;
-				if (j >= maxRow) maxRow = j + 1;
+				if (i >= viewY-1) viewY = i + 2;
+				if (j >= viewX-1) viewX = j + 2;
 			}
 		}
 	}
@@ -487,24 +500,24 @@ string GameEngine::boardToString(bool colouredOutput, bool fullBoard)
 	output << "   ";
 
 	Tile* tile = nullptr;
-	for (int header = 0; header <= maxCol; header++)
+	for (int header = 0; header < viewY; header++)
 	{
 		output << header << " ";
 		if (header < 10) output << " ";
 	}
 
 	output << "\n  -";
-	for (int dash = 0; dash <= maxCol; dash++)
+	for (int dash = 0; dash < viewY; dash++)
 	{
 		output << "---";
 	}
 
-	for (int y = 0; y <= maxRow; y++)
+	for (int y = 0; y < viewX; y++)
 	{
 		char ch = 'A' + y;
 		output << "\n" << ch << " |";
 
-		for (int x = 0; x <= maxCol; x++)
+		for (int x = 0; x < viewY; x++)
 		{
 			tile = board[x][y];
 			if (tile == nullptr) {

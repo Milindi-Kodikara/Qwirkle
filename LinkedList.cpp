@@ -17,6 +17,7 @@ LinkedList::~LinkedList()
 	{
 		prev = curr;
 		curr = curr->next;
+		delete prev->tile; 
 		delete prev;
 	}
 }

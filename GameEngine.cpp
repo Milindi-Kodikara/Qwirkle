@@ -12,7 +12,6 @@ using std::cout;
 using std::endl;
 using std::string;
 
-// Needs fixing
 void GameEngine::newGame()
 {
     // Initialises game state
@@ -537,7 +536,6 @@ string GameEngine::boardToString(bool colouredOutput, bool fullBoard)
 	return output.str();
 }
 
-// Needs fixing
 void GameEngine::displayGameState()
 {
     cout << "\n" << players[playerTurnIndex]->name << ", it's your turn" << endl;
@@ -553,7 +551,6 @@ void GameEngine::displayGameState()
     cout << players[playerTurnIndex]->hand.display(true) << endl;
 }
 
-// Needs fixing
 void GameEngine::processAITurn()
 {
 	Player* player = players[playerTurnIndex];
@@ -813,7 +810,6 @@ int GameEngine::testPlacement(Tile* tile, Position position, bool& qwirkle)
 	return score;
 }
 
-// Needs fixing
 bool GameEngine::placeTile(string tileLabel, string positionLabel)
 {
     bool success = false;
@@ -893,7 +889,6 @@ bool GameEngine::placeTile(string tileLabel, string positionLabel)
     return success;
 }
 
-// Needs fixing
 bool GameEngine::replaceTile(string tileLabel)
 {
     Tile* tile = players[playerTurnIndex]->hand.find(tileLabel);

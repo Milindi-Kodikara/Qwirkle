@@ -28,7 +28,7 @@ void GameEngine::newGame()
 
     while (playerCount < 2 || playerCount > MAX_PLAYERS)
     {
-        cout << "How many players would you like?" << endl;
+        cout << "How many players would you like?\n> ";
         getline(std::cin, input);
 		if (std::regex_match(input, std::regex("[0-9]+")))
 		{
@@ -45,19 +45,20 @@ void GameEngine::newGame()
         //prompts the user again if the given name does not follow the regex
         while (!std::regex_match(playerName, std::regex("[a-zA-Z]+")))
         {
-            cout << "Enter a name for player " << i + 1 << " (no numbers or symbols)" << endl;
+            cout << "Enter a name for player " << i + 1 
+				<< " (no numbers or symbols)\n> ";
             getline(std::cin, playerName);
         }
         while (input != "Y" && input != "N")
         {
-            cout << "Would you like this player to be an AI?\n" << "Y/N" << endl;
+            cout << "Would you like this player to be an AI? (Y/N)\n> ";
             getline(std::cin, input);
         }
         if (input == "Y")
         {
             while (input != "EASY" && input != "MEDIUM" && input != "HARD")
             {
-                cout << "Select a difficulty (EASY, MEDIUM, HARD)" << endl;
+                cout << "Select a difficulty (EASY, MEDIUM, HARD)\n> ";
                 getline(std::cin, input);
             }
             if (input == "EASY")
@@ -505,7 +506,7 @@ void GameEngine::shrinkBoard()
 				board[i - minX][j - minY] = board[i][j];
 				board[i][j] = nullptr;
 				maxX = std::max(maxX, i - minX);
-				maxY = std::max(maxY, j - minX);
+				maxY = std::max(maxY, j - minY);
 			}
 		}
 	}
@@ -513,31 +514,6 @@ void GameEngine::shrinkBoard()
 	viewX = std::min(maxX + 2, BOARD_SIZE);
 	viewY = std::min(maxY + 2, BOARD_SIZE);
 	adjustBoard(Position(0, 0));
-	
-	//Move all the tiles in the board in the most top right position possible without
-	//breaking the sequence of the tiles
-	/*int minX = BOARD_SIZE;
-	int minY = BOARD_SIZE;
-
-	for (int h = 0; h < 2; ++h)
-	{
-		for (int i = 0; i < BOARD_SIZE; ++i)
-		{
-			for (int j = 0; j < BOARD_SIZE; ++j)
-			{
-				if (board[i][j] != nullptr && h == 0)
-				{
-					if (i < minX) minX = i;
-					if (j < minY) minY = j;
-				}
-				else if (board[i][j] != nullptr && h == 1)
-				{
-					board[i - minX][j - minY] = board[i][j];
-					board[i][j] = nullptr;
-				}
-			}
-		}
-	}*/
 }
 
 void GameEngine::displayGameState()

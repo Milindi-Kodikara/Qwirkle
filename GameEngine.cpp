@@ -427,50 +427,51 @@ void GameEngine::adjustBoard(Position position)
 	int xOffset = 0;
 	int yOffset = 0;
 
-	if (position.x == 0) 
+	// Determines the x offset and updates viewX
+	if (position.x == 0 && viewX != BOARD_SIZE)
 	{
-		bool found = false;
 		xOffset = 1;
-		for (int i = 0; i < BOARD_SIZE; ++i) 
+		bool found = false;
+		for (int i = 0; i < BOARD_SIZE && !found; ++i)
 		{
-			if (board[BOARD_SIZE - 1][i] != nullptr) xOffset = 0;
-			if (board[BOARD_SIZE - 2][i] != nullptr) found = true;
+			if (board[viewX - 2][i] != nullptr)
+			{
+				++viewX;
+				found = true;
+			}
 		}
-		if (found && xOffset == 1) ++viewX;
 	}
 	else if (position.x == viewX - 1 && viewX != BOARD_SIZE) ++viewX;
 
-
-	if (position.y == 0)
+	// Determines the y offset and updates viewY
+	if (position.y == 0 && viewY != BOARD_SIZE)
 	{
-		bool found = false;
 		yOffset = 1;
-		for (int i = 0; i < BOARD_SIZE; ++i)
+		bool found = false;
+		for (int i = 0; i < BOARD_SIZE && !found; ++i)
 		{
-			if (board[BOARD_SIZE - 1][i] != nullptr) yOffset = 0;
-			if (board[BOARD_SIZE - 2][i] != nullptr) found = true;
+			if (board[i][viewY - 2] != nullptr)
+			{
+				++viewY;
+				found = true;
+			}
 		}
-		if (found && yOffset == 1) ++viewY;
 	}
 	else if (position.y == viewY - 1 && viewY != BOARD_SIZE) ++viewY;
 
-
-	
-	//Adjust tiles as needed
-	for (int i = BOARD_SIZE - 2; i >= 0; --i)
+	// Adjust tiles as needed
+	if (xOffset == 1 || yOffset == 1)
 	{
-		for (int j = BOARD_SIZE - 2; j >= 0; --j)
+		for (int i = BOARD_SIZE - 1; i >= 0; --i)
 		{
-			board[i + xOffset][j + yOffset] = board[i][j];
-			if (i == 0 && xOffset == 1)
+			for (int j = BOARD_SIZE - 1; j >= 0; --j)
 			{
-				board[i][j] = nullptr;
+				if (board[i][j] != nullptr)
+				{
+					board[i + xOffset][j + yOffset] = board[i][j];
+					board[i][j] = nullptr;
+				}
 			}
-			if (j == 0 && yOffset == 1)
-			{
-				board[i][j] = nullptr;
-			}
-
 		}
 	}
 }

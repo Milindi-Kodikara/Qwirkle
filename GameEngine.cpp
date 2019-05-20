@@ -478,9 +478,45 @@ void GameEngine::adjustBoard(Position position)
 
 void GameEngine::shrinkBoard() 
 {
+	int minX = BOARD_SIZE;
+	int minY = BOARD_SIZE;
+	
+	for (int i = 0; i < BOARD_SIZE; ++i)
+	{
+		for (int j = 0; j < BOARD_SIZE; ++j)
+		{
+			if (board[i][j] != nullptr)
+			{
+				minX = std::min(minX, i);
+				minY = std::min(minY, j);
+			}
+		}
+	}
+
+	int maxX = 0;
+	int maxY = 0;
+
+	for (int i = 0; i < BOARD_SIZE; ++i)
+	{
+		for (int j = 0; j < BOARD_SIZE; ++j)
+		{
+			if (board[i][j] != nullptr)
+			{
+				board[i - minX][j - minY] = board[i][j];
+				board[i][j] = nullptr;
+				maxX = std::max(maxX, i - minX);
+				maxY = std::max(maxY, j - minX);
+			}
+		}
+	}
+
+	viewX = std::min(maxX + 2, BOARD_SIZE);
+	viewY = std::min(maxY + 2, BOARD_SIZE);
+	adjustBoard(Position(0, 0));
+	
 	//Move all the tiles in the board in the most top right position possible without
 	//breaking the sequence of the tiles
-	int minX = BOARD_SIZE;
+	/*int minX = BOARD_SIZE;
 	int minY = BOARD_SIZE;
 
 	for (int h = 0; h < 2; ++h)
@@ -501,7 +537,7 @@ void GameEngine::shrinkBoard()
 				}
 			}
 		}
-	}
+	}*/
 }
 
 void GameEngine::displayGameState()

@@ -793,7 +793,7 @@ int GameEngine::testPlacement(Tile* tile, Position position, bool& qwirkle)
 
 bool GameEngine::placeTile(string tileLabel, string positionLabel)
 {
-    bool success = false;
+	bool success = false;
     Position* position;
     Tile* tile = players[playerTurnIndex]->hand.find(tileLabel);
     // Tile found in player's hand
@@ -805,7 +805,7 @@ bool GameEngine::placeTile(string tileLabel, string positionLabel)
         {
             if (firstTile)
             {
-                //First tile of a new game must be played only inside shown board
+				//First tile of a new game must be played only inside shown board
                 if (position->x <= 5 && position->y <= 5)
                 {
                     ++players[playerTurnIndex]->score;
@@ -822,13 +822,13 @@ bool GameEngine::placeTile(string tileLabel, string positionLabel)
             }
             else
             {
-                bool qwirkle = false;
+				bool qwirkle = false;
                 int score = testPlacement(tile, *position, qwirkle);
 
                 // If placement was successful
                 if (score > 0)
                 {
-                    if (qwirkle) cout << "QWIRKLE!!!" << endl;
+					if (qwirkle) cout << "QWIRKLE!!!" << endl;
 
                     // Score updating and tile placement
                     players[playerTurnIndex]->score += score;
@@ -861,8 +861,8 @@ bool GameEngine::placeTile(string tileLabel, string positionLabel)
                         }
                         exitGame = true;
                     }
+					success = true;
                 }
-                success = true;
             }
             delete position;
         }

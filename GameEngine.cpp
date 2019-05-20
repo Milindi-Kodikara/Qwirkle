@@ -15,7 +15,9 @@ using std::string;
 void GameEngine::newGame()
 {
     // Initialises game state
-    players = std::vector<Player*>();;
+	viewX = 6;
+	viewY = 6;
+    players = std::vector<Player*>();
 	exitGame = false;
 	playerTurnIndex = 0;
 	firstTile = true;
@@ -124,27 +126,6 @@ void GameEngine::newGame()
     }
     cout << "Let's Play!" << endl;
     runGame();
-}
-
-GameEngine::~GameEngine()
-{
-    for(Player* player:players)
-    {
-        delete player;
-    }
-
-    for (int x = 0; x < viewX; ++x)
-    {
-        for (int y = 0; y < viewY; ++y)
-        {
-            if (board[x][y] != nullptr)
-            {
-                delete board[x][y];
-            }
-        }
-        delete[] board[x];
-    }
-    delete[] board;
 }
 
 bool GameEngine::loadGame()
@@ -323,106 +304,16 @@ bool GameEngine::loadGame()
 	if (valid)
 	{
 		cout << "\nQwirkle game successfully loaded" << endl;
-		adjustBoard(true);
+		shrinkBoard();
 		runGame();
 	}
 	return valid;
-}
-
-void GameEngine::adjustBoard(bool shrinkBoard)
-{
-
-	//Move all the tiles in the board in the most top right position possible without
-	//breaking the sequence of the tiles
-	if (shrinkBoard)
-	{
-		int minX = BOARD_SIZE;
-		int minY = BOARD_SIZE;
-
-		for (int h = 0; h < 2; ++h)
-		{
-			for (int i = 0; i < BOARD_SIZE; ++i)
-			{
-				for (int j = 0; j < BOARD_SIZE; ++j)
-				{
-					if (board[i][j] != nullptr && h == 0)
-					{
-						if (i < minX) minX = i;
-						if (j < minY) minY = j;
-					}
-					else if (board[i][j] != nullptr && h == 1)
-					{
-						board[i - minX][j - minY] = board[i][j];
-						board[i][j] = nullptr;
-					}
-				}
-			}
-		}
-	}
-
-	//Flags to know if adjusts should be made
-	bool rowChange = true;
-	bool colChange = true;
-
-	//Values of how much right or down should the board adjust
-	int x = 0;
-	int y = 0;
-
-	//First checks the 26th row and col if there is alrady a tile meaning that the max
-	//row or col aleady has been met and will set their respective adjust flags to false.
-	//Then checks the 1st row and col for tiles to know if the board will need to move
-	//right or down to let players place tile above or to the right of the board.
-	for (int line = BOARD_SIZE - 1; line >= 0; line -= BOARD_SIZE - 1)
-	{
-		for (int i = 0; i < BOARD_SIZE; ++i)
-		{
-			if (board[i][line] != nullptr)
-			{
-				if (line != 0) rowChange = false;
-				else
-				{
-					y = 1;
-				}
-			}
-			if (board[line][i] != nullptr)
-			{
-				if (line != 0) colChange = false;
-				else
-				{
-					x = 1;
-				}
-			}
-		}
-	}
-
-	//Discards change values if max row or col has been met
-	if (!rowChange) y = 0;
-	if (!colChange) x = 0;
-
-	//Adjust tiles as needed
-	for (int i = BOARD_SIZE - 2; i >= 0; --i)
-	{
-		for (int j = BOARD_SIZE - 2; j >= 0; --j)
-		{
-			board[i + x][j + y] = board[i][j];
-			if (i == 0 && rowChange)
-			{
-				board[i][j] = nullptr;
-			}
-			if (j == 0 && colChange)
-			{
-				board[i][j] = nullptr;
-			}
-
-		}
-	}
 }
 
 void GameEngine::runGame()
 {
 	while (!exitGame)
 	{
-		adjustBoard(false);
 		displayGameState();
 		if (players[playerTurnIndex]->difficulty == HUMAN) getInput();
 		else processAITurn();
@@ -495,67 +386,121 @@ void GameEngine::getInput()
 
 string GameEngine::boardToString(bool colouredOutput, bool fullBoard)
 {
+	int width = (fullBoard ? BOARD_SIZE : viewX);
+	int height = (fullBoard ? BOARD_SIZE : viewY);
+	
 	std::ostringstream output;
-
-	//Minimum size of the board
-	viewX = 6;
-	viewY = 6;
-
-	//Returns an output with a 26*26 board for saving a game
-	if (fullBoard)
-	{
-		viewX = BOARD_SIZE;
-		viewY = BOARD_SIZE;
-	}
-
-	//Looks for the tiles with the highest X coordinate & the highest Y coordinate
-	//to know how big the board should be
-	for (int i = 0; i < BOARD_SIZE; ++i)
-	{
-		for (int j = 0; j < BOARD_SIZE; j++)
-		{
-			if (board[i][j] != nullptr)
-			{
-				if (i >= viewY-1 && viewY != BOARD_SIZE)) viewY = i + 2;
-				if (j >= viewX-1 && viewX != BOARD_SIZE)) viewX = j + 2;
-			}
-		}
-	}
 
 	output << "   ";
 
 	Tile* tile = nullptr;
-	for (int header = 0; header < viewY; header++)
+	for (int header = 0; header < width; header++)
 	{
 		output << header << " ";
 		if (header < 10) output << " ";
 	}
 
 	output << "\n  -";
-	for (int dash = 0; dash < viewY; dash++)
+	for (int dash = 0; dash < width; dash++)
 	{
 		output << "---";
 	}
 
-	for (int y = 0; y < viewX; y++)
+	for (int y = 0; y < height; y++)
 	{
 		char ch = 'A' + y;
 		output << "\n" << ch << " |";
 
-		for (int x = 0; x < viewY; x++)
+		for (int x = 0; x < width; x++)
 		{
 			tile = board[x][y];
-			if (tile == nullptr) {
-				output << "  |";
-			}
-			else
-			{
-					output << tile->getLabel(colouredOutput) <<"|";
-			}
+			if (tile == nullptr) output << "  |";
+			else output << tile->getLabel(colouredOutput) <<"|";
 		}
 	}
 
 	return output.str();
+}
+
+void GameEngine::adjustBoard(Position position)
+{
+	int xOffset = 0;
+	int yOffset = 0;
+
+	if (position.x == 0) 
+	{
+		bool found = false;
+		xOffset = 1;
+		for (int i = 0; i < BOARD_SIZE; ++i) 
+		{
+			if (board[BOARD_SIZE - 1][i] != nullptr) xOffset = 0;
+			if (board[BOARD_SIZE - 2][i] != nullptr) found = true;
+		}
+		if (found && xOffset == 1) ++viewX;
+	}
+	else if (position.x == viewX - 1 && viewX != BOARD_SIZE) ++viewX;
+
+
+	if (position.y == 0)
+	{
+		bool found = false;
+		yOffset = 1;
+		for (int i = 0; i < BOARD_SIZE; ++i)
+		{
+			if (board[BOARD_SIZE - 1][i] != nullptr) yOffset = 0;
+			if (board[BOARD_SIZE - 2][i] != nullptr) found = true;
+		}
+		if (found && yOffset == 1) ++viewY;
+	}
+	else if (position.y == viewY - 1 && viewY != BOARD_SIZE) ++viewY;
+
+
+	
+	//Adjust tiles as needed
+	for (int i = BOARD_SIZE - 2; i >= 0; --i)
+	{
+		for (int j = BOARD_SIZE - 2; j >= 0; --j)
+		{
+			board[i + xOffset][j + yOffset] = board[i][j];
+			if (i == 0 && xOffset == 1)
+			{
+				board[i][j] = nullptr;
+			}
+			if (j == 0 && yOffset == 1)
+			{
+				board[i][j] = nullptr;
+			}
+
+		}
+	}
+}
+
+void GameEngine::shrinkBoard() 
+{
+	//Move all the tiles in the board in the most top right position possible without
+	//breaking the sequence of the tiles
+	int minX = BOARD_SIZE;
+	int minY = BOARD_SIZE;
+
+	for (int h = 0; h < 2; ++h)
+	{
+		for (int i = 0; i < BOARD_SIZE; ++i)
+		{
+			for (int j = 0; j < BOARD_SIZE; ++j)
+			{
+				if (board[i][j] != nullptr && h == 0)
+				{
+					if (i < minX) minX = i;
+					if (j < minY) minY = j;
+				}
+				else if (board[i][j] != nullptr && h == 1)
+				{
+					board[i - minX][j - minY] = board[i][j];
+					board[i][j] = nullptr;
+				}
+			}
+		}
+	}
 }
 
 void GameEngine::displayGameState()
@@ -670,6 +615,7 @@ void GameEngine::processAITurn()
 				}
 				exitGame = true;
 			}
+			adjustBoard(Position(aiPlacement.x, aiPlacement.y));
 		}
 	}
 }
@@ -908,6 +854,7 @@ bool GameEngine::placeTile(string tileLabel, string positionLabel)
             delete position;
         }
     }
+	if (success) adjustBoard(*position);
     return success;
 }
 
@@ -954,4 +901,25 @@ bool GameEngine::saveGame(string fileName)
 	outFile << players[playerTurnIndex]->name << endl;
 	outFile.close();
 	return true;
+}
+
+GameEngine::~GameEngine()
+{
+	for (Player* player : players)
+	{
+		delete player;
+	}
+
+	for (int x = 0; x < viewX; ++x)
+	{
+		for (int y = 0; y < viewY; ++y)
+		{
+			if (board[x][y] != nullptr)
+			{
+				delete board[x][y];
+			}
+		}
+		delete[] board[x];
+	}
+	delete[] board;
 }

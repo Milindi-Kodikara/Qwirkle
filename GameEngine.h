@@ -20,8 +20,6 @@ public:
 	 */
 	void newGame();
 
-	~GameEngine();
-
 	/*
 	 * Requests a file name from the user, uses the contents
 	 * to initialise the game state and then continues with the
@@ -31,12 +29,6 @@ public:
 	 * whether the load was successful or not
 	 */
     bool loadGame();
-
-	/*
-	 * Moves the tiles of the board to the right, down, left-most, or
-	 * right-most of the board when needed.
-	 */
-	void adjustBoard(bool shrinkBoard);
 
 	/*
 	 * Contains the main game loop, performing each player's turn
@@ -58,6 +50,14 @@ public:
 	 * or a full 26 * 26 board for saving the game.
 	 */
 	std::string boardToString(bool colouredOutput, bool fullBoard);
+
+	/*
+	 * Moves the tiles of the board to the right, down, left-most, or
+	 * right-most of the board when needed.
+	 */
+	void adjustBoard(Position position);
+
+	void shrinkBoard();
 
     /*
      * Prints out the details of the current game state as specified in
@@ -100,6 +100,8 @@ public:
 	 * whether the save was successful
 	 */
     bool saveGame(std::string fileName);
+
+	~GameEngine();
 
 
 private:

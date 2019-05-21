@@ -11,6 +11,23 @@
 #define BOARD_SIZE  26
 #define MAX_PLAYERS 12
 
+struct Placement
+{
+	Placement(Tile* tile, int x, int y, int score, bool qwirkle)
+		: tile{ tile }, x{ x }, y{ y }, score{ score }, qwirkle{ qwirkle }{}
+
+	static bool compare(Placement& p1, Placement& p2)
+	{
+		return p1.score < p2.score;
+	}
+
+	Tile* tile;
+	int x;
+	int y;
+	int score;
+	bool qwirkle;
+};
+
 class GameEngine
 {
 public:
@@ -35,6 +52,12 @@ public:
 	 * until the game ends
 	 */
 	void runGame();
+
+
+	/*
+	 * Checks if a stalemate has occured, and if it has ends the game
+	 */
+	void stalemateCheck();
 
 	/*
 	 * Prompts the player for input, then processes and validates the
@@ -75,6 +98,12 @@ public:
 	 * return the resulting score if it can and returning 0 if it can't
 	 */
 	int testPlacement(Tile* tile, Position position, bool& qwirkle);
+
+	/*
+	 * Returns a vector containing all possible placements of the supplied 
+	 * set of tiles
+	 */
+	std::vector<Placement> findPossiblePlacements(std::vector<Tile*> tiles);
 
     /*
      * Attempts to remove the specified tile from the current player's 
@@ -118,23 +147,6 @@ private:
 	
 	bool firstTile;
 	bool exitGame;
-};
-
-struct Placement
-{
-	Placement(Tile* tile, int x, int y, int score, bool qwirkle)
-		: tile{ tile }, x{ x }, y{ y }, score{ score }, qwirkle{ qwirkle }{}
-	
-	static bool compare(Placement& p1, Placement& p2)
-	{
-		return p1.score < p2.score;
-	}
-
-	Tile* tile;
-	int x;
-	int y;
-	int score;
-	bool qwirkle;
 };
 
 #endif // ASSIGN2_GAMEENGINE_H

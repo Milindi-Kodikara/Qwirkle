@@ -1,0 +1,53 @@
+Welcome to Qwirkle!
+-------------------
+
+Menu
+----
+1. New Game
+2. Load Game
+3. Show Student Information
+4. Quit
+
+> 
+Enter the filename from which to load a game
+> 
+Qwirkle game successfully loaded
+
+PlayerOne, it's your turn
+Score for PlayerOne: 2
+Score for PlayerTwo: 1
+   0  1  2  3  4  5  6  7  
+  -------------------------
+A |  |  |  |  |  |  |  |  |
+B |  |  |[91mR2[0m|[91mR3[0m|[91mR4[0m|[91mR5[0m|[91mR6[0m|  |
+C |  |[38;5;202mO1[0m|[38;5;202mO2[0m|[38;5;202mO3[0m|[38;5;202mO4[0m|[38;5;202mO5[0m|[38;5;202mO6[0m|  |
+D |  |[93mY1[0m|[93mY2[0m|[93mY3[0m|[93mY4[0m|[93mY5[0m|[93mY6[0m|  |
+E |  |[92mG1[0m|[92mG2[0m|[92mG3[0m|[92mG4[0m|[92mG5[0m|[92mG6[0m|  |
+F |  |[96mB1[0m|[96mB2[0m|[96mB3[0m|[96mB4[0m|[96mB5[0m|[96mB6[0m|  |
+G |  |[95mP1[0m|[95mP2[0m|[95mP3[0m|[95mP4[0m|[95mP5[0m|[95mP6[0m|  |
+H |  |  |  |  |  |  |  |  |
+
+Your hand is
+[91mR1[0m,[91mR2[0m
+> 
+QWIRKLE!!!
+
+Stalemate reached...
+
+Game Over
+Final board:
+   0  1  2  3  4  5  6  7  
+  -------------------------
+A |  |  |  |  |  |  |  |  |
+B |  |[91mR1[0m|[91mR2[0m|[91mR3[0m|[91mR4[0m|[91mR5[0m|[91mR6[0m|  |
+C |  |[38;5;202mO1[0m|[38;5;202mO2[0m|[38;5;202mO3[0m|[38;5;202mO4[0m|[38;5;202mO5[0m|[38;5;202mO6[0m|  |
+D |  |[93mY1[0m|[93mY2[0m|[93mY3[0m|[93mY4[0m|[93mY5[0m|[93mY6[0m|  |
+E |  |[92mG1[0m|[92mG2[0m|[92mG3[0m|[92mG4[0m|[92mG5[0m|[92mG6[0m|  |
+F |  |[96mB1[0m|[96mB2[0m|[96mB3[0m|[96mB4[0m|[96mB5[0m|[96mB6[0m|  |
+G |  |[95mP1[0m|[95mP2[0m|[95mP3[0m|[95mP4[0m|[95mP5[0m|[95mP6[0m|  |
+H |  |  |  |  |  |  |  |  |
+Score for PlayerOne is 26
+Score for PlayerTwo is 1
+Player PlayerOne won!
+
+Goodbye

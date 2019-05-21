@@ -11,13 +11,14 @@
 using std::cout;
 using std::endl;
 using std::string;
+using std::vector;
 
 void GameEngine::newGame()
 {
     // Initialises game state
 	viewX = 6;
 	viewY = 6;
-    players = std::vector<Player*>();
+    players = vector<Player*>();
 	exitGame = false;
 	playerTurnIndex = 0;
 	firstTile = true;
@@ -320,6 +321,30 @@ void GameEngine::runGame()
 		else processAITurn();
 		playerTurnIndex = (playerTurnIndex == (int)(players.size() - 1)) ?
 			0 : playerTurnIndex + 1;
+		stalemateCheck();
+	}
+}
+
+void GameEngine::stalemateCheck()
+{
+	bool possiblePlacement = false;
+	for (unsigned int i = 0; i < players.size() && !possiblePlacement; ++i)
+	{
+		// If there is a possible placement
+		if (findPossiblePlacements(players[i]->hand.toVector()).size() != 0)
+		{
+			possiblePlacement = true;
+		}
+	}
+
+	// If neither the tilebag nor any player's hand 
+	// contains a tile that can be placed
+	if (!possiblePlacement && 
+		findPossiblePlacements(tileBag.toVector()).size() == 0)
+	{
+		cout << "\nStalemate reached..." << endl;
+		gameOver();
+		exitGame = true;
 	}
 }
 
@@ -341,7 +366,7 @@ void GameEngine::getInput()
 
 		if (input.size() != 0)
 		{
-			std::vector<string> commands;
+			vector<string> commands;
 			std::istringstream iss(input);
 			string word;
 
@@ -534,7 +559,7 @@ void GameEngine::displayGameState()
 void GameEngine::processAITurn()
 {
 	Player* player = players[playerTurnIndex];
-	std::vector<Tile*> handVector = player->hand.toVector();
+	vector<Tile*> handVector = player->hand.toVector();
 	std::random_device rd;
 	std::mt19937 eng(rd());
 
@@ -562,27 +587,8 @@ void GameEngine::processAITurn()
 			std::uniform_real_distribution<>(0, 0.3) ,
 			std::uniform_real_distribution<>(0.3, 0.6) ,
 			std::uniform_real_distribution<>(0.6, 1) };
-		std::vector<Placement> validPlacements;
 
-		// Finds all valid placements
-		for (int x = 0; x < viewX; ++x)
-		{
-			for (int y = 0; y < viewY; ++y)
-			{
-				if (board[x][y] == nullptr)
-				{
-					for (Tile *tile : handVector)
-					{
-						bool qwirkle = false;
-						int score = testPlacement(tile, Position(x, y), qwirkle);
-						if (score > 0)
-						{
-							validPlacements.push_back(Placement(tile, x, y, score, qwirkle));
-						}
-					}
-				}
-			}
-		}
+		vector<Placement> validPlacements = findPossiblePlacements(handVector);
 
 		// Sorts placements in terms of score
 		sort(validPlacements.begin(), validPlacements.end(), Placement::compare);
@@ -600,7 +606,7 @@ void GameEngine::processAITurn()
 			Placement aiPlacement = validPlacements[round((validPlacements.size() - 1) * choiceDistributions[players[playerTurnIndex]->difficulty](eng))];
 
 			//checks if placement gives qwirkle
-			if (aiPlacement.qwirkle) cout << "QWIRKLE!!!" << endl;
+			if (aiPlacement.qwirkle) cout << "\nQWIRKLE!!!" << endl;
 
 			//Updates AI's score and places the tile
 			player->score += aiPlacement.score;
@@ -780,6 +786,32 @@ int GameEngine::testPlacement(Tile* tile, Position position, bool& qwirkle)
 	return score;
 }
 
+vector<Placement> GameEngine::findPossiblePlacements(vector<Tile*> tiles)
+{
+	vector<Placement> validPlacements;
+
+	for (int x = 0; x < viewX; ++x)
+	{
+		for (int y = 0; y < viewY; ++y)
+		{
+			// Tries every empty position in the board
+			if (board[x][y] == nullptr)
+			{
+				for (Tile *tile : tiles)
+				{
+					bool qwirkle = false;
+					int score = testPlacement(tile, Position(x, y), qwirkle);
+					if (score > 0)
+					{
+						validPlacements.push_back(Placement(tile, x, y, score, qwirkle));
+					}
+				}
+			}
+		}
+	}
+	return validPlacements;
+}
+
 bool GameEngine::placeTile(string tileLabel, string positionLabel)
 {
 	bool success = false;
@@ -817,7 +849,7 @@ bool GameEngine::placeTile(string tileLabel, string positionLabel)
                 // If placement was successful
                 if (score > 0)
                 {
-					if (qwirkle) cout << "QWIRKLE!!!" << endl;
+					if (qwirkle) cout << "\nQWIRKLE!!!" << endl;
 
                     // Score updating and tile placement
                     players[playerTurnIndex]->score += score;

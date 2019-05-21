@@ -101,6 +101,8 @@ public:
 	 */
     bool saveGame(std::string fileName);
 
+	void gameOver();
+
 	~GameEngine();
 
 
@@ -110,12 +112,6 @@ private:
     LinkedList tileBag;
 	std::vector<Player*> players;
 	int playerTurnIndex;
-
-	// Used for AI choice generation
-	std::uniform_real_distribution<> choiceDistributions[3] = { 
-		std::uniform_real_distribution<>(0, 0.3) , 
-		std::uniform_real_distribution<>(0.3, 0.6) , 
-		std::uniform_real_distribution<>(0.6, 1) };
 
 	int viewX;
 	int viewY;

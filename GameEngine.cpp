@@ -525,9 +525,9 @@ void GameEngine::displayGameState()
         cout << "Score for " << player->name << ": " << player->score << endl;
     }
 
-    cout << boardToString(true, false);
+	cout << boardToString(true, false) << endl;;
 
-    cout << "\n\nYour hand is" << endl;
+    cout << "\nYour hand is" << endl;
     cout << players[playerTurnIndex]->hand.display(true) << endl;
 }
 
@@ -557,6 +557,11 @@ void GameEngine::processAITurn()
 	}
 	else
 	{
+		// Used for AI choice generation
+		std::uniform_real_distribution<> choiceDistributions[3] = {
+			std::uniform_real_distribution<>(0, 0.3) ,
+			std::uniform_real_distribution<>(0.3, 0.6) ,
+			std::uniform_real_distribution<>(0.6, 1) };
 		std::vector<Placement> validPlacements;
 
 		// Finds all valid placements
@@ -609,26 +614,10 @@ void GameEngine::processAITurn()
 				player->hand.add_back(newTile);
 			}
 
-			//Game over checking
-			if (player->hand.isEmpty())
-			{
-				cout << "\nGame Over" << endl;
-				for (Player* currPlayer : players)
-				{
-					cout << "Score for " << currPlayer->name << " is " << currPlayer->score << endl;
-				}
-				sort(players.begin(), players.end(), Player::compare);
-				if (players[players.size() - 1]->score == players[players.size() - 2]->score)
-				{
-					cout << "Draw... " << endl;
-				}
-				else
-				{
-					cout << "Player " << (players[(players.size() - 1)])->name << " won!" << endl;
-				}
-				exitGame = true;
-			}
 			adjustBoard(Position(aiPlacement.x, aiPlacement.y));
+
+			//Game over checking
+			if (player->hand.isEmpty()) gameOver();
 		}
 	}
 }
@@ -842,32 +831,16 @@ bool GameEngine::placeTile(string tileLabel, string positionLabel)
                         players[playerTurnIndex]->hand.add_back(newTile);
                     }
 
-                    // Game over checking
-                    if (players[playerTurnIndex]->hand.isEmpty())
-                    {
-                        cout << "\nGame Over" << endl;
-                        for (Player* player : players)
-                        {
-                            cout << "Score for " << player->name << " is " << player->score << endl;
-                        }
-                        sort(players.begin(),players.end(),Player::compare);
-                        if (players[players.size()-1]->score == (players[players.size()-2]->score))
-                        {
-                            cout << "Draw... " << endl;
-                        }
-                        else
-                        {
-                            cout << "Player " << (players[(players.size() - 1)])->name << " won!" << endl;
-                        }
-                        exitGame = true;
-                    }
+					adjustBoard(*position);
+
+					// Game over checking
+					if (players[playerTurnIndex]->hand.isEmpty()) gameOver();
 					success = true;
                 }
             }
             delete position;
         }
     }
-	if (success) adjustBoard(*position);
     return success;
 }
 
@@ -914,6 +887,27 @@ bool GameEngine::saveGame(string fileName)
 	outFile << players[playerTurnIndex]->name << endl;
 	outFile.close();
 	return true;
+}
+
+void GameEngine::gameOver()
+{
+	cout << "\nGame Over" << endl;
+	cout << "Final board:" << endl;
+	cout << boardToString(true, false) << endl;
+	for (Player* currPlayer : players)
+	{
+		cout << "Score for " << currPlayer->name << " is " << currPlayer->score << endl;
+	}
+	sort(players.begin(), players.end(), Player::compare);
+	if (players[players.size() - 1]->score == players[players.size() - 2]->score)
+	{
+		cout << "Draw... " << endl;
+	}
+	else
+	{
+		cout << "Player " << (players[(players.size() - 1)])->name << " won!" << endl;
+	}
+	exitGame = true;
 }
 
 GameEngine::~GameEngine()

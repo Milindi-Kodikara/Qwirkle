@@ -16,7 +16,7 @@ Qwirkle game successfully loaded
 PlayerOne, it's your turn
 Score for PlayerOne: 0
 Score for PlayerTwo: 0
-    1  2  3  4  5  6  7
+    0  1  2  3  4  5  6
   ----------------------
 A |  |  |  |  |  |  |  |
 B |  |  |  |  |  |[91mR2[0m|  |
@@ -49,7 +49,7 @@ Invalid input
 PlayerTwo, it's your turn
 Score for PlayerOne: 2
 Score for PlayerTwo: 0
-    1  2  3  4  5  6  7  8
+    0  1  2  3  4  5  6  7
   -------------------------
 A |  |  |  |  |  |  |  |  |
 B |  |  |  |  |  |[91mR2[0m|  |  |
@@ -72,7 +72,7 @@ Your hand is
 PlayerOne, it's your turn
 Score for PlayerOne: 2
 Score for PlayerTwo: 2
-    1  2  3  4  5  6  7  8
+    0  1  2  3  4  5  6  7
   -------------------------
 A |  |  |  |  |  |  |  |  |
 B |  |  |  |  |  |[91mR2[0m|  |  |
@@ -95,7 +95,7 @@ Your hand is
 PlayerTwo, it's your turn
 Score for PlayerOne: 7
 Score for PlayerTwo: 2
-    1  2  3  4  5  6  7  8
+    0  1  2  3  4  5  6  7
   -------------------------
 A |  |  |  |  |  |  |  |  |
 B |  |  |  |  |  |[91mR2[0m|  |  |
@@ -118,7 +118,7 @@ Your hand is
 PlayerOne, it's your turn
 Score for PlayerOne: 7
 Score for PlayerTwo: 12
-    1  2  3  4  5  6  7  8
+    0  1  2  3  4  5  6  7
   -------------------------
 A |  |  |  |  |  |  |  |  |
 B |  |  |  |  |  |[91mR2[0m|  |  |
@@ -143,7 +143,7 @@ QWIRKLE!!!
 PlayerTwo, it's your turn
 Score for PlayerOne: 13
 Score for PlayerTwo: 12
-    1  2  3  4  5  6  7  8
+    0  1  2  3  4  5  6  7
   -------------------------
 A |  |  |  |  |  |  |  |  |
 B |  |  |  |  |  |[91mR2[0m|  |  |

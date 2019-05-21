@@ -1,15 +1,15 @@
 2
 tests/placeTile1.save
 place R5 at F26
-place R6 at E2
-place R5 at L2
-place O1 at L2
+place R6 at E1
+place R5 at L1
+place O1 at L1
+place O1 at C5
 place O1 at C6
-place O1 at C7
-place R1 at G2
-place O6 at M6
-place R6 at F6
-place O3 at M7
+place R1 at G1
+place O6 at M5
+place R6 at F5
+place O3 at M6
 quit
 
 

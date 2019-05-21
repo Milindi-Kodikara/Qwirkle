@@ -897,7 +897,7 @@ bool GameEngine::replaceTile(string tileLabel)
         }
         else
         {
-            cout << "Tile Bag is empty!" << endl;
+            cout << "\nTile Bag is empty!" << endl;
         }
     }
     return replaced;

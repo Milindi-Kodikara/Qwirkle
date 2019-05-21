@@ -132,7 +132,8 @@ void GameEngine::newGame()
 
 bool GameEngine::loadGame()
 {
-    exitGame = false;
+	board = nullptr;
+	exitGame = false;
 	std::ifstream file;
 	string input;
 	bool valid = true;
@@ -219,7 +220,7 @@ bool GameEngine::loadGame()
 		if (valid)
 		{
 			//Initialize the board
-			board = new Tile * *[BOARD_SIZE];
+			board = new Tile**[BOARD_SIZE];
 			for (int i = 0; i < BOARD_SIZE; ++i)
 			{
 				board[i] = new Tile * [BOARD_SIZE];
@@ -298,7 +299,10 @@ bool GameEngine::loadGame()
 				}
 				if (!found) valid = false;
 			}
-			else valid = false;
+			else
+			{
+				valid = false;
+			}
 		}
 
 	}
@@ -946,19 +950,22 @@ GameEngine::~GameEngine()
 {
 	for (Player* player : players)
 	{
-		delete player;
+		if (player != nullptr) delete player;
 	}
 
-	for (int x = 0; x < viewX; ++x)
+	if (board != nullptr)
 	{
-		for (int y = 0; y < viewY; ++y)
+		for (int x = 0; x < BOARD_SIZE; ++x)
 		{
-			if (board[x][y] != nullptr)
+			for (int y = 0; y < BOARD_SIZE; ++y)
 			{
-				delete board[x][y];
+				if (board[x][y] != nullptr)
+				{
+					delete board[x][y];
+				}
 			}
+			delete[] board[x];
 		}
-		delete[] board[x];
+		delete[] board;
 	}
-	delete[] board;
 }

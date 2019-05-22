@@ -8,7 +8,8 @@
 #include "Position.h"
 #include "Player.h"
 
-#define BOARD_SIZE  26
+#define MAX_BOARD_SIZE  26
+#define INITIAL_BOARD_SIZE 5
 #define MAX_PLAYERS 12
 
 struct Placement
@@ -41,15 +42,15 @@ public:
 	 * Requests a file name from the user, uses the contents
 	 * to initialise the game state and then continues with the
 	 * game. If the file does not exist or the format is invalid,
-	 * then the user is asked for a different file name until a 
-	 * correct one is inputted or they quit with Ctrl D. Returns
-	 * whether the load was successful or not
+	 * then the load is aborted. Returns whether the load was 
+	 * successful
 	 */
     bool loadGame();
 
 	/*
-	 * Contains the main game loop, performing each player's turn
-	 * until the game ends
+	 * Contains the main game loop, displaying the game state, performing
+	 * the current player's turn, checking for a stalemate, and then 
+	 * repeating until the game is over
 	 */
 	void runGame();
 
@@ -61,41 +62,47 @@ public:
 
 	/*
 	 * Prompts the player for input, then processes and validates the
-	 * supplied command, calling corresponding function if the input
-	 * is valid. If the input is invalid, the player is re-prompted for
-	 * input until valid input is supplied
+	 * syntax of the supplied command, calling the requisite functions
+	 * and passing them the parsed values if valid, and re-prompting the
+	 * user for input if it is invalid
 	 */
     void getInput();
 
 	/*
 	 * Returns a string that contains the formatted representation of the
-	 * board with a size appropriate for the number of tiles in the board
-	 * or a full 26 * 26 board for saving the game.
+	 * board, with either the full board or the shrunk version and with 
+	 * colour or no colour depending on the parameters supplied
 	 */
 	std::string boardToString(bool colouredOutput, bool fullBoard);
 
 	/*
-	 * Moves the tiles of the board to the right, down, left-most, or
-	 * right-most of the board when needed.
+	 * Adjusts the position of all the tiles in the board, as well as viewX
+	 * and viewY to accommodate for a tile placed at the supplied position,
+	 * ensuring a single space border around the edge of the board if possible
 	 */
 	void adjustBoard(Position position);
 
+
+	/*
+	 * Used to shrink the board as small as possible after loading in a game
+	 */
 	void shrinkBoard();
 
     /*
-     * Prints out the details of the current game state as specified in
-	 * the assignment specification
+     * Prints out the current player's name, each player's score, the current 
+	 * board state and the current player's hand
      */
     void displayGameState();
 
 	/*
-	 * Completes the AI's turn
+	 * Completes an AI player's turn (explained exactly how in the report)
 	 */
 	void processAITurn();
 
 	/*
 	 * Tests if the specified tile can be placed at the specified postition,
-	 * return the resulting score if it can and returning 0 if it can't
+	 * return the resulting score if it can and returning 0 if it can't. The
+	 * qwirkle parameter is updated if the placement would result in a qwirkle
 	 */
 	int testPlacement(Tile* tile, Position position, bool& qwirkle);
 
@@ -124,24 +131,29 @@ public:
     bool replaceTile(std::string tileLabel);
 
 	/*
-	 * Opens the specified file and saves within it the current game state
-	 * using the format specified in the assignment specification. Returns
-	 * whether the save was successful
+	 * Opens the specified file and saves within it the number of players,
+	 * each player's name, score, hand and difficulty, the board state, the
+	 * tilebag, and the name of the current player
 	 */
-    bool saveGame(std::string fileName);
+    void saveGame(std::string fileName);
 
+	/*
+	 * Used to print out the game over message, final game state and scores,
+	 * and name the winning player
+	 */
 	void gameOver();
 
 	~GameEngine();
 
 
 private:
-	//2D array of tiles as board 26*26
+	// 2D array of tile pointers
     Tile*** board;
     LinkedList tileBag;
 	std::vector<Player*> players;
 	int playerTurnIndex;
 
+	// Holds the current display dimensions of the board
 	int viewX;
 	int viewY;
 	

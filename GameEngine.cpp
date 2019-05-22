@@ -16,8 +16,8 @@ using std::vector;
 void GameEngine::newGame()
 {
     // Initialises game state
-	viewX = 6;
-	viewY = 6;
+	viewX = INITIAL_BOARD_SIZE;
+	viewY = INITIAL_BOARD_SIZE;
     players = vector<Player*>();
 	exitGame = false;
 	playerTurnIndex = 0;
@@ -117,11 +117,11 @@ void GameEngine::newGame()
     }
 
     // Creates the empty board
-    board = new Tile**[BOARD_SIZE];
-    for (int i = 0; i < BOARD_SIZE; ++i)
+    board = new Tile**[MAX_BOARD_SIZE];
+    for (int i = 0; i < MAX_BOARD_SIZE; ++i)
     {
-        board[i] = new Tile*[BOARD_SIZE];
-        for (int j = 0; j < BOARD_SIZE; ++j)
+        board[i] = new Tile*[MAX_BOARD_SIZE];
+        for (int j = 0; j < MAX_BOARD_SIZE; ++j)
         {
             board[i][j] = nullptr;
         }
@@ -207,9 +207,9 @@ bool GameEngine::loadGame()
 					if (!file.eof())
 					{
 						if (input == "EASY") player->difficulty = EASY;
-						if (input == "MEDIUM") player->difficulty = MEDIUM;
-						if (input == "HARD") player->difficulty = HARD;
-						if (input == "HUMAN") player->difficulty = HUMAN;
+						else if (input == "MEDIUM") player->difficulty = MEDIUM;
+						else if (input == "HARD") player->difficulty = HARD;
+						else if (input == "HUMAN") player->difficulty = HUMAN;
 						else valid = false;
 					}
 					else valid = false;
@@ -220,18 +220,18 @@ bool GameEngine::loadGame()
 		if (valid)
 		{
 			//Initialize the board
-			board = new Tile**[BOARD_SIZE];
-			for (int i = 0; i < BOARD_SIZE; ++i)
+			board = new Tile**[MAX_BOARD_SIZE];
+			for (int i = 0; i < MAX_BOARD_SIZE; ++i)
 			{
-				board[i] = new Tile * [BOARD_SIZE];
-				for (int j = 0; j < BOARD_SIZE; j++)
+				board[i] = new Tile * [MAX_BOARD_SIZE];
+				for (int j = 0; j < MAX_BOARD_SIZE; j++)
 				{
 					board[i][j] = nullptr;
 				}
 			}
 			getline(file, input);
 
-			if (!file.eof() && input == "   0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25")
+			if (!file.eof() && input == "   0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 ")
 			{
 				getline(file, input);
 				if (file.eof() || input != "  -------------------------------------------------------------------------------") valid = false;
@@ -241,10 +241,10 @@ bool GameEngine::loadGame()
 			{
 				firstTile = true;
 				string rowLabel = "A |";
-				for (int i = 0; i < BOARD_SIZE && valid; i++)
+				for (int i = 0; i < MAX_BOARD_SIZE && valid; i++)
 				{
 					getline(file, input);
-					if (file.eof() || input.substr(0, 3) != rowLabel || input.size() > (3 + (BOARD_SIZE * 3))) valid = false;
+					if (file.eof() || input.substr(0, 3) != rowLabel || input.size() > (3 + (MAX_BOARD_SIZE * 3))) valid = false;
 					//Check all tiles in board are valid
 					for (unsigned int j = 3; j < input.size() && valid; j += 3)
 					{
@@ -391,13 +391,17 @@ void GameEngine::getInput()
 			{
 				if (commands[0] == "replace")
 				{
-					// Input is valid if the action was successful
 					valid = replaceTile(commands[1]);
 				}
 				else if (commands[0] == "save")
 				{
-					// Input is valid if the action was successful
-					valid = saveGame(commands[1]);
+					saveGame(commands[1]);
+					valid = true;
+
+					// Allows the current player's information to 
+					// be displayed again
+					playerTurnIndex = (playerTurnIndex == 0 ?
+						players.size() - 1 : playerTurnIndex - 1);
 				}
 			}
 			else if (commands.size() == 4)
@@ -416,8 +420,8 @@ void GameEngine::getInput()
 
 string GameEngine::boardToString(bool colouredOutput, bool fullBoard)
 {
-	int width = (fullBoard ? BOARD_SIZE : viewX);
-	int height = (fullBoard ? BOARD_SIZE : viewY);
+	int width = (fullBoard ? MAX_BOARD_SIZE : viewX);
+	int height = (fullBoard ? MAX_BOARD_SIZE : viewY);
 	
 	std::ostringstream output;
 
@@ -458,11 +462,11 @@ void GameEngine::adjustBoard(Position position)
 	int yOffset = 0;
 
 	// Determines the x offset and updates viewX
-	if (position.x == 0 && viewX != BOARD_SIZE)
+	if (position.x == 0 && viewX != MAX_BOARD_SIZE)
 	{
 		xOffset = 1;
 		bool found = false;
-		for (int i = 0; i < BOARD_SIZE && !found; ++i)
+		for (int i = 0; i < MAX_BOARD_SIZE && !found; ++i)
 		{
 			if (board[viewX - 2][i] != nullptr)
 			{
@@ -471,14 +475,14 @@ void GameEngine::adjustBoard(Position position)
 			}
 		}
 	}
-	else if (position.x == viewX - 1 && viewX != BOARD_SIZE) ++viewX;
+	else if (position.x == viewX - 1 && viewX != MAX_BOARD_SIZE) ++viewX;
 
 	// Determines the y offset and updates viewY
-	if (position.y == 0 && viewY != BOARD_SIZE)
+	if (position.y == 0 && viewY != MAX_BOARD_SIZE)
 	{
 		yOffset = 1;
 		bool found = false;
-		for (int i = 0; i < BOARD_SIZE && !found; ++i)
+		for (int i = 0; i < MAX_BOARD_SIZE && !found; ++i)
 		{
 			if (board[i][viewY - 2] != nullptr)
 			{
@@ -487,14 +491,14 @@ void GameEngine::adjustBoard(Position position)
 			}
 		}
 	}
-	else if (position.y == viewY - 1 && viewY != BOARD_SIZE) ++viewY;
+	else if (position.y == viewY - 1 && viewY != MAX_BOARD_SIZE) ++viewY;
 
 	// Adjust tiles as needed
 	if (xOffset == 1 || yOffset == 1)
 	{
-		for (int i = BOARD_SIZE - 1; i >= 0; --i)
+		for (int i = MAX_BOARD_SIZE - 1; i >= 0; --i)
 		{
-			for (int j = BOARD_SIZE - 1; j >= 0; --j)
+			for (int j = MAX_BOARD_SIZE - 1; j >= 0; --j)
 			{
 				if (board[i][j] != nullptr)
 				{
@@ -508,12 +512,12 @@ void GameEngine::adjustBoard(Position position)
 
 void GameEngine::shrinkBoard() 
 {
-	int minX = BOARD_SIZE;
-	int minY = BOARD_SIZE;
+	int minX = MAX_BOARD_SIZE;
+	int minY = MAX_BOARD_SIZE;
 	
-	for (int i = 0; i < BOARD_SIZE; ++i)
+	for (int i = 0; i < MAX_BOARD_SIZE; ++i)
 	{
-		for (int j = 0; j < BOARD_SIZE; ++j)
+		for (int j = 0; j < MAX_BOARD_SIZE; ++j)
 		{
 			if (board[i][j] != nullptr)
 			{
@@ -526,9 +530,9 @@ void GameEngine::shrinkBoard()
 	int maxX = 0;
 	int maxY = 0;
 
-	for (int i = 0; i < BOARD_SIZE; ++i)
+	for (int i = 0; i < MAX_BOARD_SIZE; ++i)
 	{
-		for (int j = 0; j < BOARD_SIZE; ++j)
+		for (int j = 0; j < MAX_BOARD_SIZE; ++j)
 		{
 			if (board[i][j] != nullptr)
 			{
@@ -540,9 +544,18 @@ void GameEngine::shrinkBoard()
 		}
 	}
 
-	viewX = std::min(maxX + 2, BOARD_SIZE);
-	viewY = std::min(maxY + 2, BOARD_SIZE);
-	adjustBoard(Position(0, 0));
+	// If the board was emtpy
+	if (minX == MAX_BOARD_SIZE)
+	{
+		viewX = INITIAL_BOARD_SIZE;
+		viewY = INITIAL_BOARD_SIZE;
+	}
+	else
+	{
+		viewX = std::min(maxX + 2, MAX_BOARD_SIZE);
+		viewY = std::min(maxY + 2, MAX_BOARD_SIZE);
+		adjustBoard(Position(0, 0));
+	}
 }
 
 void GameEngine::displayGameState()
@@ -576,7 +589,7 @@ void GameEngine::processAITurn()
 		player->hand.remove(tile);
 
 		// Places it in the center
-		board[3][3] = tile;
+		board[2][2] = tile;
 		Tile* newTile = tileBag.pop_front();
 		if (newTile != nullptr)
 		{
@@ -668,8 +681,8 @@ int GameEngine::testPlacement(Tile* tile, Position position, bool& qwirkle)
 		for (int i = 0; i < 4 && valid; ++i)
 		{
 			Position offsetPosition = position + offsets[i];
-			if (offsetPosition.x < BOARD_SIZE && offsetPosition.x >= 0
-				&& offsetPosition.y < BOARD_SIZE && offsetPosition.y >= 0)
+			if (offsetPosition.x < MAX_BOARD_SIZE && offsetPosition.x >= 0
+				&& offsetPosition.y < MAX_BOARD_SIZE && offsetPosition.y >= 0)
 			{
 				Tile* currTile = board[offsetPosition.x][offsetPosition.y];
 
@@ -732,8 +745,8 @@ int GameEngine::testPlacement(Tile* tile, Position position, bool& qwirkle)
 					Position currPosition = position + offsets[i];
 					Tile* currTile;
 					bool empty = false;
-					while (valid && currPosition.x < BOARD_SIZE && currPosition.x >= 0
-						&& currPosition.y < BOARD_SIZE && currPosition.y >= 0 && !empty)
+					while (valid && currPosition.x < MAX_BOARD_SIZE && currPosition.x >= 0
+						&& currPosition.y < MAX_BOARD_SIZE && currPosition.y >= 0 && !empty)
 					{
 						currTile = board[currPosition.x][currPosition.y];
 						if (currTile != nullptr)
@@ -903,11 +916,10 @@ bool GameEngine::replaceTile(string tileLabel)
     return replaced;
 }
 
-bool GameEngine::saveGame(string fileName)
+void GameEngine::saveGame(string fileName)
 {
 	std::ofstream outFile(fileName);
-	// Line below may be uneeded
-	// outFile.open(fileName, std::ofstream::app);
+	outFile << players.size() << endl;
 	for (Player* player : players)
 	{
 		outFile << player->name << endl;
@@ -920,9 +932,9 @@ bool GameEngine::saveGame(string fileName)
 	}
 	outFile << boardToString(false, true) << endl;
 	outFile << tileBag.display(false) << endl;
-	outFile << players[playerTurnIndex]->name << endl;
+	outFile << players[playerTurnIndex]->name;
 	outFile.close();
-	return true;
+	cout << "\nGame saved" << endl;
 }
 
 void GameEngine::gameOver()
@@ -955,9 +967,9 @@ GameEngine::~GameEngine()
 
 	if (board != nullptr)
 	{
-		for (int x = 0; x < BOARD_SIZE; ++x)
+		for (int x = 0; x < MAX_BOARD_SIZE; ++x)
 		{
-			for (int y = 0; y < BOARD_SIZE; ++y)
+			for (int y = 0; y < MAX_BOARD_SIZE; ++y)
 			{
 				if (board[x][y] != nullptr)
 				{

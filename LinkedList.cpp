@@ -22,7 +22,7 @@ LinkedList::~LinkedList()
 	}
 }
 
-void LinkedList::add_back(Tile* tile)
+void LinkedList::addBack(Tile* tile)
 {
 	Node* temp = new Node(tile, nullptr);
 	if (head == nullptr)
@@ -38,7 +38,7 @@ void LinkedList::add_back(Tile* tile)
 	}
 }
 
-Tile* LinkedList::pop_front()
+Tile* LinkedList::popFront()
 {
 	Tile* tempTile = nullptr;
 	if (head != nullptr)

@@ -93,8 +93,8 @@ void GameEngine::newGame()
     {
         for (int j = 1; j <= shapes; j++)
         {
-            temp.add_back(new Tile(colours[i], j));
-            temp.add_back(new Tile(colours[i], j));
+            temp.addBack(new Tile(colours[i], j));
+            temp.addBack(new Tile(colours[i], j));
         }
     }
 
@@ -105,14 +105,14 @@ void GameEngine::newGame()
     for (int i = 72; i > 0; i--)
     {
         std::uniform_int_distribution<> distr(0, i - 1);
-        tileBag.add_back(temp.removeAt(distr(eng)));
+        tileBag.addBack(temp.removeAt(distr(eng)));
     }
     //distribute six tiles to each player
     for (Player* player : players)
     {
         for (int i = 0; i < 6; ++i)
         {
-            player->hand.add_back(tileBag.pop_front());
+            player->hand.addBack(tileBag.popFront());
         }
     }
 
@@ -211,7 +211,7 @@ bool GameEngine::loadGame()
 							Tile* tile = Tile::stringToTile(input[j], input[j + 1]);
 							if (tile != nullptr)
 							{
-								player->hand.add_back(tile);
+								player->hand.addBack(tile);
 								++tileCount;
 							}
 							else
@@ -340,7 +340,7 @@ bool GameEngine::loadGame()
 					Tile* tile = Tile::stringToTile(input[i], input[i + 1]);
 					if (tile != nullptr)
 					{
-						tileBag.add_back(tile);
+						tileBag.addBack(tile);
 					}
 					else
 					{
@@ -672,10 +672,10 @@ void GameEngine::processAITurn()
 
 		// Places it in the center
 		board[2][2] = tile;
-		Tile* newTile = tileBag.pop_front();
+		Tile* newTile = tileBag.popFront();
 		if (newTile != nullptr)
 		{
-			player->hand.add_back(newTile);
+			player->hand.addBack(newTile);
 		}
 		firstTile = false;
 	}
@@ -713,10 +713,10 @@ void GameEngine::processAITurn()
 			board[aiPlacement.x][aiPlacement.y] = aiPlacement.tile;
 
 			//Replenishes the AI's hand
-			Tile *newTile = tileBag.pop_front();
+			Tile *newTile = tileBag.popFront();
 			if (newTile != nullptr)
 			{
-				player->hand.add_back(newTile);
+				player->hand.addBack(newTile);
 			}
 
 			adjustBoard(Position(aiPlacement.x, aiPlacement.y));
@@ -931,10 +931,10 @@ bool GameEngine::placeTile(string tileLabel, string positionLabel)
                     ++players[playerTurnIndex]->score;
                     players[playerTurnIndex]->hand.remove(tile);
                     board[position->x][position->y] = tile;
-                    Tile* newTile = tileBag.pop_front();
+                    Tile* newTile = tileBag.popFront();
                     if (newTile != nullptr)
                     {
-                        players[playerTurnIndex]->hand.add_back(newTile);
+                        players[playerTurnIndex]->hand.addBack(newTile);
                     }
                     firstTile = false;
                     success = true;
@@ -956,10 +956,10 @@ bool GameEngine::placeTile(string tileLabel, string positionLabel)
                     board[position->x][position->y] = tile;
 
                     // Tile replenishment
-                    Tile* newTile = tileBag.pop_front();
+                    Tile* newTile = tileBag.popFront();
                     if (newTile != nullptr)
                     {
-                        players[playerTurnIndex]->hand.add_back(newTile);
+                        players[playerTurnIndex]->hand.addBack(newTile);
                     }
 
 					adjustBoard(*position);
@@ -984,10 +984,10 @@ bool GameEngine::replaceTile(string tileLabel)
     {
         if (!tileBag.isEmpty())
         {
-            Tile* newTile = tileBag.pop_front();
+            Tile* newTile = tileBag.popFront();
             players[playerTurnIndex]->hand.remove(tile);
-            tileBag.add_back(tile);
-            players[playerTurnIndex]->hand.add_back(newTile);
+            tileBag.addBack(tile);
+            players[playerTurnIndex]->hand.addBack(newTile);
             replaced = true;
         }
         else

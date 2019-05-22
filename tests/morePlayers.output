@@ -1,0 +1,90 @@
+Welcome to Qwirkle!
+-------------------
+
+Menu
+----
+1. New Game
+2. Load Game
+3. Show Student Information
+4. Quit
+
+>
+Enter the filename from which to load a game
+>
+Qwirkle game successfully loaded
+
+PlayerOne, it's your turn
+Score for PlayerOne: 1
+Score for PlayerTwo: 2
+Score for PlayerThree: 3
+Score for PlayerFour: 4
+   0  1  2  3  4  5  
+  -------------------
+A |  |  |  |  |  |  |
+B |  |[91mR1[0m|[91mR2[0m|[91mR3[0m|[91mR4[0m|  |
+C |  |  |  |  |  |  |
+
+Your hand is
+[38;5;202mO1[0m,[91mR1[0m
+>
+PlayerTwo, it's your turn
+Score for PlayerOne: 3
+Score for PlayerTwo: 2
+Score for PlayerThree: 3
+Score for PlayerFour: 4
+   0  1  2  3  4  5  
+  -------------------
+A |  |  |  |  |  |  |
+B |  |[91mR1[0m|[91mR2[0m|[91mR3[0m|[91mR4[0m|  |
+C |  |[38;5;202mO1[0m|  |  |  |  |
+D |  |  |  |  |  |  |
+
+Your hand is
+[38;5;202mO2[0m,[91mR2[0m
+>
+PlayerThree, it's your turn
+Score for PlayerOne: 3
+Score for PlayerTwo: 6
+Score for PlayerThree: 3
+Score for PlayerFour: 4
+   0  1  2  3  4  5  
+  -------------------
+A |  |  |  |  |  |  |
+B |  |[91mR1[0m|[91mR2[0m|[91mR3[0m|[91mR4[0m|  |
+C |  |[38;5;202mO1[0m|[38;5;202mO2[0m|  |  |  |
+D |  |  |  |  |  |  |
+
+Your hand is
+[38;5;202mO3[0m,[91mR3[0m
+>
+PlayerFour, it's your turn
+Score for PlayerOne: 3
+Score for PlayerTwo: 6
+Score for PlayerThree: 8
+Score for PlayerFour: 4
+   0  1  2  3  4  5  
+  -------------------
+A |  |  |  |  |  |  |
+B |  |[91mR1[0m|[91mR2[0m|[91mR3[0m|[91mR4[0m|  |
+C |  |[38;5;202mO1[0m|[38;5;202mO2[0m|[38;5;202mO3[0m|  |  |
+D |  |  |  |  |  |  |
+
+Your hand is
+[38;5;202mO4[0m,[91mR4[0m
+>
+PlayerOne, it's your turn
+Score for PlayerOne: 3
+Score for PlayerTwo: 6
+Score for PlayerThree: 8
+Score for PlayerFour: 10
+   0  1  2  3  4  5  
+  -------------------
+A |  |  |  |  |  |  |
+B |  |[91mR1[0m|[91mR2[0m|[91mR3[0m|[91mR4[0m|  |
+C |  |[38;5;202mO1[0m|[38;5;202mO2[0m|[38;5;202mO3[0m|[38;5;202mO4[0m|  |
+D |  |  |  |  |  |  |
+
+Your hand is
+[91mR1[0m,[91mR5[0m
+>
+Goodbye

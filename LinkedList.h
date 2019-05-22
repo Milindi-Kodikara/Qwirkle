@@ -12,11 +12,11 @@ public:
 	~LinkedList();
 
 	// Adds the supplied tile to the back of the list
-	void add_back(Tile* tile);
+	void addBack(Tile* tile);
 
 	// Removes the tile at the start of the list and returns it
 	// Returns nullptr if the list is empty
-	Tile* pop_front();
+	Tile* popFront();
 
 	// Searches through the list for the tile with the specified
 	// tileLabel, returning it if it is found and returning nullptr

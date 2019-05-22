@@ -12,22 +12,7 @@
 #define INITIAL_BOARD_SIZE 5
 #define MAX_PLAYERS 12
 
-struct Placement
-{
-	Placement(Tile* tile, int x, int y, int score, bool qwirkle)
-		: tile{ tile }, x{ x }, y{ y }, score{ score }, qwirkle{ qwirkle }{}
-
-	static bool compare(Placement& p1, Placement& p2)
-	{
-		return p1.score < p2.score;
-	}
-
-	Tile* tile;
-	int x;
-	int y;
-	int score;
-	bool qwirkle;
-};
+struct Placement;
 
 class GameEngine
 {
@@ -159,6 +144,23 @@ private:
 	
 	bool firstTile;
 	bool exitGame;
+};
+
+struct Placement
+{
+	Placement(Tile* tile, int x, int y, int score, bool qwirkle)
+		: tile{ tile }, x{ x }, y{ y }, score{ score }, qwirkle{ qwirkle }{}
+
+	static bool compare(Placement& p1, Placement& p2)
+	{
+		return p1.score < p2.score;
+	}
+
+	Tile* tile;
+	int x;
+	int y;
+	int score;
+	bool qwirkle;
 };
 
 #endif // ASSIGN2_GAMEENGINE_H

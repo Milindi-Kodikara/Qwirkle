@@ -11,7 +11,7 @@ Menu
 > 
 Enter the filename from which to load a game
 > 
-Invalid file, try again
+Invalid file: file does not exist
 
 Menu
 ----
@@ -23,7 +23,7 @@ Menu
 > 
 Enter the filename from which to load a game
 > 
-Invalid file, try again
+Invalid file: invalid number of players
 
 Menu
 ----
@@ -35,7 +35,7 @@ Menu
 > 
 Enter the filename from which to load a game
 > 
-Invalid file, try again
+Invalid file: invalid player 1 name
 
 Menu
 ----
@@ -47,7 +47,7 @@ Menu
 > 
 Enter the filename from which to load a game
 > 
-Invalid file, try again
+Invalid file: invalid player 1 score
 
 Menu
 ----
@@ -59,7 +59,7 @@ Menu
 > 
 Enter the filename from which to load a game
 > 
-Invalid file, try again
+Invalid file: invalid player 2 hand
 
 Menu
 ----
@@ -71,7 +71,7 @@ Menu
 > 
 Enter the filename from which to load a game
 > 
-Invalid file, try again
+Invalid file: invalid player 2 difficulty
 
 Menu
 ----
@@ -83,7 +83,7 @@ Menu
 > 
 Enter the filename from which to load a game
 > 
-Invalid file, try again
+Invalid file: invalid board format
 
 Menu
 ----
@@ -95,7 +95,7 @@ Menu
 > 
 Enter the filename from which to load a game
 > 
-Invalid file, try again
+Invalid file: invalid tilebag
 
 Menu
 ----
@@ -107,19 +107,7 @@ Menu
 > 
 Enter the filename from which to load a game
 > 
-Invalid file, try again
-
-Menu
-----
-1. New Game
-2. Load Game
-3. Show Student Information
-4. Quit
-
-> 
-Enter the filename from which to load a game
-> 
-Invalid file, try again
+Invalid file: invalid current player name
 
 Menu
 ----

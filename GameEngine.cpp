@@ -150,9 +150,20 @@ bool GameEngine::loadGame()
 		int numberOfPlayers;
 		
 		//Check if the first line is a vaild number of players
-		if (!file.eof() && std::regex_match(input, std::regex("[0-9]+"))) 
+		if (!file.eof() && std::regex_match(input, std::regex("[0-9]+")))
+		{
 			std::istringstream(input) >> numberOfPlayers;
-		else valid = false;
+			if (numberOfPlayers < 2 || numberOfPlayers > MAX_PLAYERS)
+			{
+				cout << "\nInvalid file: invalid number of players" << endl;
+				valid = false;
+			}
+		}
+		else
+		{
+			cout << "\nInvalid file: invalid number of players" << endl;
+			valid = false;
+		}
 
 		if (valid)
 		{
@@ -167,7 +178,12 @@ bool GameEngine::loadGame()
 				{
 					player = new Player(input);
 				}
-				else valid = false;
+				else
+				{
+					cout << "\nInvalid file: invalid player " << i + 1 << " name" 
+						<< endl;
+					valid = false;
+				}
 
 				// Checks player score
 				if (valid)
@@ -175,7 +191,12 @@ bool GameEngine::loadGame()
 					getline(file, input);
 					if (!file.eof() && std::regex_match(input, std::regex("[0-9]+"))) 
 						std::istringstream(input) >> player->score;
-					else valid = false;
+					else
+					{
+						cout << "\nInvalid file: invalid player " << i + 1 
+							<< " score" << endl;
+						valid = false;
+					}
 				}
 
 				// Checks player hand
@@ -185,19 +206,34 @@ bool GameEngine::loadGame()
 					if (!file.eof())
 					{
 						int tileCount = 0;
-						for (unsigned int i = 0; i < input.size() && valid; i += 3)
+						for (unsigned int j = 0; j < input.size() && valid; j += 3)
 						{
-							Tile* tile = Tile::stringToTile(input[i], input[i + 1]);
-							if (tile == nullptr) valid = false;
-							else
+							Tile* tile = Tile::stringToTile(input[j], input[j + 1]);
+							if (tile != nullptr)
 							{
 								player->hand.add_back(tile);
 								++tileCount;
 							}
-							if (tileCount > 6) valid = false;
+							else
+							{
+								cout << "\nInvalid file: invalid player " << i + 1 
+									<< " hand" << endl;
+								valid = false;
+							}
+							if (tileCount > 6)
+							{
+								cout << "\nInvalid file: invalid player " << i + 1 
+									<< " hand" << endl;
+								valid = false;
+							}
 						}
 					}
-					else valid = false;
+					else
+					{
+						cout << "\nInvalid file: invalid player " << i + 1 << " hand" 
+							<< endl;
+						valid = false;
+					}
 				}
 
 				// Checks if player is an AI + difficulty
@@ -210,9 +246,19 @@ bool GameEngine::loadGame()
 						else if (input == "MEDIUM") player->difficulty = MEDIUM;
 						else if (input == "HARD") player->difficulty = HARD;
 						else if (input == "HUMAN") player->difficulty = HUMAN;
-						else valid = false;
+						else
+						{
+							cout << "\nInvalid file: invalid player " << i + 1
+								<< " difficulty" << endl;
+							valid = false;
+						}
 					}
-					else valid = false;
+					else
+					{
+						cout << "\nInvalid file: invalid player " << i + 1
+							<< " difficulty" << endl;
+						valid = false;
+					}
 				}
 				players.push_back(player);
 			}
@@ -231,12 +277,22 @@ bool GameEngine::loadGame()
 			}
 			getline(file, input);
 
-			if (!file.eof() && input == "   0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 ")
+			if (!file.eof() && input == 
+				"   0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 ")
 			{
 				getline(file, input);
-				if (file.eof() || input != "  -------------------------------------------------------------------------------") valid = false;
+				if (file.eof() || input !=
+					"  -------------------------------------------------------------------------------")
+				{
+					cout << "\nInvalid file: invalid board format" << endl;
+					valid = false;
+				}
 			}
-			else valid = false;
+			else
+			{
+				cout << "\nInvalid file: invalid board format" << endl;
+				valid = false;
+			}
 			if (valid)
 			{
 				firstTile = true;
@@ -244,18 +300,28 @@ bool GameEngine::loadGame()
 				for (int i = 0; i < MAX_BOARD_SIZE && valid; i++)
 				{
 					getline(file, input);
-					if (file.eof() || input.substr(0, 3) != rowLabel || input.size() > (3 + (MAX_BOARD_SIZE * 3))) valid = false;
-					//Check all tiles in board are valid
+					if (file.eof() || input.substr(0, 3) != rowLabel
+						|| input.size() > (3 + (MAX_BOARD_SIZE * 3)))
+					{
+						cout << "\nInvalid file: invalid board format" << endl;
+						valid = false;
+					}
+
+					// Checks all tiles in board are valid
 					for (unsigned int j = 3; j < input.size() && valid; j += 3)
 					{
 						if (input.substr(j, 3) != "  |")
 						{
 							Tile* tile = Tile::stringToTile(input[j], input[j + 1]);
-							if (tile == nullptr) valid = false;
-							else
+							if (tile != nullptr)
 							{
 								firstTile = false;
 								board[((j - 3) / 3)][i] = tile;
+							}
+							else
+							{
+								cout << "\nInvalid file: invalid board format" << endl;
+								valid = false;
 							}
 						}
 					}
@@ -272,14 +338,22 @@ bool GameEngine::loadGame()
 				for (unsigned int i = 0; i < input.size() && valid; i += 3)
 				{
 					Tile* tile = Tile::stringToTile(input[i], input[i + 1]);
-					if (tile == nullptr) valid = false;
-					else
+					if (tile != nullptr)
 					{
 						tileBag.add_back(tile);
 					}
+					else
+					{
+						cout << "\nInvalid file: invalid tilebag" << endl;
+						valid = false;
+					}
 				}
 			}
-			else valid = false;
+			else
+			{
+				cout << "\nInvalid file: invalid tilebag" << endl;
+				valid = false;
+			}
 		}
 		if (valid)
 		{
@@ -297,16 +371,24 @@ bool GameEngine::loadGame()
 						found = true;
 					}
 				}
-				if (!found) valid = false;
+				if (!found)
+				{
+					cout << "\nInvalid file: invalid current player name" << endl;
+					valid = false;
+				}
 			}
 			else
 			{
+				cout << "\nInvalid file: invalid current player name" << endl;
 				valid = false;
 			}
 		}
-
 	}
-	else valid = false;
+	else
+	{
+		cout << "\nInvalid file: file does not exist" << endl;
+		valid = false;
+	}
 	if (valid)
 	{
 		cout << "\nQwirkle game successfully loaded" << endl;

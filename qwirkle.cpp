@@ -56,7 +56,6 @@ int main(void)
 				GameEngine engine;
 				// Exits if the load was successful, returns to menu if it wasn't
 				if (engine.loadGame()) exit = true;
-				else cout << "\nInvalid file, try again" << endl;
 				valid_input = true;
 			}
 			else if (input == "3")

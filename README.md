@@ -1,4 +1,4 @@
-# APT-Assignment-2
+# Qwirkle
 ## Description
 A console based version of the game Qwirkle made by me and 3 other RMIT students. The rules are mostly identical to those found [here](https://www.ultraqwirkle.com/game-rules.php) except that only one tile can be placed at a time. The game can host up to 12 players, and any of those players can be chosen to be an AI with a difficulty rating of EASY, MEDIUM or HARD.
 ## Running and playing
